@@ -1,0 +1,442 @@
+body{
+    font-family: 'Hind', sans-serif;
+    background-size:"cover";
+    background-image: "url('/jean-philippe-delberghe-75xPHEQBmvA-unsplash.jpg')";
+}
+img {
+    max-width: 100%;
+}
+p {
+    color: #7a7a7a;
+    font-size: 16px;
+    font-weight: 100;
+    line-height: 28px;
+}
+p.big {
+    font-size: 24px;
+    line-height: 38px;
+}
+.dark {
+    color: #393939;
+}
+.no-bg:before {
+    display: none;
+}
+
+section#geo-hero {
+    background-color: whitesmoke;
+}
+section#geo-hero {
+    height: 70vh;
+    color: #fff;
+}
+
+section#geo-hero .container {
+    height: 100%;
+    position: relative;
+    justify-content: center;
+}
+
+section#faq {
+    text-align: left;
+}
+section {
+    text-align: center;
+    position: relative;
+    padding: 60px 0;
+}
+
+section#geo-hero:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgb(94 94 94 / 40%);
+    z-index: 0;
+}
+.geo-hero-text h4 {
+    font-size: 26px;
+}
+
+.geo-hero-text h2 {
+    font-size: 54px;
+}
+
+.geo-hero-text p {
+    font-size: 22px;
+    font-weight: 300;
+}
+section#geo-slider {
+    background: #eae8e5;
+}
+
+section#geo-started {
+    background: #eae8e5;
+}
+
+section#geo-slider strong {
+    color: #373634;
+    display: inline-block;
+    margin-bottom: 40px;
+}
+section#geo-started h2 {
+    font-size: 26px;
+    color: #29a044;
+    margin-bottom: 20px;
+}
+
+section#geo-started p {
+    font-size: 16px;
+    font-weight: 300;
+    margin: 0 auto;
+    color: #6f6e6c;
+}
+
+#geo-started button.geo-btn {
+    margin-top: 30px;
+    border: none;
+}
+
+.geo-btn {
+    padding: 15px 40px;
+    border-radius: 2px;
+    font-size: 18px;
+}
+
+button.geo-btn.btn-primary {
+    background: #4990e2;
+}
+
+section#geo-blog h2 {
+    font-size: 28px;
+}
+.carousel-item {
+    text-align: center;
+    padding: 0 15%;
+}
+
+.carousel-item img {
+    margin-bottom: 40px;
+    max-width: 100%;
+}
+
+.carousel-item p {
+    font-size: 16px;
+    font-weight: 300;
+    color: #6f6e6c;
+}
+ol.carousel-indicators {
+    bottom: -20px;
+}
+.carousel-control-prev, .carousel-control-next {
+    align-items: end;
+    bottom: 20px;
+    color: #43423e;
+    font-size: 33px;
+}
+.carousel-control-prev span, .carousel-control-next span {
+    border: solid 1px #aaaaa6;
+    border-radius: 50px;
+    padding: 6px 11px 0px;
+    text-align: center;
+}
+.carousel-control-prev span, .carousel-control-next span {
+    border: solid 1px #aaaaa6;
+    border-radius: 50px;
+    padding: 6px 11px 0px;
+    text-align: center;
+}
+
+ol.carousel-indicators li {
+    width: 6px;
+    border-radius: 10px;
+    height: 6px;
+    background: #adaa9f;
+    display: inline-block;
+}
+
+.carousel-indicators .active {
+    width: 10px;
+    height: 10px;
+    background-color: #adaa9f;
+    margin-top: -2px;
+}
+.carousel-item h3 {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 25px;
+    color: #40413f;
+}
+section#geo-blog {
+}
+.geo-thumbnail img {width: 85%;}
+.geo-article {
+    text-align: left;
+}
+
+.entry-title {
+    font-size: 23px;
+    margin-bottom: 20px;
+    color: #393939;
+    font-weight: 600;
+}
+
+.geo-article p {
+    color: #7a7a7a;
+    font-size: 16px;
+    font-weight: 100;
+    line-height: 28px;
+}
+
+a.geo-btn.btn-secondary {
+    background: none;
+    border: solid 1px #202020;
+    color: #202020;
+    font-size: 16px;
+    padding: 10px 28px;
+    margin-top: 40px;
+    display: inline-block;
+}
+
+.geo-article .row {
+    margin: 70px 0;
+}
+
+section#geo-cta {
+    background: #262626;
+    color: #fff;
+}
+
+section#geo-cta h2 {
+    font-size: 26px;
+    margin-bottom: 20px;
+}
+
+section#geo-cta p {
+    font-size: 16px;
+    font-weight: 100;
+    color: #9e9e9e;
+    margin-bottom: 40px;
+}
+
+section#geo-cta ul {
+    list-style: none;
+    padding: 0;
+}
+
+section#geo-cta ul li {
+    display: inline;
+    margin-right: 30px;
+}
+
+section#geo-cta ul li a {
+    color: #54a4c7;
+}
+.grid {
+    display: grid;
+    grid-gap: 1rem;
+    grid-template-columns: repeat(4, 1fr);
+}
+.grid article {
+    border: solid 1px #ddd;
+    text-align: left;
+    position: relative;
+    aspect-ratio: 1;
+}
+.grid article a {
+    display: block;
+    height: 100%;
+    padding: 15px;
+}
+
+.grid article:hover {
+    border-color: #2E90EB;
+}
+.grid .entry-title {
+    font-size: 18px;
+    line-height: 23px;
+}
+
+.grid .read-more {
+    color: #2E90EB;
+    position: absolute;
+    bottom: 10px;
+    right: 15px;
+    font-size: 24px;
+}
+
+.grid .entry-content {
+    color: #7c7c7c;
+}
+.accordion .card {
+    border: none;
+}
+
+.accordion .card-header {
+    background: none;
+    border: none;
+}
+
+.accordion .card-header button {
+    padding: 0;
+    color: #212529;
+    font-weight: bold;
+    font-size: 18px;
+    width: 100%;
+    text-align: left;
+    position: relative;
+}
+
+.accordion .card-body {
+    padding: 0 20px;
+}
+.accordion .card-header button i {
+    color: #558174;
+    float: right;
+    border: solid 1px #ddd;
+    font-size: 12px;
+    width: 30px;
+    height: 30px;
+    border-radius: 30px;
+    text-align: center;
+    line-height: 30px;
+    display: inline-block;
+    vertical-align: bottom;
+}
+.accordion .card-header button.collapsed i {
+    transform: rotate(180deg);
+}
+section#geo-page-title {
+    background: whitesmoke;
+    padding: 40px;
+}
+
+section#geo-content {
+    background-color: white;
+}
+section#geo-geo-content {
+    height: 70vh;
+    color: #fff;
+}
+
+section#geo-geo-content .container {
+    height: 100%;
+    position: relative;
+    justify-content: center;
+}
+
+
+/*
+div#sidebar {
+    text-align: left;
+    background: #0a311c;
+    color: #fff;
+    padding-bottom: 10px;
+    width: 80%;
+}
+
+div#sidebar li {
+    list-style: none;
+}
+
+div#sidebar ul {
+    padding: 0;
+}
+div#sidebar li a {
+    color: #fff;
+    padding: 10px 20px;
+    display: inline-block;
+    font-size: 15px;
+}
+div#sidebar.fixed {
+    position: fixed;
+    top: 50px;
+}
+
+*/
+
+.widget_title {
+    background: #17783f;
+    padding: 10px 20px;
+    text-transform: uppercase;
+}
+
+
+.help-single section {
+    padding-top: 0;
+}
+
+.help-single h1 {
+    font-size: 44px;
+    margin-bottom: 20px;
+}
+
+figcaption {
+    margin: 25px;
+    text-align: center;
+    color: #7a7a7a;
+}
+section#geo-page-title input {
+    border: none;
+    background: none;
+    font-size: 13px;
+}
+
+section#geo-page-title button {
+    border: none;
+    background: none;
+    float: right;
+}
+
+section#geo-page-title form {
+    border: solid 1px #ddd;
+    padding: 6px;
+    text-align: left;
+    width: 200px;
+}
+
+section#geo-page-title input:focus {
+    outline: none;
+}
+
+section#geo-page-title p {
+    font-size: 14px;
+}
+
+.grid a:hover{
+    text-decoration: none;
+}
+@media only screen and (max-width: 768px) {
+    .hide-mobile {
+        display: none;
+    }
+    .entry-title {
+        margin-top: 20px;
+    }
+
+    a.geo-btn.btn-secondary {
+        margin-bottom: 20px;
+    }
+    .grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+@media only screen and (max-width: 480px){
+    .grid {
+        grid-template-columns: repeat(1, 1fr);
+    }
+
+    .accordion .card-header, .accordion .card-body {
+        padding: 0.75rem 0;
+    }
+    section#geo-page-title p {
+        text-align: center;
+        margin-top: 10px;
+    }
+
+    section#geo-page-title form {
+        margin: 0 auto;
+    }
+}

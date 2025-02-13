@@ -1,0 +1,47 @@
+import {
+  CREATE_{BESAR}_SUCCESS,
+  CREATE_{BESAR}_FAIL,
+  RETRIEVE_{BESAR}_SUCCESS,
+  RETRIEVE_{BESAR}_FAIL,
+  UPDATE_{BESAR}_SUCCESS,
+  UPDATE_{BESAR}_FAIL,
+  DELETE_{BESAR}_SUCCESS,
+  DELETE_{BESAR}_FAIL,
+} from "../actions/types";
+
+const initialState = [];
+
+function Reducer(datas = initialState, action) {
+  const { type, payload } = action;
+
+  switch (type) {
+    case CREATE_{BESAR}_SUCCESS:
+      return [...datas, payload];
+
+    case RETRIEVE_{BESAR}_SUCCESS:
+      return payload;
+
+    case RETRIEVE_{BESAR}_FAIL:
+      return [...datas];
+
+    case UPDATE_{BESAR}_SUCCESS:
+      return datas.map((data) => {
+        if (data.uuid === payload.uuid) {
+          return {
+            ...datas,
+            ...payload,
+          };
+        } else {
+          return data;
+        }
+      });
+
+    case DELETE_{BESAR}_SUCCESS:
+      return datas.filter(({ uuid }) => uuid !== payload.uuid);
+
+    default:
+      return datas;
+  }
+}
+
+export default Reducer;

@@ -1,0 +1,253 @@
+.ol-map {
+    margin: 0px;
+    height: 92vh;
+    width: 100%;
+    
+}
+
+.ol-control {
+  position: absolute;
+  /*background-color: rgba(255, 255, 255, 0.4);*/
+  border-radius: 4px;
+  /*padding: 5px;*/
+}
+
+.ol-control button {
+  background-color: #fff;
+  color: #000;
+  cursor:pointer;
+}
+
+.ol-zoom .ol-zoom-in,  .ol-zoom .ol-zoom-out {
+  border-radius: 0px;
+
+}
+
+.ol-zoom {
+  left: auto;
+  top: 121px;
+  right: .5em;
+}
+
+.ol-zoom-extent{
+  left: auto;
+  top: 126px;
+  right: .5em;
+}
+
+.ol-full-screen {
+  top: 120px;
+  right: .5em;
+}
+
+
+.ol-scale-text{
+  font-size: 11px;
+}
+
+.ol-scale-step-text{
+  font-size: 11px;
+}
+  
+.ol-scale-bar{
+  left: 200px;
+  bottom: 20px !important;
+  font-size: 12px;
+}
+
+
+.ol-custom-overviewmap,
+.ol-custom-overviewmap.ol-uncollapsible {
+top: auto;
+left: auto;
+right: 10px;
+bottom: 55px;
+}
+
+.ol-custom-overviewmap:not(.ol-collapsed)  {
+border: 1px solid rgb(153, 153, 153);
+}
+
+.ol-custom-overviewmap .ol-overviewmap-map {
+border: none;
+width: 180px;
+}
+
+.ol-custom-overviewmap .ol-overviewmap-box {
+border: 1px solid rgb(238, 0, 0);
+}
+
+.ol-custom-overviewmap:not(.ol-collapsed) button{
+bottom: auto;
+left: auto;
+right: 1px;
+top: 1px;
+}
+
+
+.ol-attribution{
+  font-size: 12px;
+  right: 20px;
+  bottom: 15px !important;
+}
+
+
+.graticule{
+top: 155px;
+right: .5em;  
+}
+
+.graticule button{
+padding-top: 2px;
+}
+
+.measure{
+top: 170px;
+right: 0.5em;  
+}
+
+.measure button{
+padding-top: 2px;
+}
+
+.identify{
+top:200px;
+right: 0.5em;  
+}
+
+.drawing{
+top: 230px;
+right: 0.5em;  
+}
+
+
+
+#measurement {
+position: absolute;
+right: 3em;
+top: 225px;
+width: 160px;
+min-height: 30px;
+padding-bottom: 10px;
+background-color: #fff;
+z-index: 1002;
+background: #fff;
+-webkit-box-shadow: 7px 7px 24px 0px rgba(94, 94, 94, 0.75);
+-moz-box-shadow: 7px 7px 24px 0px rgba(94, 94, 94, 0.75);
+box-shadow: 7px 7px 24px 0px rgba(94, 94, 94, 0.75);
+}
+
+#identifying {
+position: absolute;
+right: 3em;
+top:  255px;
+width: 180px;
+min-height: 25px;
+padding-bottom: 10px;
+background-color: #fff;
+z-index: 1002;
+background: #fff;
+-webkit-box-shadow: 7px 7px 24px 0px rgba(94, 94, 94, 0.75);
+-moz-box-shadow: 7px 7px 24px 0px rgba(94, 94, 94, 0.75);
+box-shadow: 7px 7px 24px 0px rgba(94, 94, 94, 0.75);
+}
+
+
+#drawing {
+position: absolute;
+right: 3em;
+top: 137px;
+width: 240px;
+min-height: 30px;
+padding-bottom: 10px;
+background-color: #fff;
+z-index: 1002;
+background: #fff;
+-webkit-box-shadow: 7px 7px 24px 0px rgba(94, 94, 94, 0.75);
+-moz-box-shadow: 7px 7px 24px 0px rgba(94, 94, 94, 0.75);
+box-shadow: 7px 7px 24px 0px rgba(94, 94, 94, 0.75);
+}
+
+
+.show{
+visibility:visible;
+}
+
+.hide{
+visibility:hidden;
+display: none;
+}
+
+/* custom scrollbar */
+::-webkit-scrollbar {
+  width: 13px;
+  height: 10px;      
+}
+
+
+::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #d6dee1;
+  border-radius: 10px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: #a8bbbf;
+}
+
+
+.ol-popup {
+  position: absolute;
+  background-color: white;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+  padding: 15px;
+  border: 1px solid #cccccc;
+  bottom: 12px;
+  left: -50px;
+  min-width: 320px;
+}
+
+.ol-popup:after, .ol-popup:before {
+  top: 100%;
+  border: solid transparent;
+  content: " ";
+  height: 0;
+  width: 0;
+  position: absolute;
+  pointer-events: none;
+}
+.ol-popup:after {
+  border-top-color: white;
+  border-width: 10px;
+  left: 48px;
+  margin-left: -10px;
+}
+.ol-popup:before {
+  border-top-color: #cccccc;
+  border-width: 11px;
+  left: 48px;
+  margin-left: -11px;
+}
+.ol-popup-closer {
+  text-decoration: none;
+  position: absolute;
+  top: 2px;
+  right: 8px;
+}
+
+.ol-popup-closer:hover {
+  cursor: pointer;
+}
+.ol-popup-closer:after {
+  content: "X";
+}
+
+.kontent{
+  max-height: 195px;
+  overflow-y: scroll;
+}

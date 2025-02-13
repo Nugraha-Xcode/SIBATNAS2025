@@ -1,0 +1,322 @@
+import { forwardRef, useState, useRef, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+
+import { create, update, remove } from "src/redux/actions/eksternal-tematik";
+import { retrieve } from "src/redux/actions/eksternal";
+import { retrieve as retrieveTematik } from "src/redux/actions/tematik";
+
+import PropTypes from "prop-types";
+import {
+  Alert,
+  Avatar,
+  Box,
+  Button,
+  Checkbox,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  FormControl,
+  FormControlLabel,
+  Grid,
+  InputLabel,
+  Link,
+  MenuItem,
+  Select,
+  Slide,
+  TextField,
+  Typography,
+  CircularProgress,
+} from "@mui/material";
+
+import swal from "sweetalert";
+import { blue, green } from "@mui/material/colors";
+import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
+
+const Transition = forwardRef(function Transition(props, ref) {
+  return <Slide direction="up" ref={ref} {...props} />;
+});
+
+function UnduhDialog(props) {
+  const { onClose, open, config } = props;
+  const { user: currentUser } = useSelector((state) => state.auth);
+  const eksternals = useSelector((state) => state.eksternal);
+  const tematiks = useSelector((state) => state.tematik);
+
+  const initialDataState = {
+    eksternal: eksternals[0],
+    tematik: tematiks[0],
+  };
+  const [data, setData] = useState(initialDataState);
+  const [selectedEksternal, setSelectedEksternal] = useState(
+    eksternals[0]?.name
+  );
+  const [selectedTematik, setSelectedTematik] = useState(tematiks[0]?.name);
+
+  const [loading, setLoading] = useState(false);
+  //const kategoriOptions = [];
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (currentUser.roles.includes("ROLE_ADMIN")) {
+      dispatch(retrieve());
+      dispatch(retrieveTematik());
+    }
+  }, []);
+  const handleEksternalChange = (e) => {
+    let value = null;
+
+    if (e.target.value !== "all") {
+      value = e.target.value;
+    }
+
+    setSelectedEksternal(value);
+    var a = eksternals.filter(function (el) {
+      return el.name == value;
+    });
+
+    setData({ ...data, ["eksternal"]: a[0] });
+  };
+
+  const handleTematikChange = (e) => {
+    let value = null;
+
+    if (e.target.value !== "all") {
+      value = e.target.value;
+    }
+
+    setSelectedTematik(value);
+    var a = tematiks.filter(function (el) {
+      return el.name == value;
+    });
+
+    setData({ ...data, ["tematik"]: a[0] });
+  };
+  const handleClose = () => {
+    onClose();
+  };
+
+  useEffect(() => {
+    if (config) {
+      //console.log(config);
+      if (config.data) {
+        setData(config.data);
+        setSelectedTematik(config.data.name);
+        var a = eksternals.filter(function (el) {
+          return el.name == config.eksternal?.name;
+        });
+        //setSelectedBpkhtl(config.data.bpkhtls[0]?.name);
+        setData({ ...data, ["eksternal"]: a[0] });
+
+        var b = tematiks.filter(function (el) {
+          return el.name == config.data.name;
+        });
+
+        setData({ ...data, ["tematik"]: b[0] });
+      } else {
+        setData(initialDataState);
+        setSelectedEksternal(config.eksternal?.name);
+        setData({ ...data, ["eksternal"]: config.eksternal });
+        setSelectedTematik(tematiks[0]?.name);
+      }
+    }
+  }, [config]);
+
+  const save = (e) => {
+    e.preventDefault();
+    const { eksternal, tematik } = data;
+    setLoading(true);
+    dispatch(create(eksternal, tematik))
+      .then((data) => {
+        //console.log(data);
+        //setSubmitted(true);
+        setLoading(false);
+        swal("Success", "Data berhasil disimpan!", "success", {
+          buttons: false,
+          timer: 2000,
+        });
+        onClose();
+
+        //console.log(data);
+      })
+      .catch((e) => {
+        setLoading(false);
+
+        swal("Error", e.response.data.message, "error", {
+          buttons: false,
+          timer: 2000,
+        });
+        console.log(e);
+      });
+  };
+
+  const updateContent = (e) => {
+    e.preventDefault();
+    setLoading(true);
+
+    dispatch(update(data.uuid, data))
+      .then((response) => {
+        console.log(response);
+        setLoading(false);
+
+        swal("Success", "Data berhasil diperbarui!", "success", {
+          buttons: false,
+          timer: 2000,
+        });
+
+        onClose();
+      })
+      .catch((e) => {
+        setLoading(false);
+
+        swal("Error", e.response.data.message, "error", {
+          buttons: false,
+          timer: 2000,
+        });
+        console.log(e);
+      });
+  };
+
+  const removeData = (e) => {
+    e.preventDefault();
+    setLoading(true);
+
+    dispatch(remove(data))
+      .then(() => {
+        setLoading(false);
+        swal("Success", "Data berhasil dihapus!", "success", {
+          buttons: false,
+          timer: 2000,
+        });
+        onClose();
+      })
+      .catch((e) => {
+        setLoading(false);
+        swal("Error", e.response.data.message, "error", {
+          buttons: false,
+          timer: 2000,
+        });
+        console.log(e);
+      });
+  };
+
+  return (
+    <Dialog
+      TransitionComponent={Transition}
+      keepMounted
+      maxWidth="sm"
+      fullWidth
+      scroll="paper"
+      onClose={handleClose}
+      open={open}
+    >
+      <DialogTitle>{config.title}</DialogTitle>
+
+      <DialogContent>
+        <DialogContentText>{config.description}</DialogContentText>
+
+        {currentUser.roles.includes("ROLE_ADMIN") ? (
+          <FormControl
+            fullWidth
+            variant="outlined"
+            sx={{ mt: 1 }}
+            disabled={true}
+          >
+            <InputLabel>Eksternal</InputLabel>
+            <Select
+              value={selectedEksternal ?? ""}
+              onChange={handleEksternalChange}
+              label="Eksternal"
+              key="eksternal"
+              autoWidth
+            >
+              {eksternals.map((data) => (
+                <MenuItem key={data.uuid} value={data.name}>
+                  {data.name}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        ) : (
+          ""
+        )}
+        {currentUser.roles.includes("ROLE_ADMIN") ? (
+          <FormControl
+            fullWidth
+            variant="outlined"
+            sx={{ mt: 1 }}
+            disabled={config.mode == "delete"}
+          >
+            <InputLabel>IGT</InputLabel>
+            <Select
+              value={selectedTematik ?? ""}
+              onChange={handleTematikChange}
+              label="IGT"
+              autoWidth
+            >
+              {tematiks.map((lokasi) => (
+                <MenuItem key={lokasi.uuid} value={lokasi.name}>
+                  {lokasi.name}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        ) : (
+          ""
+        )}
+      </DialogContent>
+      <DialogActions>
+        <Box sx={{ position: "relative" }}>
+          <Button
+            onClick={handleClose}
+            variant="outlined"
+            disabled={loading}
+            sx={{ mr: "10px" }}
+          >
+            Cancel
+          </Button>
+          {config.mode == "add" ? (
+            <Button onClick={save} variant="contained" disabled={loading}>
+              {loading ? (
+                <CircularProgress
+                  size={24}
+                  sx={{
+                    color: blue[500],
+                    position: "absolute",
+                    top: "50%",
+                    left: "40%",
+                    marginTop: "-12px",
+                    marginLeft: "-12px",
+                  }}
+                />
+              ) : (
+                config.action
+              )}
+            </Button>
+          ) : config.mode == "edit" ? (
+            <Button
+              onClick={updateContent}
+              variant="contained"
+              disabled={loading}
+            >
+              {config.action}
+            </Button>
+          ) : (
+            <Button onClick={removeData} variant="contained" disabled={loading}>
+              {config.action}
+            </Button>
+          )}
+        </Box>
+      </DialogActions>
+    </Dialog>
+  );
+}
+
+UnduhDialog.propTypes = {
+  onClose: PropTypes.func.isRequired,
+  open: PropTypes.bool.isRequired,
+  config: PropTypes.object.isRequired,
+};
+
+export default UnduhDialog;

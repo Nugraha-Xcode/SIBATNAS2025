@@ -1,0 +1,82 @@
+import {
+  CREATE_{BESAR}_SUCCESS,
+  CREATE_{BESAR}_FAIL,
+  RETRIEVE_{BESAR}_SUCCESS,
+  RETRIEVE_{BESAR}_FAIL,
+  UPDATE_{BESAR}_SUCCESS,
+  UPDATE_{BESAR}_FAIL,
+  DELETE_{BESAR}_SUCCESS,
+  DELETE_{BESAR}_FAIL,
+  SET_MESSAGE,
+} from "./types";
+
+import Service from "src/services/{kecil}.service";
+import EventBus from "src/utils/EventBus";
+
+export const retrieve = () => async (dispatch) => {
+  try {
+    const res = await Service.getAll();
+
+    dispatch({
+      type: RETRIEVE_{BESAR}_SUCCESS,
+      payload: res.data,
+    });
+  } catch (err) {
+    if (err.response && err.response.status === 401) {
+      EventBus.dispatch("logout");
+    }
+    console.log(err);
+  }
+};
+
+export const create = (data) => async (dispatch) => {
+  try {
+    const res = await Service.create(data);
+
+    dispatch({
+      type: CREATE_{BESAR}_SUCCESS,
+      payload: res.data,
+    });
+
+    return Promise.resolve(res.data);
+  } catch (err) {
+    if (err.response && err.response.status === 401) {
+      EventBus.dispatch("logout");
+    }
+    return Promise.reject(err);
+  }
+};
+
+export const update = (uuid, data) => async (dispatch) => {
+  try {
+    const res = await Service.update(uuid, data);
+
+    dispatch({
+      type: UPDATE_{BESAR}_SUCCESS,
+      payload: data,
+    });
+
+    return Promise.resolve(res.data);
+  } catch (err) {
+    if (err.response && err.response.status === 401) {
+      EventBus.dispatch("logout");
+    }
+    return Promise.reject(err);
+  }
+};
+
+export const remove = (uuid) => async (dispatch) => {
+  try {
+    await Service.remove(uuid);
+
+    dispatch({
+      type: DELETE_{BESAR}_SUCCESS,
+      payload: { uuid },
+    });
+  } catch (err) {
+    if (err.response && err.response.status === 401) {
+      EventBus.dispatch("logout");
+    }
+    console.log(err);
+  }
+};
