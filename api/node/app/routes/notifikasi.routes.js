@@ -14,4 +14,6 @@ module.exports = (app) => {
 
   app.get(base, [authJwt.verifyToken], controller.findAll);
   app.get(base + "user/:uuid", [authJwt.verifyToken], controller.findAllUser);
+  app.get(base + "user/unread/:uuid", [authJwt.verifyToken], controller.findAllUserUnread);
+  app.put(base + "update/:uuid", [authJwt.verifyToken], controller.updateReadStatus);
 };

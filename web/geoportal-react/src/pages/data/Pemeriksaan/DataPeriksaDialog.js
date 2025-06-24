@@ -34,6 +34,7 @@ import {
   TextField,
   Typography,
   CircularProgress,
+  Tooltip
 } from "@mui/material";
 import swal from "sweetalert";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
@@ -54,42 +55,28 @@ function KategoriDialog(props) {
       id: 1,
       nilai: "A",
       keterangan:
-        "Nilai Kualitas Data 100 dan Metadata Lengkap, berarti IGT dapat disebarluaskan",
+        "Data Sesuai Standar dan Metadata Lengkap, IG dapat disebarluaskan",
       status: "Sudah Diperiksa - Siap Publikasi",
     },
     {
       id: 2,
       nilai: "B",
       keterangan:
-        "Nilai Kualitas Data 90-99 dan Metadata Lengkap, berarti IGT dapat disebarluaskan dengan Catatan",
+        "Data Cukup Sesuai Standar dan Metadata Lengkap, IG dapat disebarluaskan dengan Catatan",
       status: "Sudah Diperiksa - Siap Publikasi",
     },
     {
       id: 3,
       nilai: "C",
       keterangan:
-        "Nilai Kualitas Data 100 dan Metadata Tidak Lengkap, berarti IGT belum dapat disebarluaskan dan perlu perbaikan Metadata",
+        "Data Cukup Sesuai Standar dan Metadata Tidak Lengkap, IG belum dapat disebarluaskan, perlu perbaikan Metadata",
       status: "Sudah Diperiksa - Perlu Perbaikan",
     },
     {
       id: 4,
       nilai: "D",
       keterangan:
-        "Nilai Kualitas Data 90-99 dan Metadata Tidak Lengkap, berarti IGT belum dapat disebarluaskan, perlu perbaikan Kualitas Data (opsional) dan perbaikan Metadata",
-      status: "Sudah Diperiksa - Perlu Perbaikan",
-    },
-    {
-      id: 5,
-      nilai: "E",
-      keterangan:
-        "Nilai Kualitas Data < 90 dan Metadata Lengkap, berarti IGT belum dapat disebarluaskan dan perlu perbaikan Kualitas Data",
-      status: "Sudah Diperiksa - Perlu Perbaikan",
-    },
-    {
-      id: 6,
-      nilai: "F",
-      keterangan:
-        "Nilai Kualitas Data < 90 dan Metadata Tidak Lengkap, berarti IGT belum dapat disebarluaskan, dan perlu Perbaikan Kualitas Data dan Metadata",
+        "Data Belum Sesuai Standar dan Metadata Tidak Lengkap, IG belum dapat disebarluaskan, perlu perbaikan Data dan Metadata",
       status: "Sudah Diperiksa - Perlu Perbaikan",
     },
   ];
@@ -115,11 +102,9 @@ function KategoriDialog(props) {
 
   // const [submitted, setSubmitted] = useState(false);
 
-
   const [fileErrors, setFileErrors] = useState({
     document: "",
   });
-
 
   const dispatch = useDispatch();
 
@@ -128,12 +113,10 @@ function KategoriDialog(props) {
     //setSelectedStatus(statuses[0]?.name);
   }, []);
 
-  
-  
   // Validate file based on type and size
   const validateFile = (file, type) => {
     // Reset previous error
-    setFileErrors(prev => ({ ...prev, [type]: "" }));
+    setFileErrors((prev) => ({ ...prev, [type]: "" }));
 
     // Check file exists
     if (!file) {
@@ -144,50 +127,51 @@ function KategoriDialog(props) {
 
     // Set restrictions based on file type
     switch (type) {
-      case 'document':
-        allowedTypes = environment.ALLOWED_DOCUMENT_TYPES.split(',');
-        maxSize = environment.MAX_DOCUMENT_SIZE * 1024 * 1024; // Convert MB to bytes
-        errorMessage = `Dokumen harus berupa ${allowedTypes.join(', ')} dan maks ${environment.MAX_DOCUMENT_SIZE} MB`;
+      case "document":
+        allowedTypes = process.env.REACT_APP_ALLOWED_DOCUMENT_TYPES.split(",");
+        maxSize = process.env.REACT_APP_MAX_DOCUMENT_SIZE * 1024 * 1024; // Convert MB to bytes
+        errorMessage = `Dokumen harus berupa ${allowedTypes.join(
+          ", "
+        )} dan maks ${process.env.REACT_APP_MAX_DOCUMENT_SIZE} MB`;
         break;
       // case 'metadata':
       //   allowedTypes = ['.xml'];
-      //   maxSize = environment.MAX_METADATA_SIZE * 1024 * 1024;
-      //   errorMessage = `Metadata harus berupa .xml dan maks ${environment.MAX_METADATA_SIZE} MB`;
+      //   maxSize = process.env.REACT_APP_MAX_METADATA_SIZE * 1024 * 1024;
+      //   errorMessage = `Metadata harus berupa .xml dan maks ${process.env.REACT_APP_MAX_METADATA_SIZE} MB`;
       //   break;
       // case 'dataSpasial':
       //   allowedTypes = ['.zip'];
-      //   maxSize = environment.MAX_SPASIAL_SIZE * 1024 * 1024;
-      //   errorMessage = `Data Spasial harus berupa .zip dan maks ${environment.MAX_SPASIAL_SIZE} MB`;
+      //   maxSize = process.env.REACT_APP_MAX_SPASIAL_SIZE * 1024 * 1024;
+      //   errorMessage = `Data Spasial harus berupa .zip dan maks ${process.env.REACT_APP_MAX_SPASIAL_SIZE} MB`;
       //   break;
       default:
         return false;
     }
 
     // Check file extension
-    const fileExtension = '.' + file.name.split('.').pop().toLowerCase();
+    const fileExtension = "." + file?.name.split(".").pop().toLowerCase();
     if (!allowedTypes.includes(fileExtension)) {
-      setFileErrors(prev => ({ ...prev, [type]: errorMessage }));
+      setFileErrors((prev) => ({ ...prev, [type]: errorMessage }));
       return false;
     }
 
     // Check file size
-    if (file.size > maxSize) {
-      setFileErrors(prev => ({ ...prev, [type]: errorMessage }));
+    if (file?.size > maxSize) {
+      setFileErrors((prev) => ({ ...prev, [type]: errorMessage }));
       return false;
     }
 
     return true;
   };
 
-
   const selectDocumentFile = (e) => {
     if (!e.target.files) {
       return;
     }
     const file = e.target.files[0];
-    if (validateFile(file, 'document')) {
+    if (validateFile(file, "document")) {
       setSelectedDocumentFiles(e.target.files);
-      setDocumentName(file.name);
+      setDocumentName(file?.name);
     }
     //const file = e.target.files[0];
     //const { name } = file;
@@ -228,17 +212,17 @@ function KategoriDialog(props) {
 
   const handleClose = () => {
     onClose();
-        // Reset file errors when closing
-        setFileErrors({
-          document: "",
-        });
-    
-        // Reset form data to initial state
-        setData(initialState);
-      
-        // Reset file-related states
-        setSelectedDocumentFiles(undefined);
-        setDocumentName(undefined);
+    // Reset file errors when closing
+    setFileErrors({
+      document: "",
+    });
+
+    // Reset form data to initial state
+    setData(initialState);
+
+    // Reset file-related states
+    setSelectedDocumentFiles(undefined);
+    setDocumentName(undefined);
   };
 
   useEffect(() => {
@@ -264,8 +248,7 @@ function KategoriDialog(props) {
   }, [config]);
   function isValidated() {
     //console.log(user);
-    return (selectedDocumentFiles &&
-      !fileErrors.document);
+    return selectedDocumentFiles && !fileErrors.document;
   }
 
   const save = (e) => {
@@ -424,32 +407,43 @@ function KategoriDialog(props) {
         </FormControl>
 
         <Typography variant="body2" color="textSecondary" sx={{ mb: 1 }}>
-      Maksimal ukuran: {environment.MAX_DOCUMENT_SIZE} MB. Tipe file yang diperbolehkan: {environment.ALLOWED_DOCUMENT_TYPES}
-    </Typography>
-    <Box
-      className="mb25"
-      display="flex"
-      alignItems="center"
-      justifyContent="space-between"
-    >
-      <Box>
-        <Button
-          component="label"
-          variant="outlined"
-          startIcon={<UploadFileIcon />}
-          sx={{ marginRight: "1rem" }}
+          Maksimal ukuran: {process.env.REACT_APP_MAX_DOCUMENT_SIZE} MB. Tipe file yang
+          diperbolehkan: {process.env.REACT_APP_ALLOWED_DOCUMENT_TYPES}
+        </Typography>
+        <Box
+          className="mb25"
+          display="flex"
+          alignItems="center"
+          justifyContent="space-between"
         >
-          Upload Dokumen Referensi
-          <input type="file" hidden onChange={selectDocumentFile} accept={environment.ALLOWED_DOCUMENT_TYPES} />
-        </Button>
-      </Box>
-      {documentName ? <Box mr={1}>{documentName}</Box> : ""}
-    </Box>
-    {fileErrors.document && (
-      <Typography color="error" variant="body2">
-        {fileErrors.document}
-      </Typography>
-    )}
+          <Box>
+            <Button
+              component="label"
+              variant="outlined"
+              startIcon={<UploadFileIcon />}
+              sx={{ marginRight: "1rem" }}
+            >
+              Upload Dokumen QA&nbsp;
+                <Tooltip title="Wajib diisi">
+                  <Typography component="span" color="error">
+                    *
+                  </Typography>
+                </Tooltip>
+              <input
+                type="file"
+                hidden
+                onChange={selectDocumentFile}
+                accept={process.env.REACT_APP_ALLOWED_DOCUMENT_TYPES}
+              />
+            </Button>
+          </Box>
+          {documentName ? <Box mr={1}>{documentName}</Box> : ""}
+        </Box>
+        {fileErrors.document && (
+          <Typography color="error" variant="body2">
+            {fileErrors.document}
+          </Typography>
+        )}
       </DialogContent>
       <DialogActions>
         <Button onClick={handleClose} variant="outlined">

@@ -4,6 +4,7 @@ const { Op } = require("sequelize");
 const uploadPemeriksaan = require("../middleware/uploadPemeriksaan");
 
 const fs = require("fs");
+const { constants } = require("buffer");
 
 const User = db.user;
 const Lokasi = db.lokasi;
@@ -16,6 +17,7 @@ const dataPemeriksaan = db.dataPemeriksaan;
 const dataPublikasi = db.dataPublikasi;
 
 const statusPemeriksaan = db.statusPemeriksaan;
+const notifikasi = db.notifikasi;
 
 exports.create = async (req, res) => {
   try {
@@ -68,7 +70,27 @@ exports.create = async (req, res) => {
         where: {
           uuid: objectValue.uuid,
         },
+        include: [
+          {
+            model: dataProdusen,
+            as: "dataProdusen", // alias relasi
+            attributes: ["id", "deskripsi", "userId"] // field
+          }
+        ]
       });
+
+      let notif = {
+              uuid: uuidv4(),
+              waktuKirim: new Date(),
+              subjek: "Data " + dPeriksa.dataProdusen.deskripsi + " Sudah Lolos Pemeriksaan",
+              pesan:
+                "Data Anda sudah lolos pemeriksaan, silahkan tunggu publikasi data anda pada menu publikasi",
+              sudahBaca: false,
+              userId: dPeriksa.dataProdusen.userId,
+            };
+
+      notifikasi.create(notif);
+
       //update status data pemeriksaan == 3, userId, kategori, filename
       const update = {
         kategori: objectValue.kategori.nilai,
@@ -207,7 +229,27 @@ exports.create = async (req, res) => {
         where: {
           uuid: objectValue.uuid,
         },
+        include: [
+          {
+            model: dataProdusen,
+            as: "dataProdusen", // alias relasi
+            attributes: ["id", "deskripsi", "userId"] // field
+          }
+        ]
       });
+
+      let notif = {
+              uuid: uuidv4(),
+              waktuKirim: new Date(),
+              subjek: "Data " + dPeriksa.dataProdusen.deskripsi + " Belum Lolos Pemeriksaan",
+              pesan:
+                "Data Anda belum lolos pemeriksaan, silahkan perbaiki data anda dan upload ulang pada menu pemeriksaan -> data perbaikan",
+              sudahBaca: false,
+              userId: dPeriksa.dataProdusen.userId,
+            };
+
+      notifikasi.create(notif);
+
       //update status data pemeriksaan == 3, userId, kategori, filename
       const update = {
         kategori: objectValue.kategori.nilai,
@@ -529,262 +571,199 @@ exports.delete = (req, res) => {
     });
 };
 
-exports.downloadFile = async (req, res) => {
-  const uuid = req.params.uuid;
-  let data = await dataPemeriksaan.findOne({
-    where: {
-      uuid: uuid,
-    },
-  });
-  const fileName = data.filename;
-  const directoryPath = __basedir + "/app/resources/static/assets/pemeriksaan/";
 
-  res.download(directoryPath + fileName, fileName, (err) => {
-    if (err) {
-      res.status(500).send({
-        message: "Could not download the file. " + err,
+exports.downloadFile = async (req, res) => {
+  try {
+    const uuid = req.params.uuid;
+    const data = await dataPemeriksaan.findOne({
+      where: {
+        uuid: uuid,
+      },
+    });
+    
+    if (!data) {
+      return res.status(404).send({
+        message: "Data not found",
       });
     }
-  });
-};
-
-exports.findAllProdusen = (req, res) => {
-  const uuid = req.params.uuid;
-  Produsen.findOne({
-    where: {
-      uuid: uuid,
-    },
-  })
-    .then(async (data) => {
-      if (!data) {
-        return res.send([]);
-        //return res.status(404).send({ message: "Produsen Not found." });
-      } else {
-        Tematik.findAll({
-          where: {
-            produsenId: data.id,
-          },
-        })
-          .then((tema) => {
-            console.log(tema);
-            let tematiks = [];
-            for (let i = 0; i < tema.length; i++) {
-              tematiks.push(tema[i].id);
-            }
-            dataProdusen
-              .findAll({
-                where: {
-                  tematikId: {
-                    [Op.or]: tematiks,
-                  },
-                },
-
-                attributes: ["id"],
-              })
-              .then((daProd) => {
-                //res.send(daProd);
-                if (daProd.length == 0) {
-                  return res.send([]);
-                  //return res.status(404).send({ message: "Produsen Not found." });
-                } else {
-                  let ids = [];
-                  for (let i = 0; i < daProd.length; i++) {
-                    //console.log(eks_tema[i]);
-                    ids.push(daProd[i].id);
-                  }
-                  console.log(ids);
-
-                  dataPemeriksaan
-                    .findAll({
-                      order: [["id", "ASC"]],
-                      offset: 0,
-                      limit: 100,
-                      where: {
-                        dataProdusenId: {
-                          [Op.or]: ids,
-                        },
-                      },
-                      include: [
-                        {
-                          model: User,
-                          as: "user",
-                          attributes: ["id", "username"],
-                        },
-                        {
-                          model: dataProdusen,
-                          as: "dataProdusen",
-                          attributes: ["id", "uuid", "deskripsi"],
-                          include: [
-                            {
-                              model: Tematik,
-                              as: "tematik",
-                              attributes: ["id", "name"],
-                            },
-                          ],
-                        },
-                        {
-                          model: statusPemeriksaan,
-                          as: "statusPemeriksaan",
-                          attributes: ["id", "name"],
-                        },
-                      ],
-                      attributes: ["id", "uuid", "kategori", "createdAt"],
-                    })
-                    .then((data) => {
-                      res.send(data);
-                    })
-                    .catch((err) => {
-                      res.status(500).send({
-                        message:
-                          err.message ||
-                          "Some error occurred while retrieving lokasi.",
-                      });
-                    });
-                }
-              })
-              .catch((err) => {
-                res.status(500).send({
-                  message:
-                    err.message ||
-                    "Some error occurred while retrieving Data Produsen.",
-                });
-              });
-          })
-          .catch((err) => {
-            res.status(500).send({
-              message:
-                err.message || "Some error occurred while retrieving Tematik.",
-            });
-          });
-      }
-    })
-    .catch((err) => {
-      res.status(500).send({
-        message: err.message || "Some error occurred while retrieving lokasi.",
+    
+    const fileName = data.filename;
+    const directoryPath = __basedir + "/app/resources/static/assets/pemeriksaan/";
+    const filePath = directoryPath + fileName;
+    
+    // Check if file exists
+    const fs = require('fs');
+    if (!fs.existsSync(filePath)) {
+      return res.status(404).send({
+        message: "File not found",
       });
-    });
-};
+    }
 
-exports.findAllProdusenUser = (req, res) => {
-  const uuid = req.params.uuid;
-  User.findOne({
-    where: {
-      uuid: uuid,
-    },
-  })
-    .then(async (us) => {
-      user_bpkh = await us.getProdusens();
-      console.log(user_bpkh);
-
-      Produsen.findByPk(user_bpkh[0].id)
-        .then(async (data) => {
-          if (!data) {
-            return res.send([]);
-            //return res.status(404).send({ message: "Produsen Not found." });
-          } else {
-            Tematik.findAll({
-              where: {
-                produsenId: data.id,
-              },
-            })
-              .then((tema) => {
-                console.log(tema);
-                let tematiks = [];
-                for (let i = 0; i < tema.length; i++) {
-                  tematiks.push(tema[i].id);
-                }
-                dataProdusen
-                  .findAll({
-                    where: {
-                      tematikId: {
-                        [Op.or]: tematiks,
-                      },
-                    },
-
-                    attributes: ["id"],
-                  })
-                  .then((daProd) => {
-                    //res.send(daProd);
-                    let ids = [];
-                    for (let i = 0; i < daProd.length; i++) {
-                      //console.log(eks_tema[i]);
-                      ids.push(daProd[i].id);
-                    }
-                    dataPemeriksaan
-                      .findAll({
-                        order: [["id", "DESC"]],
-                        offset: 0,
-                        limit: 100,
-                        where: {
-                          dataProdusenId: {
-                            [Op.or]: ids,
-                          },
-                        },
-                        include: [
-                          {
-                            model: User,
-                            as: "user",
-                            attributes: ["id", "username"],
-                          },
-                          {
-                            model: dataProdusen,
-                            as: "dataProdusen",
-                            attributes: ["id", "uuid", "deskripsi"],
-                            include: [
-                              {
-                                model: Tematik,
-                                as: "tematik",
-                                attributes: ["id", "name"],
-                              },
-                            ],
-                          },
-                          {
-                            model: statusPemeriksaan,
-                            as: "statusPemeriksaan",
-                            attributes: ["id", "name"],
-                          },
-                        ],
-                        attributes: ["id", "uuid", "kategori", "createdAt"],
-                      })
-                      .then((data) => {
-                        res.send(data);
-                      })
-                      .catch((err) => {
-                        res.status(500).send({
-                          message:
-                            err.message ||
-                            "Some error occurred while retrieving lokasi.",
-                        });
-                      });
-                  })
-                  .catch((err) => {
-                    res.status(500).send({
-                      message:
-                        err.message ||
-                        "Some error occurred while retrieving Data Produsen.",
-                    });
-                  });
-              })
-              .catch((err) => {
-                res.status(500).send({
-                  message:
-                    err.message ||
-                    "Some error occurred while retrieving Tematik.",
-                });
-              });
-          }
-        })
-        .catch((err) => {
-          res.status(500).send({
-            message:
-              err.message || "Some error occurred while retrieving lokasi.",
-          });
+    res.download(filePath, fileName, (err) => {
+      if (err && !res.headersSent) {
+        return res.status(500).send({
+          message: "Could not download the file. " + err,
         });
-    })
-    .catch((err) => {
-      console.log(err);
-      res.status(500).send({
-        message: "Error retrieving User with uuid=" + uuid,
-      });
+      }
+      // Don't send any response here, as the download response is already sent
     });
+  } catch (error) {
+    if (!res.headersSent) {
+      return res.status(500).send({
+        message: "Error processing download request: " + error.message,
+      });
+    }
+  }
 };
+
+exports.findAllProdusen = async (req, res) => {
+  const uuid = req.params.uuid;
+  const { page = 0, size = 10, keyword = "" } = req.query;
+
+  try {
+    const produsen = await Produsen.findOne({ where: { uuid } });
+    if (!produsen) return res.send([]);
+
+    const tematiks = await Tematik.findAll({ where: { produsenId: produsen.id } });
+    const tematikIds = tematiks.map(t => t.id);
+
+    const dataProdusens = await dataProdusen.findAll({
+      where: { tematikId: { [Op.in]: tematikIds } },
+      attributes: ["id"]
+    });
+    const dataProdusenIds = dataProdusens.map(dp => dp.id);
+
+    const searchCondition = keyword ? {
+      [Op.or]: [
+        { kategori: { [Op.iLike]: `%${keyword}%` } },
+        { '$dataProdusen.deskripsi$': { [Op.iLike]: `%${keyword}%` } },
+        { '$dataProdusen.tematik.name$': { [Op.iLike]: `%${keyword}%` } }
+      ]
+    } : {};
+
+    const { count, rows } = await dataPemeriksaan.findAndCountAll({
+      where: {
+        dataProdusenId: { [Op.in]: dataProdusenIds },
+        ...searchCondition
+      },
+      include: [
+        {
+          model: User,
+          as: "user",
+          attributes: ["id", "username"]
+        },
+        {
+          model: dataProdusen,
+          as: "dataProdusen",
+          attributes: ["id", "uuid", "deskripsi"],
+          include: [
+            {
+              model: Tematik,
+              as: "tematik",
+              attributes: ["id", "name"]
+            }
+          ]
+        },
+        {
+          model: statusPemeriksaan,
+          as: "statusPemeriksaan",
+          attributes: ["id", "name"]
+        }
+      ],
+      attributes: ["id", "uuid", "kategori", "createdAt"],
+      limit: parseInt(size),
+      offset: parseInt(page) * parseInt(size),
+      order: [["id", "DESC"]],
+    });
+
+    res.send({
+      records: rows,
+      totalItems: count,
+      totalPages: Math.ceil(count / size),
+      currentPage: parseInt(page)
+    });
+
+  } catch (err) {
+    res.status(500).send({
+      message: err.message || "Some error occurred while retrieving data."
+    });
+  }
+};
+
+exports.findAllProdusenUser = async (req, res) => {
+  const uuid = req.params.uuid;
+  const { page = 0, size = 10, keyword = "" } = req.query;
+
+  try {
+    const user = await User.findOne({ where: { uuid } });
+    const produsens = await user.getProdusens();
+
+    if (!produsens.length) return res.send([]);
+
+    const produsen = produsens[0]; // ambil salah satu
+    const tematiks = await Tematik.findAll({ where: { produsenId: produsen.id } });
+    const tematikIds = tematiks.map(t => t.id);
+
+    const dataProdusens = await dataProdusen.findAll({
+      where: { tematikId: { [Op.in]: tematikIds } },
+      attributes: ["id"]
+    });
+    const dataProdusenIds = dataProdusens.map(dp => dp.id);
+
+    const searchCondition = keyword ? {
+      [Op.or]: [
+        { kategori: { [Op.iLike]: `%${keyword}%` } },
+        { '$dataProdusen.deskripsi$': { [Op.iLike]: `%${keyword}%` } },
+        { '$dataProdusen.tematik.name$': { [Op.iLike]: `%${keyword}%` } }
+      ]
+    } : {};
+
+    const { count, rows } = await dataPemeriksaan.findAndCountAll({
+      where: {
+        dataProdusenId: { [Op.in]: dataProdusenIds },
+        ...searchCondition
+      },
+      include: [
+        {
+          model: User,
+          as: "user",
+          attributes: ["id", "username"]
+        },
+        {
+          model: dataProdusen,
+          as: "dataProdusen",
+          attributes: ["id", "uuid", "deskripsi"],
+          include: [
+            {
+              model: Tematik,
+              as: "tematik",
+              attributes: ["id", "name"]
+            }
+          ]
+        },
+        {
+          model: statusPemeriksaan,
+          as: "statusPemeriksaan",
+          attributes: ["id", "name"]
+        }
+      ],
+      attributes: ["id", "uuid", "kategori", "createdAt"],
+      limit: parseInt(size),
+      offset: parseInt(page) * parseInt(size),
+      order: [["id", "DESC"]],
+    });
+
+    res.send({
+      records: rows,
+      totalItems: count,
+      totalPages: Math.ceil(count / size),
+      currentPage: parseInt(page)
+    });
+
+  } catch (err) {
+    res.status(500).send({
+      message: err.message || "Some error occurred while retrieving data."
+    });
+  }
+};
+

@@ -15,7 +15,7 @@ api = DataDto.api
 
 #APP_ROOT = os.path.dirname(os.path.abspath(__file__))
 UPLOAD_FOLDER = os.path.join(os.getcwd(), 'data', 'uploads')
-GEOSERVER = "http://localhost/geoserver/rest/" 
+GEOSERVER = "http://10.10.171.9/geoserver/rest/" 
 AUTH = "Basic YWRtaW46Z2Vvc2VydmVy" #'Authorization: Basic YWRtaW46bXlhd2Vzb21lZ2Vvc2VydmVy' 
 WS = 'fta'
 CONTENT = "Content-type: application/zip"

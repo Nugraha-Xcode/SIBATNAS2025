@@ -29,34 +29,73 @@ export const retrieveAll = () => async (dispatch) => {
   }
 };
 
-export const retrieveAllProdusen = (uuid) => async (dispatch) => {
+export const retrieveAllProdusen = (uuid, params) => async (dispatch) => {
   try {
-    const res = await Service.getAllProdusen(uuid);
+    const res = await Service.getAllProdusen(uuid, params);
+    
+    // Pastikan struktur data yang tepat
+    const payload = res.data.records 
+      ? res.data 
+      : { 
+          records: res.data, 
+          totalItems: res.data.length, 
+          totalPages: 1, 
+          currentPage: params.page || 0 
+        };
+        console.log("retrieveAllProdusen",payload);
     dispatch({
       type: RETRIEVE_DATA_PRODUSEN_SUCCESS,
-      payload: res.data,
+      payload: payload,
     });
+    return Promise.resolve(payload);
   } catch (err) {
     if (err.response && err.response.status === 401) {
       EventBus.dispatch("logout");
     }
-    console.log(err);
+    console.error('Error in retrieveAllProdusenPaginated:', err);
+    
+    dispatch({
+      type: RETRIEVE_DATA_PRODUSEN_FAIL,
+    });
+    
+    return Promise.reject(err);
   }
 };
-export const retrieveAllProdusenUser = (uuid) => async (dispatch) => {
+
+export const retrieveAllProdusenUser = (uuid, params) => async (dispatch) => {
+  console.log("retrieveAllProdusenUser",uuid,params);
   try {
-    const res = await Service.getAllUser(uuid);
+    const res = await Service.getAllUser(uuid, params);
+    
+    // Pastikan struktur data yang tepat
+    const payload = res.data.records 
+      ? res.data 
+      : { 
+          records: res.data, 
+          totalItems: res.data.length, 
+          totalPages: 1, 
+          currentPage: params.page || 0 
+        };
+        console.log("retrieveAllProdusenUser",payload);
     dispatch({
       type: RETRIEVE_DATA_PRODUSEN_SUCCESS,
-      payload: res.data,
+      payload: payload,
     });
+    return Promise.resolve(payload);
   } catch (err) {
     if (err.response && err.response.status === 401) {
       EventBus.dispatch("logout");
     }
-    console.log(err);
+    console.error('Pagination fetch error:', err);
+    
+    dispatch({
+      type: RETRIEVE_DATA_PRODUSEN_FAIL,
+    });
+    
+    return Promise.reject(err);
   }
 };
+
 export const unduhReferensi = (data) => async (dispatch) => {
   try {
     let response = await Service.unduhReferensi(data.uuid);

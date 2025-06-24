@@ -2,15 +2,24 @@ const db = require("../models");
 const config = require("../config/api.config");
 const axios = require("axios");
 const { v4: uuidv4 } = require("uuid");
-const { Op } = require("sequelize");
+const { Op, Sequelize } = require("sequelize");
+const fs = require('fs');
+const path = require('path');
+const AdmZip = require('adm-zip');
 const {
   importShapefileToPostGIS,
+  deletePostGISTable,
   getTableName,
 } = require("../utils/shapefile_to_postgis");
 const {
   publishTableAsLayer,
   getUrlGeoserver,
+  unpublishLayer,
+  deleteFeatureType,
 } = require("../utils/postgis_to_geoserver");
+const { 
+  processSLDInZip,
+} = require('../utils/sld_to_geoserver');
 const User = db.user;
 const Eksternal = db.eksternal;
 const Internal = db.internal;
@@ -22,6 +31,7 @@ const Produsen = db.produsen;
 
 const dataProdusen = db.dataProdusen;
 const dataPemeriksaan = db.dataPemeriksaan;
+const dataPerbaikanProdusen = db.dataPerbaikanProdusen;
 const dataPublikasi = db.dataPublikasi;
 
 const statusPemeriksaan = db.statusPemeriksaan;
@@ -30,6 +40,9 @@ const notifikasi = db.notifikasi;
 
 const region = db.region;
 const province = db.province;
+const recordCsw = db.record;
+
+const sequelize = db.sequelize;
 
 exports.create = async (req, res) => {
   try {
@@ -359,11 +372,6 @@ exports.createDatang = async (req, res) => {
 exports.publish = async (req, res) => {
   const uuid = req.params.uuid;
   console.log(req.body);
-  //var objectValue = JSON.parse(req.body.data);
-  //console.log(Object.keys(objectValue));
-  //console.log(Object.values(objectValue));
-
-  //console.log(util.inspect(req.body.data, false, null));
 
   if (!req.body.uuid) {
     return res.status(400).send({
@@ -371,12 +379,20 @@ exports.publish = async (req, res) => {
     });
   }
 
-  dataPublikasi
-    .findOne({
-      where: {
-        uuid: uuid,
-      },
-
+  // Start database transaction
+  const transaction = await sequelize.transaction();
+  
+  // Variables to track what needs to be rolled back - MOVED TO FUNCTION SCOPE
+  let cleanTableName = null;
+  let publishedToGeoServer = false;
+  let sldProcessed = false;
+  let deactivatedPreviousPublications = false;
+  let publikasi = null; // Add publikasi to function scope
+  
+  try {
+    // Step 1: Fetch publikasi data
+    publikasi = await dataPublikasi.findOne({
+      where: { uuid },
       include: [
         { model: User, as: "user", attributes: ["id", "username"] },
         {
@@ -401,249 +417,273 @@ exports.publish = async (req, res) => {
         "filename",
         "createdAt",
       ],
-    })
-    .then(async (publikasi) => {
-      if (!publikasi) {
-        return res.status(404).send({ message: "Publikasi Not found." });
-      }
-
-      //const url = config.api_grass + "/konversi/publikasi/" + publikasi.uuid; // Replace with your API endpoint URL
-      //console.log(url);
-      //const response = await axios.get(url);
-      //console.log(response.data);
-      // Send the image data as the response
-
-      //if non  series
-      if (!publikasi.tematik.is_series) {
-        const upd = {
-          is_active: false,
-        };
-        await dataPublikasi.update(upd, {
-          where: { tematikId: publikasi.tematik.id },
-        });
-
-        let us = await User.findOne({
-          where: {
-            uuid: req.body.uuid,
-          },
-        });
-        //axios? trigger publish to grass
-        //get geoserver?
-
-        //return res.status(404).send({ message: "Please Check GRASS.." });
-        //proses postgis
-        const shapefileZipPath =
-          __basedir +
-          "/app/resources/static/assets/publikasi/" +
-          publikasi.filename;
-        await importShapefileToPostGIS(shapefileZipPath);
-        let tableName = await getTableName(shapefileZipPath);
-        await publishTableAsLayer(
-          tableName,
-          publikasi.tematik.name,
-          publikasi.deskripsi
-        );
-
-        let urlGeoserver = await getUrlGeoserver(tableName);
-        console.log(urlGeoserver);
-        const update = {
-          userId: us.id,
-          is_published: true,
-          is_active: true,
-          waktuPublish: new Date(),
-          urlGeoserver: urlGeoserver,
-        };
-        dataPublikasi
-          .update(update, {
-            where: { id: publikasi.id },
-          })
-          .then(async (num) => {
-            if (num == 1) {
-              let users = await User.findAll({ attributes: ["id"] });
-              for (let i = 0; i < users.length; i++) {
-                let notif = {
-                  uuid: uuidv4(),
-                  waktuKirim: new Date(),
-                  subjek: "Publikasi IGT Baru - " + publikasi.tematik.name,
-                  pesan:
-                    "Walidata baru saja melakukan publikasi data IGT " +
-                    publikasi.tematik.name +
-                    " (" +
-                    publikasi.deskripsi +
-                    "). Cek ke menu Data Publikasi ya!",
-                  sudahBaca: false,
-                  userId: users[i].id,
-                };
-
-                notifikasi.create(notif);
-              }
-              dataPublikasi
-                .findByPk(publikasi.id, {
-                  include: [
-                    {
-                      model: User,
-                      as: "user",
-                      attributes: ["id", "username"],
-                    },
-                    {
-                      model: dataPemeriksaan,
-                      as: "dataPemeriksaan",
-                      attributes: ["id", "kategori"],
-                    },
-                    {
-                      model: Tematik,
-                      as: "tematik",
-                      attributes: ["id", "name", "is_series"],
-                    },
-                  ],
-                  attributes: [
-                    "id",
-                    "uuid",
-                    "deskripsi",
-                    "is_published",
-                    "is_active",
-                    "urlGeoserver",
-                    "waktuPublish",
-                    "createdAt",
-                  ],
-                })
-                .then((data) => {
-                  res.send(data);
-                })
-                .catch((err) => {
-                  res.status(500).send({
-                    message:
-                      err.message ||
-                      "Some error occurred while querying the Data Publikasi.",
-                  });
-                });
-            } else {
-              res.send({
-                message: `Cannot update Data Publikasi with id=${uuid}. Maybe Data Publikasi was not found or req.body is empty!`,
-              });
-            }
-          })
-          .catch((err) => {
-            console.log(err);
-            res.status(500).send({
-              message: "Error updating Data Publikasi with uuid=" + uuid,
-            });
-          });
-      } else {
-        //else non series
-        let us = await User.findOne({
-          where: {
-            uuid: req.body.uuid,
-          },
-        });
-        //axios? trigger publish to grass
-        //get geoserver?
-
-        //return res.status(404).send({ message: "Please Check GRASS.." });
-        const shapefileZipPath =
-          __basedir +
-          "/app/resources/static/assets/publikasi/" +
-          publikasi.filename;
-        await importShapefileToPostGIS(shapefileZipPath);
-        await importShapefileToPostGIS(shapefileZipPath);
-        let tableName = await getTableName(shapefileZipPath);
-        //console.log(tableName);
-        await publishTableAsLayer(
-          tableName,
-          publikasi.tematik.name,
-          publikasi.deskripsi
-        );
-        let urlGeoserver = await getUrlGeoserver(tableName);
-        console.log(urlGeoserver);
-        const update = {
-          userId: us.id,
-          is_published: true,
-          is_active: true,
-          waktuPublish: new Date(),
-          urlGeoserver: urlGeoserver,
-        };
-        dataPublikasi
-          .update(update, {
-            where: { id: publikasi.id },
-          })
-          .then(async (num) => {
-            if (num == 1) {
-              let users = await User.findAll({ attributes: ["id"] });
-              for (let i = 0; i < users.length; i++) {
-                let notif = {
-                  uuid: uuidv4(),
-                  waktuKirim: new Date(),
-                  subjek: "Publikasi IGT Baru - " + publikasi.tematik.name,
-                  pesan:
-                    "Walidata baru saja melakukan publikasi data IGT " +
-                    publikasi.tematik.name +
-                    " (" +
-                    publikasi.deskripsi +
-                    "). Cek ke menu Data Publikasi ya!",
-                  sudahBaca: false,
-                  userId: users[i].id,
-                };
-
-                notifikasi.create(notif);
-              }
-              dataPublikasi
-                .findByPk(publikasi.id, {
-                  include: [
-                    {
-                      model: User,
-                      as: "user",
-                      attributes: ["id", "username"],
-                    },
-                    {
-                      model: dataPemeriksaan,
-                      as: "dataPemeriksaan",
-                      attributes: ["id", "kategori"],
-                    },
-                    {
-                      model: Tematik,
-                      as: "tematik",
-                      attributes: ["id", "name", "is_series"],
-                    },
-                  ],
-                  attributes: [
-                    "id",
-                    "uuid",
-                    "deskripsi",
-                    "is_published",
-                    "is_active",
-                    "urlGeoserver",
-                    "waktuPublish",
-                    "createdAt",
-                  ],
-                })
-                .then((data) => {
-                  res.send(data);
-                })
-                .catch((err) => {
-                  res.status(500).send({
-                    message:
-                      err.message ||
-                      "Some error occurred while querying the Data Publikasi.",
-                  });
-                });
-            } else {
-              res.send({
-                message: `Cannot update Data Publikasi with id=${uuid}. Maybe Data Publikasi was not found or req.body is empty!`,
-              });
-            }
-          })
-          .catch((err) => {
-            console.log(err);
-            res.status(500).send({
-              message: "Error updating Data Publikasi with uuid=" + uuid,
-            });
-          });
-      }
-    })
-    .catch((err) => {
-      res.status(500).send({ message: err.message });
+      transaction, // Include transaction
     });
+
+    if (!publikasi) {
+      await transaction.rollback();
+      return res.status(404).send({ message: "Publikasi Not found." });
+    }
+
+    const user = await User.findOne({ 
+      where: { uuid: req.body.user.uuid },
+      transaction 
+    });
+    
+    if (!user) {
+      await transaction.rollback();
+      return res.status(404).send({ message: "User not found." });
+    }
+
+    console.log("USER", user);
+    
+    const shapefileZipPath = __basedir + "/app/resources/static/assets/publikasi/" + publikasi.filename;
+    const is_public = req.body.is_public !== undefined ? req.body.is_public : false;
+
+    if (publikasi.tematik.is_series) {
+      // ===== Series Section =====
+      console.log("Series: Menonaktifkan publikasi sebelumnya...");
+      
+      // Step 2: Deactivate previous publications (database operation)
+      await dataPublikasi.update(
+        { is_active: false },
+        { 
+          where: { tematikId: publikasi.tematik.id },
+          transaction 
+        }
+      );
+      deactivatedPreviousPublications = true;
+
+      // Step 3: Import shapefile to PostGIS (external operation)
+      console.log("Importing shapefile to PostGIS...");
+      await importShapefileToPostGIS(shapefileZipPath);
+
+      let tableName = await getTableName(shapefileZipPath);
+      cleanTableName = tableName.replace(/['"]/g, '');
+      console.log(`Table name from shapefile: ${cleanTableName}`);
+
+      // Step 4: Publish to GeoServer (external operation)
+      console.log(`Publishing ${cleanTableName} to GeoServer...`);
+      await publishTableAsLayer(cleanTableName, publikasi.tematik.name, publikasi.deskripsi);
+      publishedToGeoServer = true;
+
+      // Step 5: Process SLD (external operation)
+      console.log("Processing SLD...");
+      const sldResult = await processSLDInZip(shapefileZipPath, cleanTableName);
+      if (sldResult) {
+        console.log("SLD processed successfully.");
+        sldProcessed = true;
+      } else {
+        console.log("No SLD or failed processing.");
+      }
+
+      const urlGeoserver = await getUrlGeoserver(cleanTableName);
+      const update = {
+        userId: user.id,
+        is_published: true,
+        is_active: true,
+        waktuPublish: new Date(),
+        urlGeoserver,
+        is_public: is_public,
+      };
+
+      // Step 6: Update publikasi and send notifications (database operations)
+      const updatedPublikasi = await updatePublikasiDanKirimNotif(publikasi.id, update, publikasi, transaction);
+      
+      // Commit transaction before sending response
+      await transaction.commit();
+      console.log("Transaction committed successfully");
+      
+      // Send successful response
+      res.send(updatedPublikasi);
+
+    } else {
+      // ===== Non-Series Section =====
+      console.log("Non-Series: Langsung publish tanpa menonaktifkan sebelumnya...");
+
+      // Step 2: Import shapefile to PostGIS (external operation)
+      let tableName = await getTableName(shapefileZipPath);
+      cleanTableName = tableName.replace(/['"]/g, '');
+      console.log(`Table name from shapefile: ${cleanTableName}`);
+
+      console.log("Importing shapefile to PostGIS...");
+      await importShapefileToPostGIS(shapefileZipPath);
+
+      // Step 3: Publish to GeoServer (external operation)
+      console.log(`Publishing ${cleanTableName} to GeoServer...`);
+      await publishTableAsLayer(cleanTableName, publikasi.tematik.name, publikasi.deskripsi);
+      publishedToGeoServer = true;
+
+      // Step 4: Process SLD (external operation)
+      console.log("Processing SLD...");
+      const sldResult = await processSLDInZip(shapefileZipPath, cleanTableName);
+      if (sldResult) {
+        console.log("SLD processed successfully.");
+        sldProcessed = true;
+      } else {
+        console.log("No SLD or failed processing.");
+      }
+
+      const urlGeoserver = await getUrlGeoserver(cleanTableName);
+      const update = {
+        userId: user.id,
+        is_published: true,
+        is_active: true,
+        waktuPublish: new Date(),
+        urlGeoserver,
+        is_public: is_public,
+      };
+
+      // Step 5: Update publikasi and send notifications (database operations)
+      const updatedPublikasi = await updatePublikasiDanKirimNotif(publikasi.id, update, publikasi, transaction);
+      
+      // Commit transaction before sending response
+      await transaction.commit();
+      console.log("Transaction committed successfully");
+      
+      // Send successful response
+      res.send(updatedPublikasi);
+    }
+
+  } catch (err) {
+    console.error("Error during publish process:", err);
+    
+    // Rollback database transaction
+    try {
+      await transaction.rollback();
+      console.log("🔄 Database transaction rolled back");
+    } catch (rollbackError) {
+      console.error("Error during rollback:", rollbackError);
+    }
+
+    // Additional cleanup for external operations
+    await performCleanupOperations(cleanTableName, publishedToGeoServer, publikasi);
+
+    return res.status(500).send({
+      message: err.message || "Terjadi kesalahan saat memproses publikasi.",
+    });
+  }
 };
+
+// Helper function untuk update dan kirim notifikasi dengan transaction
+async function updatePublikasiDanKirimNotif(publikasiId, update, publikasi, transaction) {
+  try {
+    // Update publikasi data
+    const updated = await dataPublikasi.update(update, {
+      where: { id: publikasiId },
+      transaction, // Use the passed transaction
+    });
+
+    if (updated[0] !== 1) {
+      throw new Error(`Gagal update Data Publikasi dengan id=${publikasiId}.`);
+    }
+
+    // Get all users for notification
+    const users = await User.findAll({ 
+      attributes: ["id"],
+      transaction 
+    });
+
+    // Create notifications for all users
+    const notificationPromises = users.map(user => {
+      const notif = {
+        uuid: uuidv4(),
+        waktuKirim: new Date(),
+        subjek: "Publikasi IGT Baru - " + publikasi.tematik.name,
+        pesan:
+          "Walidata baru saja melakukan publikasi service data IGT " +
+          publikasi.tematik.name +
+          " (" +
+          publikasi.deskripsi +
+          ").",
+        sudahBaca: false,
+        userId: user.id,
+      };
+      return notifikasi.create(notif, { transaction });
+    });
+
+    // Wait for all notifications to be created
+    await Promise.all(notificationPromises);
+
+    // Fetch updated publikasi data
+    const updatedPublikasi = await dataPublikasi.findByPk(publikasiId, {
+      include: [
+        { model: User, as: "user", attributes: ["id", "username"] },
+        {
+          model: dataPemeriksaan,
+          as: "dataPemeriksaan",
+          attributes: ["id", "kategori"],
+          include: [
+            {
+              model: dataPerbaikanProdusen,
+              as: "dataPerbaikanProdusen",
+              attributes: ["id", "uuid", "kategori"],
+              order: [["createdAt", "DESC"]],
+              limit: 1,
+              separate: true,
+            },
+          ],
+        },
+        {
+          model: Tematik,
+          as: "tematik",
+          attributes: ["id", "name", "is_series"],
+        },
+      ],
+      attributes: [
+        "id",
+        "uuid",
+        "deskripsi",
+        "is_published",
+        "is_active",
+        "urlGeoserver",
+        "waktuPublish",
+        "createdAt",
+      ],
+      transaction, // Use transaction here too
+    });
+
+    // Return the updated publikasi data
+    return updatedPublikasi;
+    
+  } catch (error) {
+    console.error("Error in updatePublikasiDanKirimNotif:", error);
+    throw error; // Re-throw to trigger rollback
+  }
+}
+
+// Cleanup function for external operations
+async function performCleanupOperations(cleanTableName, publishedToGeoServer, publikasi) {
+  console.log("Starting cleanup operations...");
+  console.log("cleanTableName",cleanTableName)
+  
+  try {
+    // Cleanup PostGIS table if it was imported
+    if (cleanTableName) {
+      console.log(`Cleaning up PostGIS table: ${cleanTableName}`);
+      try {
+        await deletePostGISTable(cleanTableName);
+        console.log(`PostGIS table ${cleanTableName} cleaned up successfully`);
+      } catch (cleanupError) {
+        console.error(`Failed to cleanup PostGIS table ${cleanTableName}:`, cleanupError);
+      }
+    }
+
+    // Cleanup GeoServer layer if it was published
+    if (publishedToGeoServer && cleanTableName) {
+      console.log(`Cleaning up GeoServer layer: ${cleanTableName}`);
+      try {
+        await unpublishLayer(cleanTableName);
+        console.log(`GeoServer layer ${cleanTableName} cleaned up successfully`);
+      } catch (cleanupError) {
+        console.error(`Failed to cleanup GeoServer layer ${cleanTableName}:`, cleanupError);
+      }
+    }
+
+  } catch (error) {
+    console.error("Error during cleanup operations:", error);
+  }
+}
 
 exports.deactivate = async (req, res) => {
   const uuid = req.params.uuid;
@@ -767,6 +807,7 @@ exports.deactivate = async (req, res) => {
       res.status(500).send({ message: err.message });
     });
 };
+
 exports.unduhRegion = async (req, res) => {
   const uuid = req.params.uuid;
   const kode = req.params.kode;
@@ -863,6 +904,7 @@ exports.unduhRegion = async (req, res) => {
   }
 };
 
+/*
 exports.unduh = async (req, res) => {
   const uuid = req.params.uuid;
   const user_uuid = req.params.user_uuid;
@@ -911,6 +953,115 @@ exports.unduh = async (req, res) => {
         });
     }
   });
+};
+*/
+
+/*
+exports.unduh = async (req, res) => {
+  const uuid = req.params.uuid;
+  const user_uuid = req.params.user_uuid;
+  let us = await User.findOne({
+    where: {
+      uuid: user_uuid,
+    },
+  });
+  let data = await dataPublikasi.findOne({
+    where: {
+      uuid: uuid,
+    },
+  });
+  const fileName = data.filename;
+  const directoryPath = __basedir + "/app/resources/static/assets/publikasi/";
+
+  res.download(directoryPath + fileName, fileName, (err) => {
+    if (err) {
+      res.status(500).send({
+        message: "Could not download the file. " + err,
+      });
+    } else {
+      const aktivitas = {
+        uuid: uuidv4(),
+        wilayah: "-",
+        wilayahName: "-",
+        waktuMulai: new Date(),
+        status: "done",
+        dataPublikasiId: data.id,
+        userId: us.id,
+      };
+
+      aktifitasUnduh
+        .create(aktivitas)
+        .then((pub) => {
+          res.status(200).send({
+            message: "Successfully processing the request",
+          });
+        })
+        .catch((err) => {
+          res.status(500).send({
+            message:
+              err.message ||
+              "Some error occurred while creating the Data Aktivitas.",
+          });
+        });
+    }
+  });
+};
+*/
+
+exports.unduh = async (req, res) => {
+  try {
+    const uuid = req.params.uuid;
+    const user_uuid = req.params.user_uuid;
+    
+    // Find user and data
+    let us = await User.findOne({
+      where: {
+        uuid: user_uuid,
+      },
+    });
+    
+    let data = await dataPublikasi.findOne({
+      where: {
+        uuid: uuid,
+      },
+    });
+    
+    if (!data || !us) {
+      return res.status(404).send({
+        message: "User or publication not found",
+      });
+    }
+    
+    const fileName = data.filename;
+    const directoryPath = __basedir + "/app/resources/static/assets/publikasi/";
+    
+    // Create activity record before download
+    const aktivitas = {
+      uuid: uuidv4(),
+      wilayah: "-",
+      wilayahName: "-",
+      waktuMulai: new Date(),
+      status: "done",
+      dataPublikasiId: data.id,
+      userId: us.id,
+    };
+    
+    await aktifitasUnduh.create(aktivitas);
+    
+    // Then download the file
+    res.download(directoryPath + fileName, fileName, (err) => {
+      if (err) {
+        // Just log the error, don't try to send another response
+        console.error("Download error:", err);
+      }
+    });
+  } catch (error) {
+    // If anything fails before the download starts, send error response
+    console.error("Unduh error:", error);
+    res.status(500).send({
+      message: "Failed to process download request: " + error.message,
+    });
+  }
 };
 
 exports.unduhIndonesia = async (req, res) => {
@@ -1194,98 +1345,109 @@ exports.findAll = (req, res) => {
     });
 };
 
-exports.findAllProdusen = (req, res) => {
+exports.findAllProdusen = async (req, res) => {
   const uuid = req.params.uuid;
-  Produsen.findOne({
-    where: {
-      uuid: uuid,
-    },
-  })
-    .then(async (data) => {
-      if (!data) {
-        return res.send([]);
-        //return res.status(404).send({ message: "Produsen Not found." });
-      } else {
-        Tematik.findAll({
-          where: {
-            produsenId: data.id,
-          },
-        })
-          .then((tema) => {
-            console.log(tema);
-            let tematiks = [];
-            for (let i = 0; i < tema.length; i++) {
-              tematiks.push(tema[i].id);
-            }
-            dataPublikasi
-              .findAll({
-                where: {
-                  tematikId: {
-                    [Op.or]: tematiks,
-                  },
-                  is_active: true,
-                },
-                order: [["deskripsi", "ASC"]],
+  const { page = 0, size = 10, keyword = "" } = req.query;
 
-                include: [
-                  {
-                    model: User,
-                    as: "user",
-                    attributes: ["id", "username"],
-                  },
-                  {
-                    model: dataPemeriksaan,
-                    as: "dataPemeriksaan",
-                    attributes: ["id", "uuid", "kategori"],
-                    include: [
-                      {
-                        model: db.dataPerbaikanProdusen,
-                        as: "dataPerbaikanProdusen",
-                      },
-                    ],
-                  },
-                  {
-                    model: Tematik,
-                    as: "tematik",
-                    attributes: ["id", "name", "is_series"],
-                  },
-                ],
-                attributes: [
-                  "id",
-                  "uuid",
-                  "deskripsi",
-                  "is_published",
-                  "is_active",
-                  "urlGeoserver",
-                  "waktuPublish",
-                  "createdAt",
-                ],
-              })
-              .then((daPub) => {
-                res.send(daPub);
-              })
-              .catch((err) => {
-                res.status(500).send({
-                  message:
-                    err.message ||
-                    "Some error occurred while retrieving Data Produsen.",
-                });
-              });
-          })
-          .catch((err) => {
-            res.status(500).send({
-              message:
-                err.message || "Some error occurred while retrieving Tematik.",
-            });
-          });
-      }
-    })
-    .catch((err) => {
-      res.status(500).send({
-        message: err.message || "Some error occurred while retrieving lokasi.",
+  try {
+    const produsen = await Produsen.findOne({ where: { uuid } });
+    if (!produsen) {
+      return res.send({
+        records: [],
+        totalItems: 0,
+        totalPages: 0,
+        currentPage: parseInt(page)
       });
+    }
+    
+    // Cari tematik berdasarkan produsen
+    const tematiks = await Tematik.findAll({
+      where: {
+        produsenId: produsen.id,
+      },
     });
+    
+    // Buat array untuk menyimpan ID tematik
+    let tematikIds = [];
+    for (let i = 0; i < tematiks.length; i++) {
+      tematikIds.push(tematiks[i].id);
+    }
+    
+    // Buat kondisi pencarian (search)
+    let whereCondition = {
+      tematikId: {
+        [Op.or]: tematikIds,
+      },
+      is_active: true
+    };
+    
+    // Tambahkan kondisi pencarian jika keyword ada
+    if (keyword && keyword.trim() !== "") {
+      whereCondition = {
+        ...whereCondition,
+        [Op.or]: [
+          { deskripsi: { [Op.iLike]: `%${keyword}%` } },
+          { '$tematik.name$': { [Op.iLike]: `%${keyword}%` } }
+        ]
+      };
+    }
+    
+    // Cari data publikasi dengan pagination
+    const { count, rows } = await dataPublikasi.findAndCountAll({
+      where: whereCondition,
+      include: [
+        { model: User, as: "user", attributes: ["id", "username"] },
+        {
+          model: dataPemeriksaan,
+          as: "dataPemeriksaan",
+          attributes: ["id", "uuid", "kategori"],
+          include: [
+            {
+              model: dataPerbaikanProdusen,
+              as: "dataPerbaikanProdusen",
+              attributes: ["id", "uuid", "kategori"],
+              order: [["createdAt", "DESC"]],
+              limit: 1,
+              separate: true,
+            },
+          ],
+        },
+        {
+          model: Tematik,
+          as: "tematik",
+          attributes: ["id", "name", "is_series"],
+        },
+      ],
+      attributes: [
+        "id",
+        "uuid",
+        "deskripsi",
+        "is_published",
+        "is_active",
+        "urlGeoserver",
+        "waktuPublish",
+        "createdAt",
+      ],
+      limit: parseInt(size),
+      offset: parseInt(page) * parseInt(size),
+      order: [["deskripsi", "ASC"]],
+    });
+    
+    // Kirim respons dengan format pagination
+    res.send({
+      records: rows,
+      totalItems: count,
+      totalPages: Math.ceil(count / parseInt(size)),
+      currentPage: parseInt(page)
+    });
+  } catch (err) {
+    res.status(500).send({
+      message: err.message || "Some error occurred while retrieving data publikasi.",
+    });
+  }
 };
+
+// Implementasi yang sama untuk findAllProdusenAdmin dengan perbedaan tidak adanya filter is_active: true
 
 exports.findAllIGT = (req, res) => {
   const query = req.params.query;
@@ -1368,96 +1530,107 @@ exports.findAllIGT = (req, res) => {
     });
 };
 
-exports.findAllProdusenAdmin = (req, res) => {
+// Modifikasi endpoint findAllProdusenAdmin untuk mendukung pencarian dan pagination
+exports.findAllProdusenAdmin = async (req, res) => {
   const uuid = req.params.uuid;
-  Produsen.findOne({
-    where: {
-      uuid: uuid,
-    },
-  })
-    .then(async (data) => {
-      if (!data) {
-        return res.send([]);
-        //return res.status(404).send({ message: "Produsen Not found." });
-      } else {
-        Tematik.findAll({
-          where: {
-            produsenId: data.id,
-          },
-        })
-          .then((tema) => {
-            console.log(tema);
-            let tematiks = [];
-            for (let i = 0; i < tema.length; i++) {
-              tematiks.push(tema[i].id);
-            }
-            dataPublikasi
-              .findAll({
-                where: {
-                  tematikId: {
-                    [Op.or]: tematiks,
-                  },
-                },
-                order: [["deskripsi", "ASC"]],
+  const { page = 0, size = 10, keyword = "" } = req.query;
 
-                include: [
-                  {
-                    model: User,
-                    as: "user",
-                    attributes: ["id", "username"],
-                  },
-                  {
-                    model: dataPemeriksaan,
-                    as: "dataPemeriksaan",
-                    attributes: ["id", "kategori"],
-                    include: [
-                      {
-                        model: db.dataPerbaikanProdusen,
-                        as: "dataPerbaikanProdusen",
-                      },
-                    ],
-                  },
-                  {
-                    model: Tematik,
-                    as: "tematik",
-                    attributes: ["id", "name", "is_series"],
-                  },
-                ],
-                attributes: [
-                  "id",
-                  "uuid",
-                  "deskripsi",
-                  "is_published",
-                  "is_active",
-                  "urlGeoserver",
-                  "waktuPublish",
-                  "createdAt",
-                ],
-              })
-              .then((daPub) => {
-                res.send(daPub);
-              })
-              .catch((err) => {
-                res.status(500).send({
-                  message:
-                    err.message ||
-                    "Some error occurred while retrieving Data Produsen.",
-                });
-              });
-          })
-          .catch((err) => {
-            res.status(500).send({
-              message:
-                err.message || "Some error occurred while retrieving Tematik.",
-            });
-          });
-      }
-    })
-    .catch((err) => {
-      res.status(500).send({
-        message: err.message || "Some error occurred while retrieving lokasi.",
+  try {
+    const produsen = await Produsen.findOne({ where: { uuid } });
+    if (!produsen) {
+      return res.send({
+        records: [],
+        totalItems: 0,
+        totalPages: 0,
+        currentPage: parseInt(page)
       });
+    }
+    
+    // Cari tematik berdasarkan produsen
+    const tematiks = await Tematik.findAll({
+      where: {
+        produsenId: produsen.id,
+      },
     });
+    
+    // Buat array untuk menyimpan ID tematik
+    let tematikIds = [];
+    for (let i = 0; i < tematiks.length; i++) {
+      tematikIds.push(tematiks[i].id);
+    }
+    
+    // Buat kondisi pencarian (search)
+    let whereCondition = {
+      tematikId: {
+        [Op.in]: tematikIds,
+      },
+      // Tidak ada filter is_active untuk Admin
+    };
+    
+    // Tambahkan kondisi pencarian jika keyword ada
+    if (keyword && keyword.trim() !== "") {
+      whereCondition = {
+        ...whereCondition,
+        [Op.or]: [
+          { deskripsi: { [Op.iLike]: `%${keyword}%` } },
+          { '$tematik.name$': { [Op.iLike]: `%${keyword}%` } }
+        ]
+      };
+    }
+    
+    // Cari data publikasi dengan pagination
+    const { count, rows } = await dataPublikasi.findAndCountAll({
+      where: whereCondition,
+      include: [
+        { model: User, as: "user", attributes: ["id", "username"] },
+        {
+          model: dataPemeriksaan,
+          as: "dataPemeriksaan",
+          attributes: ["id", "uuid", "kategori"],
+          include: [
+            {
+              model: dataPerbaikanProdusen,
+              as: "dataPerbaikanProdusen",
+              attributes: ["id", "uuid", "kategori"],
+              order: [["createdAt", "DESC"]],
+              limit: 1,
+              separate: true,
+            },
+          ],
+        },
+        {
+          model: Tematik,
+          as: "tematik",
+          attributes: ["id", "name", "is_series"],
+        },
+      ],
+      attributes: [
+        "id",
+        "uuid",
+        "deskripsi",
+        "is_published",
+        "is_active",
+        "urlGeoserver",
+        "waktuPublish",
+        "createdAt",
+      ],
+      limit: parseInt(size),
+      offset: parseInt(page) * parseInt(size),
+      order: [["deskripsi", "ASC"]],
+    });
+    
+    // Kirim respons dengan format pagination
+    res.send({
+      records: rows,
+      totalItems: count,
+      totalPages: Math.ceil(count / parseInt(size)),
+      currentPage: parseInt(page)
+    });
+  } catch (err) {
+    res.status(500).send({
+      message: err.message || "Some error occurred while retrieving data publikasi.",
+    });
+  }
 };
 
 exports.findAllEksternalUser = (req, res) => {
@@ -1854,27 +2027,244 @@ exports.update = (req, res) => {
 };
 
 // Delete a Kategori with the specified id in the request
-exports.delete = (req, res) => {
+exports.delete = async (req, res) => {
   const uuid = req.params.uuid;
 
-  dataPublikasi
-    .destroy({
+  try {
+    const publikasi = await dataPublikasi.findOne({
       where: { uuid: uuid },
-    })
-    .then((num) => {
-      if (num == 1) {
-        res.send({
-          message: "Data Publikasi was deleted successfully!",
-        });
-      } else {
-        res.send({
-          message: `Cannot delete Data Publikasi with id=${id}. Maybe Data Publikasi was not found!`,
-        });
-      }
-    })
-    .catch((err) => {
-      res.status(500).send({
-        message: "Could not Data Publikasi with id=" + id,
-      });
+      include: [
+        {
+          model: dataPemeriksaan,
+          as: "dataPemeriksaan",
+          attributes: ["id", "uuid", "kategori"]
+        },
+        {
+          model: Tematik,
+          as: "tematik",
+          attributes: ["id", "name"]
+        }
+      ],
+      attributes: [
+        "id",
+        "uuid",
+        "deskripsi",
+        "filename",
+        "pdfname",
+        "metadatafilename",
+        "identifier",
+        "waktuPublish"
+      ]
     });
+
+    if (!publikasi) {
+      return res.status(404).send({ message: "Publication not found" });
+    }
+
+    const filePathShapefile = __basedir + "/app/resources/static/assets/publikasi/" + publikasi.filename;
+    const filePathPDF = __basedir + "/app/resources/static/assets/publikasi/" + publikasi.pdfname;
+    const filePathMetadata = __basedir + "/app/resources/static/assets/publikasi/" + publikasi.metadatafilename;
+
+    const deleteFileIfExists = (filePath) => {
+      if (filePath && fs.existsSync(filePath)) {
+        try {
+          fs.unlinkSync(filePath);
+        } catch (err) {
+          console.error(`Failed to delete file ${filePath}:`, err);
+        }
+      }
+    };
+
+    if (!publikasi.waktuPublish) {
+      // Jika belum dipublish: hanya hapus file dan record database
+      deleteFileIfExists(filePathShapefile);
+      deleteFileIfExists(filePathPDF);
+      deleteFileIfExists(filePathMetadata);
+
+      await dataPublikasi.destroy({ where: { uuid: uuid } });
+
+      return res.send({
+        message: "Unpublished publication was deleted (file and database only)."
+      });
+    }
+
+    // Proses lengkap jika sudah pernah dipublish
+    const tableName = await getTableName(filePathShapefile);
+
+    await unpublishLayer(tableName.replace(/^"(.*)"$/, "$1"));
+    await deletePostGISTable(tableName);
+
+    await aktifitasUnduh.destroy({
+      where: { dataPublikasiId: publikasi.id }
+    });
+
+    await recordCsw.destroy({
+      where: { identifier: publikasi.identifier }
+    });
+
+    const deleted = await dataPublikasi.destroy({ where: { uuid: uuid } });
+
+    if (deleted === 1) {
+      deleteFileIfExists(filePathShapefile);
+      deleteFileIfExists(filePathPDF);
+      deleteFileIfExists(filePathMetadata);
+
+      res.send({
+        message: "Publication was successfully deleted along with its layer and files"
+      });
+    } else {
+      res.status(500).send({
+        message: "Could not delete publication record"
+      });
+    }
+  } catch (err) {
+    console.error("Error deleting publication:", err);
+    res.status(500).send({
+      message: "Error deleting publication: " + err.message
+    });
+  }
 };
+
+exports.unpublish = async (req, res) => {
+  const uuid = req.params.uuid;
+  
+  if (!req.body.uuid) {
+    return res.status(400).send({
+      message: "User UUID is required in the request body"
+    });
+  }
+
+  try {
+    const publikasi = await dataPublikasi.findOne({
+      where: { uuid: uuid },
+      include: [
+        {
+          model: dataPemeriksaan,
+          as: "dataPemeriksaan",
+          attributes: ["id", "uuid", "kategori"]
+        },
+        {
+          model: Tematik,
+          as: "tematik",
+          attributes: ["id", "name"]
+        }
+      ],
+      attributes: [
+        "id",
+        "uuid",
+        "deskripsi",
+        "filename",
+        "pdfname",
+        "metadatafilename",
+        "identifier",
+        "waktuPublish"
+      ]
+    });
+
+    if (!publikasi) {
+      return res.status(404).send({ message: "Publication not found" });
+    }
+
+    // Find the user
+    const user = await User.findOne({
+      where: { uuid: req.body.uuid }
+    });
+
+    if (!user) {
+      return res.status(404).send({ message: "User not found" });
+    }
+
+    // Get the table name from the shapefile
+    const shapefileZipPath = __basedir + 
+      "/app/resources/static/assets/publikasi/" + 
+      publikasi.filename;
+    
+    const tableName = await getTableName(shapefileZipPath);
+    
+    // // Unpublish from GeoServer
+    // const layerUnpublished = await unpublishLayer(tableName.replace(/^"(.*)"$/, "$1"));
+    
+    // if (!layerUnpublished) {
+    //   return res.status(500).send({ 
+    //     message: "Failed to unpublish layer from GeoServer" 
+    //   });
+    // }
+
+    await unpublishLayer(tableName.replace(/^"(.*)"$/, "$1"));
+    await deletePostGISTable(tableName);
+
+    console.log("Identifier:", publikasi.identifier);
+
+    await recordCsw.destroy({
+      where: { identifier: publikasi.identifier }
+    });
+
+    // Update the publication record
+    const update = {
+      userId: user.id,
+      identifier: null,
+      is_published: false,
+      is_active: false,
+      waktuPublish: null,
+      urlGeoserver: null  
+    };
+
+    await dataPublikasi.update(update, {
+      where: { id: publikasi.id }
+    });
+
+    // Create notification for administrators
+    // const notifMessage = {
+    //   uuid: uuidv4(),
+    //   waktuKirim: new Date(),
+    //   subjek: "Publikasi IGT - " + publikasi.tematik.name + "telah di-unpublish",
+    //   pesan: "Publikasi IGT " + publikasi.deskripsi + " telah di-unpublish oleh " + user.username,
+    //   sudahBaca: false,
+    //   userId: 1
+    // };
+
+    // Create notification for all users
+    const users = await User.findAll({ attributes: ["id"] });
+
+    for (let i = 0; i < users.length; i++) {
+      const notif = {
+        uuid: uuidv4(),
+        waktuKirim: new Date(),
+        subjek: "Publikasi service IGT - " + publikasi.tematik.name + " telah di-unpublish",
+        pesan: "Publikasi service IGT " + publikasi.deskripsi + " telah di-unpublish oleh " + user.username,
+        sudahBaca: false,
+        userId: users[i].id,
+      };
+      await notifikasi.create(notif);
+    }
+
+    // Return the updated publication
+    const updatedPublication = await dataPublikasi.findByPk(publikasi.id, {
+      include: [
+        { model: User, as: "user", attributes: ["id", "username"] },
+        {
+          model: dataPemeriksaan,
+          as: "dataPemeriksaan",
+          attributes: ["id", "kategori"]
+        },
+        {
+          model: Tematik,
+          as: "tematik",
+          attributes: ["id", "name", "is_series"]
+        }
+      ],
+      attributes: [
+        "id", "uuid", "deskripsi", "is_published", "is_active",
+        "urlGeoserver", "waktuPublish", "createdAt"
+      ]
+    });
+
+    res.send(updatedPublication);
+  } catch (err) {
+    console.error("Error unpublishing layer:", err);
+    res.status(500).send({
+      message: "Error unpublishing layer: " + err.message
+    });
+  }
+};
+

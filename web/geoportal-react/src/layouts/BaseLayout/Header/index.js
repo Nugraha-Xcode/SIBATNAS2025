@@ -1,5 +1,5 @@
-import PropTypes from "prop-types";
 import React, { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Outlet, Link as RouterLink, useLocation } from "react-router-dom";
 import {
   Box,
@@ -15,6 +15,10 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 
 import MenuIcon from "@mui/icons-material/Menu";
 
+// Site Settings
+import { retrievePublicSiteSettings } from "src/redux/actions/siteSetting";
+import environment from "src/config/environment";
+
 function Header() {
   const theme = useTheme();
 
@@ -22,6 +26,16 @@ function Header() {
 
   const [anchorEl, setAnchorEl] = useState(null);
   const [value, setValue] = useState(0);
+
+  // Site Settings
+  const siteSetting = useSelector((state) => state.siteSetting);
+  
+  const dispatch = useDispatch();
+
+  // Site Settings
+    useEffect(() => {
+      dispatch(retrievePublicSiteSettings());
+    }, []);
 
   const location = useLocation(); // Get the current location
   //console.log(location.pathname);
@@ -91,12 +105,10 @@ function Header() {
           >
             <a href="/">
               <img
-                src={
-                  process.env.PUBLIC_URL + "/static/images/logo/kukar-logo.png"
-                }
+                src={`${environment.api}site-settings/logo`}
                 width="60"
                 height="72"
-                alt="Geoportal SJ"
+                alt={`logo ${siteSetting?.name || 'SIBATNAS'}`}
               />
             </a>
             <h2
@@ -111,7 +123,7 @@ function Header() {
                 lineHeight: 1.2,
               }}
             >
-              Geoportal Kutai Kartanegara
+              {siteSetting?.name}
             </h2>
           </Box>
         </Box>
@@ -161,7 +173,7 @@ function Header() {
                   to="/peta"
                   onClick={handleMenuClose}
                 >
-                  Penyaji Peta
+                  Peta
                 </MenuItem>
                 <MenuItem
                   component={RouterLink}
@@ -198,7 +210,7 @@ function Header() {
 
               <Tab
                 value={2}
-                label="Penyaji Peta"
+                label="Peta"
                 component={RouterLink}
                 to="/peta"
                 sx={{ color: "#ffffff" }}

@@ -1,0 +1,16 @@
+<layer>
+  <name>garpan_makassar</name>
+  <id>LayerInfoImpl--25278b9:19766f7a946:-7fed</id>
+  <type>VECTOR</type>
+  <defaultStyle>
+    <id>StyleInfoImpl--78614775:19734fd86ae:-7ffc</id>
+  </defaultStyle>
+  <resource class="featureType">
+    <id>FeatureTypeInfoImpl--25278b9:19766f7a946:-7fee</id>
+  </resource>
+  <attribution>
+    <logoWidth>0</logoWidth>
+    <logoHeight>0</logoHeight>
+  </attribution>
+  <dateCreated>2025-06-13 09:16:48.862 UTC</dateCreated>
+</layer>

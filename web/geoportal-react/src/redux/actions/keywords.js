@@ -29,6 +29,22 @@ export const retrieve = () => async (dispatch) => {
   }
 };
 
+export const retrievePublik = () => async (dispatch) => {
+  try {
+    const res = await Service.getAllPublik();
+
+    dispatch({
+      type: RETRIEVE_KEYWORDS_SUCCESS,
+      payload: res.data,
+    });
+  } catch (err) {
+    if (err.response && err.response.status === 401) {
+      EventBus.dispatch("logout");
+    }
+    console.log(err);
+  }
+};
+
 export const create = (data) => async (dispatch) => {
   try {
     const res = await Service.create(data);

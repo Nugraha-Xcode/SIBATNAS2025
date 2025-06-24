@@ -99,7 +99,7 @@ services:
 
   geoserver:
     container_name: ${COMPOSE_PROJECT_NAME}-geoserver
-    image: kartoza/geoserver:2.18.2
+    image: kartoza/geoserver:2.23.2
     restart: always
     depends_on:
       - db-spasial
@@ -107,12 +107,14 @@ services:
       - db-spasial
     ports:
       - "${GEOSERVER_CONNECTION_PORT}:8080"
-    #volumes:
-    #  - ./geoserver:/opt/geoserver/data_dir
+    volumes:
+      - ./geoserver:/opt/geoserver
     environment:
       - GEOSERVER_DATA_DIR=/opt/geoserver/data_dir
       - GEOWEBCACHE_CACHE_DIR=/opt/geoserver/data_dir/gwc
-      - GEOSERVER_ADMIN_PASSWORD=${GEOSERVER_ADMIN_PASSWORD}
+      - GEOSERVER_LOG_DIR=/opt/geoserver/data_dir/logs
       - GEOSERVER_ADMIN_USER=admin
+      - GEOSERVER_ADMIN_PASSWORD=${GEOSERVER_ADMIN_PASSWORD}
+      #- RECREATE_DATADIR=TRUE
       - INITIAL_MEMORY=4G
       - MAXIMUM_MEMORY=8G

@@ -18,6 +18,7 @@ module.exports = (app) => {
   app.post(base, [authJwt.verifyToken], controller.create);
 
   app.put(base + "publish/:uuid", [authJwt.verifyToken], controller.publish);
+  app.put(base + "unpublish/:uuid", [authJwt.verifyToken], controller.unpublish);
   app.put(
     base + "deactivate/:uuid",
     [authJwt.verifyToken],
@@ -43,7 +44,7 @@ module.exports = (app) => {
 
   app.get(
     base + "unduh/:uuid/:user_uuid",
-    [authJwt.verifyToken],
+    //[authJwt.verifyToken],
     controller.unduh
   );
 

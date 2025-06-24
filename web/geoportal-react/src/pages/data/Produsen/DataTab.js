@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { NavLink as RouterLink } from "react-router-dom";
 import {
@@ -31,6 +31,9 @@ import {
   useTheme,
   styled,
   CardContent,
+  TextField,
+  InputAdornment,
+  CircularProgress,
 } from "@mui/material";
 
 import DoneTwoToneIcon from "@mui/icons-material/DoneTwoTone";
@@ -40,6 +43,7 @@ import { format, subHours, subWeeks, subDays, parseISO } from "date-fns";
 import AddTwoToneIcon from "@mui/icons-material/AddTwoTone";
 import DownloadTwoToneIcon from "@mui/icons-material/DownloadTwoTone";
 import RefreshIcon from "@mui/icons-material/Refresh";
+import SearchIcon from '@mui/icons-material/Search';
 
 import { retrieve } from "src/redux/actions/kategoriTematik";
 import { retrieveProdusenKategori } from "src/redux/actions/produsen";
@@ -51,12 +55,42 @@ import environment from "src/config/environment";
 
 import DataDialog from "./DataDialog";
 
+const ButtonError = styled(Button)(
+  ({ theme }) => `
+     background: ${theme.colors.error.main};
+     color: ${theme.palette.error.contrastText};
+
+     &:hover {
+        background: ${theme.colors.error.dark};
+     }
+    `
+);
+
+const AvatarSuccess = styled(Avatar)(
+  ({ theme }) => `
+    background: ${theme.colors.success.light};
+    width: ${theme.spacing(5)};
+    height: ${theme.spacing(5)};
+`
+);
+
+const AvatarWrapper = styled(Avatar)(
+  ({ theme }) => `
+    width: ${theme.spacing(5)};
+    height: ${theme.spacing(5)};
+`
+);
+
 function KategoriTab() {
   const theme = useTheme();
 
-  const [page, setPage] = useState(2);
+  const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [open, setOpen] = useState(false);
+  const [keyword, setKeyword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [searchTimeout, setSearchTimeout] = useState(null);
+
   const label = "Produsen";
   const initialConfig = {
     data: null,
@@ -64,42 +98,91 @@ function KategoriTab() {
     title: `Tambah Data ${label} baru`,
     mode: "add",
     action: "Submit",
-    description:
-      "Silahkan isi form berikut untuk menambahkan Data Produsen baru.",
+    description: "Silahkan isi form berikut untuk menambahkan Data Produsen baru.",
   };
   const [config, setConfig] = useState(initialConfig);
+  
   const datas = useSelector((state) => state.data_produsen);
   const { user: currentUser } = useSelector((state) => state.auth);
   const kategoris = useSelector((state) => state.kategoriTematik);
 
   const [listKategori, setListKategori] = useState([]);
-
-  const [selectedKategori, setSelectedKategori] = useState(
-    "Pilih Kategori Bidang IGT"
-  );
+  const [selectedKategori, setSelectedKategori] = useState("Pilih Kategori Bidang IGT");
   const [listProdusen, setListProdusen] = useState([]);
-  const [selectedProdusen, setSelectedProdusen] = useState(
-    "Pilih Produsen Data Geospasial"
-  );
-  const [produsen, setProdusen] = useState();
+  const [selectedProdusen, setSelectedProdusen] = useState("Pilih Produsen Data Geospasial");
+  const [produsen, setProdusen] = useState(null);
+  
   const dispatch = useDispatch();
 
+  // Fetch data with pagination and search
+  const fetchData = useCallback(async () => {
+    setLoading(true);
+    try {
+      // Safe access to produsen UUID and currentUser
+      const produsenUuid = produsen?.uuid !== "0" ? produsen?.uuid : "0";
+      const userUuid = currentUser?.uuid || "";
+      
+      console.log('Fetching data with parameters:', {
+        userUuid,
+        page,
+        rowsPerPage,
+        keyword,
+        produsenUuid
+      });
+  
+      let result;
+      if (currentUser?.roles?.includes("ROLE_PRODUSEN")) {
+        // For produsen role, use user's UUID
+        result = await dispatch(
+          retrieveAllProdusenUser(userUuid, {
+            page,
+            size: rowsPerPage,
+            keyword,
+          })
+        );
+      } else if (
+        currentUser?.roles?.includes("ROLE_ADMIN")
+      ) {
+        // For admin, use selected produsen UUID
+        result = await dispatch(
+          retrieveAllProdusen(produsenUuid, {
+            page,
+            size: rowsPerPage,
+            keyword,
+          })
+        );
+      }
+      
+      if (result) {
+        console.log('Fetch successful. Records count:', result.records?.length || 0);
+      } else {
+        console.warn('Fetch completed but no result returned');
+      }
+      
+      return result;
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    } finally {
+      setLoading(false);
+    }
+  }, [dispatch, page, rowsPerPage, keyword, currentUser, produsen]);
+
+  // Load data on component mount or when parameters change
   useEffect(() => {
-    //dispatch(retrieveAllData());
-    //if (currentUser.roles.includes("ROLE_ADMIN")) {
-    //  dispatch(retrieveAllData());
-    //} else if (currentUser.roles.includes("ROLE_PRODUSEN")) {
-    //  dispatch(retrieveAllLocation(currentUser.uuid)); // per igt milik produsen
-    //}
-    if (currentUser.roles.includes("ROLE_ADMIN")) {
+    fetchData();
+  }, [fetchData]);
+
+  // Initial data load and filter options
+  useEffect(() => {
+    if (currentUser?.roles?.includes("ROLE_ADMIN")) {
       dispatch(retrieve());
       dispatch(retrieveProdusenKategori("0"));
-      dispatch(retrieveAllProdusen("0"));
+      
       var list = [];
       list.push({ uuid: "0", name: "Pilih Produsen Data Geospasial" });
       setListProdusen(list);
-    } else if (currentUser.roles.includes("ROLE_PRODUSEN")) {
-      dispatch(retrieveAllProdusenUser(currentUser.uuid));
+    } else if (currentUser?.roles?.includes("ROLE_PRODUSEN")) {
+      fetchData();
     }
   }, []);
 
@@ -119,36 +202,85 @@ function KategoriTab() {
     value = e.target.value;
 
     if (value !== "Pilih Kategori Bidang IGT") {
+      // Find the selected kategori object
+      const selectedKategoriObj = kategoris.find(el => el.name === value);
+      
+      if (!selectedKategoriObj) {
+        console.error("Selected kategori not found in list");
+        return;
+      }
+      
       setSelectedKategori(value);
-      var a = kategoris.filter(function (el) {
-        return el.name == value;
-      });
+      
+      // Clear existing data while loading
+      setLoading(true);
+      
+      // Reset search and pagination
+      setKeyword("");
+      setPage(0);
 
-      dispatch(retrieveProdusenKategori(a[0].uuid))
+      dispatch(retrieveProdusenKategori(selectedKategoriObj.uuid))
         .then((datas) => {
           var list = [];
           list.push({ uuid: "0", name: "Pilih Produsen Data Geospasial" });
-          datas.map((data) => {
-            list.push(data);
-          });
+          
+          if (datas && Array.isArray(datas)) {
+            datas.forEach((data) => {
+              list.push(data);
+            });
+          }
+          
           setListProdusen(list);
-          setProdusen(list[1]);
-          setConfig({ ...config, ["produsen"]: list[1] });
-          setSelectedProdusen(list[0].name);
-          dispatch(retrieveAllProdusen("0"));
+          
+          // Clear produsen selection
+          setProdusen(null);
+          setConfig(prevConfig => ({ ...prevConfig, produsen: null }));
+          setSelectedProdusen("Pilih Produsen Data Geospasial");
+          
+          // Clear the data display until a produsen is selected
+          dispatch({
+            type: "RETRIEVE_DATA_PRODUSEN_SUCCESS",
+            payload: { records: [], totalItems: 0, totalPages: 0, currentPage: 0 }
+          });
+          
+          setLoading(false);
         })
         .catch((e) => {
-          console.log(e);
+          console.error("Error fetching produsen for kategori:", e);
+          setLoading(false);
         });
     } else {
+      // Clear kategori selection
       setSelectedKategori(value);
-      dispatch(retrieveProdusenKategori("0"));
-      var list = [];
-      list.push({ uuid: "0", name: "Pilih Produsen Data Geospasial" });
-      setListProdusen(list);
-      setProdusen(null);
-      setConfig({ ...config, ["produsen"]: null });
-      dispatch(retrieveAllProdusen("0"));
+      
+      // Reset search and pagination
+      setKeyword("");
+      setPage(0);
+      
+      // Clear existing data while loading
+      setLoading(true);
+      
+      dispatch(retrieveProdusenKategori("0"))
+        .then(() => {
+          var list = [];
+          list.push({ uuid: "0", name: "Pilih Produsen Data Geospasial" });
+          setListProdusen(list);
+          setProdusen(null);
+          setConfig(prevConfig => ({ ...prevConfig, produsen: null }));
+          setSelectedProdusen("Pilih Produsen Data Geospasial");
+          
+          // Clear the data display
+          dispatch({
+            type: "RETRIEVE_DATA_PRODUSEN_SUCCESS",
+            payload: { records: [], totalItems: 0, totalPages: 0, currentPage: 0 }
+          });
+          
+          setLoading(false);
+        })
+        .catch((e) => {
+          console.error("Error clearing produsen list:", e);
+          setLoading(false);
+        });
     }
   };
 
@@ -157,69 +289,123 @@ function KategoriTab() {
     value = e.target.value;
 
     if (value !== "Pilih Produsen Data Geospasial") {
+      // Find the selected produsen object
+      const selectedProdusenObj = listProdusen.find(el => el.name === value);
+      
+      if (!selectedProdusenObj) {
+        console.error("Selected produsen not found in list");
+        return;
+      }
+      
+      // Update state in a single batch to prevent race conditions
       setSelectedProdusen(value);
-      var a = listProdusen.filter(function (el) {
-        return el.name == value;
+      setConfig(prevConfig => ({ ...prevConfig, produsen: selectedProdusenObj }));
+      
+      // Important: set produsen first, then fetch data directly
+      // This ensures we're using the correct produsen UUID
+      setProdusen(selectedProdusenObj);
+      
+      // Reset pagination and search when changing filters
+      setKeyword("");
+      setPage(0);
+      
+      console.log("Selected produsen:", selectedProdusenObj);
+      
+      // Directly fetch data with the new produsen UUID
+      dispatch(
+        retrieveAllProdusen(selectedProdusenObj.uuid, {
+          page: 0,
+          size: rowsPerPage,
+          keyword: "",
+        })
+      ).then(result => {
+        console.log("Fetched data for produsen:", result);
+      }).catch(error => {
+        console.error("Error fetching data for produsen:", error);
       });
-
-      //setData({ ...data, ["province"]: a[0] });
-      setConfig({ ...config, ["produsen"]: a[0] });
-      setProdusen(a[0]);
-      dispatch(retrieveAllProdusen(a[0].uuid));
+      
     } else {
+      // Clear produsen selection
       setSelectedProdusen(value);
-      setConfig({ ...config, ["produsen"]: null });
+      setConfig(prevConfig => ({ ...prevConfig, produsen: null }));
       setProdusen(null);
-      dispatch(retrieveAllProdusen("0"));
+      
+      // Reset pagination and search when clearing filters
+      setKeyword("");
+      setPage(0);
+      
+      // Directly fetch data with default UUID "0"
+      dispatch(
+        retrieveAllProdusen("0", {
+          page: 0,
+          size: rowsPerPage,
+          keyword: "",
+        })
+      ).then(result => {
+        console.log("Fetched data with cleared filters:", result);
+      }).catch(error => {
+        console.error("Error fetching data with cleared filters:", error);
+      });
     }
+  };
+
+  // Search handler with debounce
+  const handleSearchChange = (event) => {
+    const value = event.target.value;
+    
+    // Update the search keyword state
+    setKeyword(value);
+    
+    // Reset to first page when searching
+    setPage(0);
+    
+    // Clear any existing timeout
+    if (searchTimeout) {
+      clearTimeout(searchTimeout);
+    }
+    
+    // Set a new timeout to trigger the search
+    const timeoutId = setTimeout(() => {
+      // Log the search parameters for debugging
+      console.log("Searching with:", {
+        keyword: value,
+        page: 0,
+        size: rowsPerPage,
+        produsenUuid: produsen?.uuid || "0"
+      });
+      
+      // Determine which API to call based on user role
+      if (currentUser?.roles?.includes("ROLE_PRODUSEN")) {
+        dispatch(
+          retrieveAllProdusenUser(currentUser.uuid, {
+            page: 0,
+            size: rowsPerPage,
+            keyword: value,
+          })
+        );
+      } else if (
+        currentUser?.roles?.includes("ROLE_ADMIN")
+      ) {
+        const produsenUuid = produsen?.uuid !== "0" ? produsen?.uuid : "0";
+        
+        dispatch(
+          retrieveAllProdusen(produsenUuid, {
+            page: 0,
+            size: rowsPerPage,
+            keyword: value,
+          })
+        );
+      }
+    }, 300);
+    
+    setSearchTimeout(timeoutId);
   };
 
   const handleClickAdd = () => {
     setConfig(initialConfig);
     setOpen(true);
   };
-  /*
-  const handleClickEdit = (data) => {
-    setConfig({
-      data: data,
-      title: "Edit Data Produsen",
-      mode: "edit",
-      action: "Save",
-      description: "Silahkan edit form berikut untuk mengupdate Kategori.",
-    });
-    setOpen(true);
-  };
 
-  const unduhRef = (data) => {
-    dispatch(unduhReferensi(data))
-      .then(() => {
-        console.log("sukses unduh referensi");
-      })
-      .catch((e) => {
-        console.log(e);
-      });
-  };
-
-  const unduhMeta = (uuid) => {
-    dispatch(unduhMetadata(uuid))
-      .then(() => {
-        console.log("sukses unduh metadata");
-      })
-      .catch((e) => {
-        console.log(e);
-      });
-  };
-
-  const unduhData = (uuid) => {
-    dispatch(unduhFile(uuid))
-      .then(() => {
-        console.log("sukses unduh file");
-      })
-      .catch((e) => {
-        console.log(e);
-      });
-  };
-  */
   const handleClickDelete = (data) => {
     setConfig({
       data: data,
@@ -233,20 +419,31 @@ function KategoriTab() {
 
   const handleClose = () => {
     setOpen(false);
+    // Refresh data after closing dialog
+    fetchData();
   };
 
+  // Pagination handlers
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
+    // fetchData will be triggered by useEffect due to page dependency
   };
 
   const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
+    const newRowsPerPage = parseInt(event.target.value, 10);
+    setRowsPerPage(newRowsPerPage);
+    setPage(0); // Reset to first page when changing rows per page
+    // fetchData will be triggered by useEffect due to rowsPerPage dependency
+  };
+
+  // Handle refresh button click
+  const handleRefresh = () => {
+    fetchData();
   };
 
   return (
     <Grid container spacing={3}>
-      {currentUser.roles.includes("ROLE_ADMIN") ? (
+      {currentUser?.roles?.includes("ROLE_ADMIN") ? (
         <Grid item xs={12}>
           <Card>
             <CardContent>
@@ -308,40 +505,123 @@ function KategoriTab() {
       <Grid item xs={12}>
         <Card>
           <CardContent>
-            <Grid
-              container
-              justifyContent="end"
-              alignItems="center"
-              sx={{ mb: 2 }}
-            >
-              {currentUser.roles.includes("ROLE_ADMIN") ||
-              currentUser.roles.includes("ROLE_PRODUSEN") ? (
-                <Grid item>
-                  <Tooltip placement="top" title="Tambah Data Produsen" arrow>
-                    <Button
-                      sx={{ mt: { xs: 2, md: 0 }, mr: 1 }}
-                      variant="outlined"
-                      startIcon={<AddTwoToneIcon fontSize="small" />}
-                      onClick={handleClickAdd}
-                    >
-                      Tambah Data Produsen
-                    </Button>
-                  </Tooltip>
-                  {/*
-                <Tooltip title="Reload" arrow>
-                  <IconButton>
-                    <RefreshIcon color="inherit" sx={{ display: "block" }} />
-                  </IconButton>
-                </Tooltip>
-                */}
-                </Grid>
-              ) : (
-                ""
-              )}
-            </Grid>
+            {/* Search and Action Controls */}
+            <Box sx={{ 
+              display: 'flex', 
+              justifyContent: 'space-between', 
+              alignItems: 'center', 
+              mb: 2 
+            }}>
+              <TextField
+                placeholder="Cari berdasarkan deskripsi atau nama tematik..."
+                variant="outlined"
+                size="small"
+                value={keyword}
+                onChange={handleSearchChange}
+                sx={{ minWidth: 300 }}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <SearchIcon />
+                    </InputAdornment>
+                  ),
+                  endAdornment: keyword && (
+                    <InputAdornment position="end">
+                      <IconButton
+                        aria-label="clear search"
+                        onClick={() => {
+                          // Clear the search field
+                          setKeyword("");
+                          setPage(0);
+                          
+                          // Explicitly fetch data with empty keyword
+                          if (currentUser?.roles?.includes("ROLE_PRODUSEN")) {
+                            dispatch(
+                              retrieveAllProdusenUser(currentUser.uuid, {
+                                page: 0,
+                                size: rowsPerPage,
+                                keyword: "",
+                              })
+                            );
+                          } else if (
+                            currentUser?.roles?.includes("ROLE_ADMIN")
+                          ) {
+                            const produsenUuid = produsen?.uuid !== "0" ? produsen?.uuid : "0";
+                            
+                            dispatch(
+                              retrieveAllProdusen(produsenUuid, {
+                                page: 0,
+                                size: rowsPerPage,
+                                keyword: "",
+                              })
+                            );
+                          }
+                        }}
+                        edge="end"
+                        size="small"
+                      >
+                        <Typography variant="caption">×</Typography>
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
+              />
+
+              <Box>
+                {currentUser?.roles?.includes("ROLE_ADMIN") ||
+                currentUser?.roles?.includes("ROLE_PRODUSEN") ? (
+                  currentUser?.roles?.includes("ROLE_ADMIN") &&
+                  selectedProdusen === "Pilih Produsen Data Geospasial" ? (
+                    ""
+                  ) : (
+                    <Tooltip placement="top" title="Tambah Data Produsen" arrow>
+                      <Button
+                        sx={{ mt: { xs: 2, md: 0 }, mr: 1 }}
+                        variant="outlined"
+                        startIcon={<AddTwoToneIcon fontSize="small" />}
+                        onClick={handleClickAdd}
+                      >
+                        Tambah Data Produsen
+                      </Button>
+                    </Tooltip>
+                  )
+                ) : (
+                  ""
+                )}
+                
+                <Button
+                  variant="outlined"
+                  startIcon={<RefreshIcon />}
+                  onClick={handleRefresh}
+                >
+                  Refresh
+                </Button>
+              </Box>
+            </Box>
+
             <Divider />
-            <TableContainer>
-              <Table width={300}>
+
+            {/* Table Container with Loading */}
+            <TableContainer sx={{ position: 'relative', minHeight: 200 }}>
+              {loading && (
+                <Box
+                  sx={{
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    backgroundColor: 'rgba(255, 255, 255, 0.7)',
+                    zIndex: 1,
+                  }}
+                >
+                  <CircularProgress />
+                </Box>
+              )}
+              <Table>
                 <TableHead>
                   <TableRow>
                     <TableCell>IG Tematik</TableCell>
@@ -353,8 +633,8 @@ function KategoriTab() {
                     <TableCell>Keterangan Referensi</TableCell>
                     <TableCell>Metadata</TableCell>
                     <TableCell>File</TableCell>
-                    {currentUser.roles.includes("ROLE_ADMIN") ||
-                    currentUser.roles.includes("ROLE_PRODUSEN") ? (
+                    {currentUser?.roles?.includes("ROLE_ADMIN") ||
+                    currentUser?.roles?.includes("ROLE_PRODUSEN") ? (
                       <TableCell align="right">Actions</TableCell>
                     ) : (
                       ""
@@ -362,29 +642,30 @@ function KategoriTab() {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {datas.length == 0 ? (
+                  {!loading && (!datas.records || datas.records.length === 0) ? (
                     <TableRow key={0}>
-                      <TableCell colSpan={9}>
-                        {currentUser.roles.includes("ROLE_ADMIN")
-                          ? selectedProdusen == "Pilih Produsen Data Geospasial"
-                            ? "Filter belum dipilih"
-                            : "Data tidak ditemukan"
-                          : "Data tidak ditemukan"}
+                      <TableCell colSpan={10} align="center">
+                        {currentUser?.roles?.includes("ROLE_ADMIN")
+                          ? selectedProdusen === "Pilih Produsen Data Geospasial" && !keyword
+                            ? "Silakan pilih filter terlebih dahulu"
+                            : keyword 
+                              ? `Tidak ada data yang cocok dengan pencarian "${keyword}"`
+                              : "Data tidak ditemukan"
+                          : keyword
+                            ? `Tidak ada data yang cocok dengan pencarian "${keyword}"`
+                            : "Data tidak ditemukan"}
                       </TableCell>
                     </TableRow>
-                  ) : null}
-                  {datas &&
-                    datas.map((data) => (
+                  ) : (
+                    datas.records && datas.records.map((data) => (
                       <TableRow key={data.id} hover>
                         <TableCell>{data.tematik?.name}</TableCell>
                         <TableCell>
                           {data.tematik?.is_series ? "Series" : "Tidak Series"}
                         </TableCell>
-
                         <TableCell>{data.deskripsi}</TableCell>
-                        <TableCell>{data.tematik?.produsen.name}</TableCell>
+                        <TableCell>{data.tematik?.produsen?.name}</TableCell>
                         <TableCell>{data.user?.username}</TableCell>
-
                         <TableCell>
                           {format(
                             parseISO(data.createdAt),
@@ -408,7 +689,6 @@ function KategoriTab() {
                                 "/data-produsen/unduhReferensi/" +
                                 data.uuid
                               }
-                              //onClick={() => unduhRef(data)}
                             >
                               <DownloadTwoToneIcon fontSize="small" />
                             </IconButton>
@@ -431,7 +711,6 @@ function KategoriTab() {
                                 "/data-produsen/unduhMetadata/" +
                                 data.uuid
                               }
-                              // onClick={() => unduhMeta(data.uuid)}
                             >
                               <DownloadTwoToneIcon fontSize="small" />
                             </IconButton>
@@ -454,32 +733,14 @@ function KategoriTab() {
                                 "/data-produsen/unduhFile/" +
                                 data.uuid
                               }
-                              //onClick={() => unduhData(data.uuid)}
                             >
                               <DownloadTwoToneIcon fontSize="small" />
-                            </IconButton>
+                              </IconButton>
                           </Tooltip>
                         </TableCell>
                         <TableCell align="center">
-                          {/*
-                            <Tooltip title="Edit Kategori" arrow>
-                              <IconButton
-                                sx={{
-                                  "&:hover": {
-                                    background: theme.colors.primary.lighter,
-                                  },
-                                  color: theme.palette.primary.main,
-                                }}
-                                color="inherit"
-                                size="small"
-                                onClick={() => handleClickEdit(kategori)}
-                              >
-                                <EditTwoToneIcon fontSize="small" />
-                              </IconButton>
-                            </Tooltip>
-                              */}
-                          {currentUser.roles.includes("ROLE_ADMIN") ||
-                          currentUser.roles.includes("ROLE_PRODUSEN") ? (
+                          {currentUser?.roles?.includes("ROLE_ADMIN") ||
+                          currentUser?.roles?.includes("ROLE_PRODUSEN") ? (
                             <Tooltip
                               placement="top"
                               title="Delete Data Produsen"
@@ -504,10 +765,26 @@ function KategoriTab() {
                           )}
                         </TableCell>
                       </TableRow>
-                    ))}
+                    ))
+                  )}
                 </TableBody>
               </Table>
             </TableContainer>
+            
+            {/* Pagination */}
+            <TablePagination
+              component="div"
+              count={datas.totalItems || 0}
+              page={page}
+              onPageChange={handleChangePage}
+              rowsPerPage={rowsPerPage}
+              onRowsPerPageChange={handleChangeRowsPerPage}
+              rowsPerPageOptions={[10, 25, 50, 100]}
+              labelRowsPerPage="Baris per halaman:"
+              labelDisplayedRows={({ from, to, count }) => 
+                `${from}-${to} dari ${count !== -1 ? count : `lebih dari ${to}`}`
+              }
+            />
           </CardContent>
           <DataDialog open={open} onClose={handleClose} config={config} />
         </Card>

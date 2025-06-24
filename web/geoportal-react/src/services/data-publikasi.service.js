@@ -7,24 +7,32 @@ const getAll = () => {
   return http.get(`/${base}`, { headers: authHeader() });
 };
 
-const getAllProdusen = (uuid) => {
-  //return http.get("/tutorials");
-  return http.get(`/${base}/produsen/${uuid}`, { headers: authHeader() });
+const getAllProdusen = (uuid, params = {}) => {
+  return http.get(`/${base}/produsen/${uuid}`, { 
+    params, 
+    headers: authHeader() 
+  });
 };
 
-const getAllProdusenAdmin = (uuid) => {
-  //return http.get("/tutorials");
-  return http.get(`/${base}/produsen-admin/${uuid}`, { headers: authHeader() });
+const getAllProdusenAdmin = (uuid, params = {}) => {
+  return http.get(`/${base}/produsen-admin/${uuid}`, { 
+    params, 
+    headers: authHeader() 
+  });
 };
 
-const getAllEksternalUser = (uuid) => {
-  //return http.get("/tutorials");
-  return http.get(`/${base}/eksternal-user/${uuid}`, { headers: authHeader() });
+const getAllEksternalUser = (uuid, params = {}) => {
+  return http.get(`/${base}/eksternal-user/${uuid}`, { 
+    params, 
+    headers: authHeader() 
+  });
 };
 
-const getAllInternalUser = (uuid) => {
-  //return http.get("/tutorials");
-  return http.get(`/${base}/internal-user/${uuid}`, { headers: authHeader() });
+const getAllInternalUser = (uuid, params = {}) => {
+  return http.get(`/${base}/internal-user/${uuid}`, { 
+    params, 
+    headers: authHeader() 
+  });
 };
 
 const getAllLocation = (uuid) => {
@@ -42,9 +50,11 @@ const getAllUser = (uuid) => {
   return http.get(`/${base}/user/${uuid}`, { headers: authHeader() });
 };
 
-const getAllIGT = (query) => {
-  //return http.get("/tutorials");
-  return http.get(`/${base}/igt/${query}`, { headers: authHeader() });
+const getAllIGT = (query, params = {}) => {
+  return http.get(`/${base}/igt/${query}`, { 
+    params, 
+    headers: authHeader() 
+  });
 };
 
 const get = (uuid) => {
@@ -117,6 +127,10 @@ const remove = (uuid) => {
   return http.delete(`/${base}/${uuid}`, { headers: authHeader() });
 };
 
+const unpublish = (uuid, data) => {
+  return http.put(`/${base}/unpublish/${uuid}`, data, { headers: authHeader() });
+};
+
 const BukuTamuService = {
   getAll,
   getAllProdusen,
@@ -126,7 +140,6 @@ const BukuTamuService = {
   getAllLocation,
   getAllUser,
   getAllIGT,
-
   getByUUID,
   get,
   createData,
@@ -136,6 +149,7 @@ const BukuTamuService = {
   unduhIndonesia,
   update,
   remove,
+  unpublish
   //removeAll,
   //findByTitle,
 };

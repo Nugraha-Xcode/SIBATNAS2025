@@ -6,68 +6,75 @@ const Op = db.Sequelize.Op;
 
 const { v4: uuidv4 } = require("uuid");
 // Create and Save a new User
-exports.create = (req, res) => {
-  // Validate request
-  if (!req.body.produsen && !req.body.user) {
-    res.status(400).send({
-      message: "Content can not be empty!",
+exports.create = async (req, res) => {
+  try {
+    const { produsen: produsenData, user: userData } = req.body;
+
+    if (!produsenData || !userData) {
+      console.log("Request body tidak lengkap.");
+      return res.status(400).send({ message: "Content can not be empty!" });
+    }
+
+    console.log("Cek Produsen dan User...");
+    const bp = await produsen.findOne({ where: { uuid: produsenData.uuid } });
+    if (!bp) {
+      console.log("Produsen tidak ditemukan.");
+      return res.status(404).send({ message: "Produsen not found!" });
+    }
+
+    const us = await user.findOne({
+      where: { uuid: userData.uuid },
+      include: {
+        model: produsen,
+        as: "produsens",
+        attributes: ["uuid", "name"],
+        through: { attributes: [] },
+      },
     });
-    return;
+
+    if (!us) {
+      console.log("User tidak ditemukan.");
+      return res.status(404).send({ message: "User not found!" });
+    }
+
+    // Cek apakah sudah ada relasi user-produsen yang sama
+    const isAlreadyLinked = us.produsens.some((p) => p.uuid === bp.uuid);
+    if (isAlreadyLinked) {
+      console.log("User sudah terhubung dengan produsen yang sama.");
+      return res.status(409).send({ message: "User sudah terhubung dengan produsen ini." });
+    }
+
+    // Cek apakah user sudah terhubung ke produsen lain
+    if (us.produsens.length > 0) {
+      console.log("User sudah terhubung ke produsen lain:", us.produsens);
+      return res.status(409).send({
+        message: "User sudah terhubung ke produsen lain.",
+        existingProdusen: us.produsens,
+      });
+    }
+
+    // Lakukan asosiasi jika semua pengecekan lolos
+    await bp.addUser(us);
+    console.log(`User ${us.uuid} ditambahkan ke produsen ${bp.uuid}`);
+
+    return res.send({
+      uuid: us.uuid,
+      username: us.username,
+      email: us.email,
+      produsens: [
+        {
+          uuid: bp.uuid,
+          name: bp.name,
+          akronim: bp.akronim,
+        },
+      ],
+    });
+  } catch (err) {
+    console.error("Terjadi error saat menambahkan user ke produsen:", err);
+    return res.status(500).send({
+      message: "Internal server error.",
+    });
   }
-  produsen
-    .findOne({ where: { uuid: req.body.produsen.uuid } })
-    .then((bp) => {
-      if (!bp) {
-        console.log("Produsen not found!");
-        return null;
-      }
-      return user
-        .findOne({ where: { uuid: req.body.user.uuid } })
-        .then((us) => {
-          if (!us) {
-            console.log("User not found!");
-            return null;
-          }
-
-          bp.addUser(us);
-          console.log(
-            `>> added User uuid=${us.uuid} to Produsen id=${bp.uuid}`
-          );
-          //return bp;
-          return res.send({
-            uuid: us.uuid,
-            username: us.username,
-            produsens: [
-              {
-                uuid: bp.uuid,
-                name: bp.name,
-                akronim: bp.akronim,
-              },
-            ],
-          });
-        });
-    })
-    .catch((err) => {
-      console.log(">> Error while adding User to Produsen: ", err);
-    });
-  /*
-  // Create a Tutorial
-  const input = {
-    // uuid: uuidv4(),
-    bpkhtlId: req.body.bpkhtl.id,
-    provinceId: req.body.province.id,
-  };
-
-  // Save Tutorial in the database
-  kategoriTematik
-    .create(input)
-    .then((data) => {
-      res.send(data);
-    })
-    .catch((err) => {
-      res.status(500).send({ message: err.message });
-    });
-    */
 };
 
 exports.findKategoriById = (id) => {
@@ -149,7 +156,7 @@ exports.findByProdusenUuid = (req, res) => {
                   },
                 },
               ],
-              attributes: ["uuid", "username"],
+              attributes: ["uuid", "username", "email"],
             })
             .then((data) => {
               //sconsole.log(data);

@@ -28,6 +28,8 @@ import {
   Select,
   TextField,
   Typography,
+  CircularProgress,
+  Tooltip
 } from "@mui/material";
 import swal from "sweetalert";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
@@ -48,42 +50,28 @@ function KategoriDialog(props) {
       id: 1,
       nilai: "A",
       keterangan:
-        "Nilai Kualitas Data 100 dan Metadata Lengkap, berarti IGT dapat disebarluaskan",
+        "Data Sesuai Standar dan Metadata Lengkap, IG dapat disebarluaskan",
       status: "Sudah Diperiksa - Siap Publikasi",
     },
     {
       id: 2,
       nilai: "B",
       keterangan:
-        "Nilai Kualitas Data 90-99 dan Metadata Lengkap, berarti IGT dapat disebarluaskan dengan Catatan",
+        "Data Cukup Sesuai Standar dan Metadata Lengkap, IG dapat disebarluaskan dengan Catatan",
       status: "Sudah Diperiksa - Siap Publikasi",
     },
     {
       id: 3,
       nilai: "C",
       keterangan:
-        "Nilai Kualitas Data 100 dan Metadata Tidak Lengkap, berarti IGT belum dapat disebarluaskan dan perlu perbaikan Metadata",
+        "Data Cukup Sesuai Standar dan Metadata Tidak Lengkap, IG belum dapat disebarluaskan, perlu perbaikan Metadata",
       status: "Sudah Diperiksa - Perlu Perbaikan",
     },
     {
       id: 4,
       nilai: "D",
       keterangan:
-        "Nilai Kualitas Data 90-99 dan Metadata Tidak Lengkap, berarti IGT belum dapat disebarluaskan, perlu perbaikan Kualitas Data (opsional) dan perbaikan Metadata",
-      status: "Sudah Diperiksa - Perlu Perbaikan",
-    },
-    {
-      id: 5,
-      nilai: "E",
-      keterangan:
-        "Nilai Kualitas Data < 90 dan Metadata Lengkap, berarti IGT belum dapat disebarluaskan dan perlu perbaikan Kualitas Data",
-      status: "Sudah Diperiksa - Perlu Perbaikan",
-    },
-    {
-      id: 6,
-      nilai: "F",
-      keterangan:
-        "Nilai Kualitas Data < 90 dan Metadata Tidak Lengkap, berarti IGT belum dapat disebarluaskan, dan perlu Perbaikan Kualitas Data dan Metadata",
+        "Data Belum Sesuai Standar dan Metadata Tidak Lengkap, IG belum dapat disebarluaskan, perlu perbaikan Data dan Metadata",
       status: "Sudah Diperiksa - Perlu Perbaikan",
     },
   ];
@@ -105,6 +93,7 @@ function KategoriDialog(props) {
   const [progress, setProgress] = useState(0);
   const [message, setMessage] = useState("");
   const [isError, setIsError] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   // const [submitted, setSubmitted] = useState(false);
 
   const [fileErrors, setFileErrors] = useState({
@@ -134,33 +123,33 @@ function KategoriDialog(props) {
     // Set restrictions based on file type
     switch (type) {
       case 'document':
-        allowedTypes = environment.ALLOWED_DOCUMENT_TYPES.split(',');
-        maxSize = environment.MAX_DOCUMENT_SIZE * 1024 * 1024; // Convert MB to bytes
-        errorMessage = `Dokumen harus berupa ${allowedTypes.join(', ')} dan maks ${environment.MAX_DOCUMENT_SIZE} MB`;
+        allowedTypes = process.env.REACT_APP_ALLOWED_DOCUMENT_TYPES.split(',');
+        maxSize = process.env.REACT_APP_MAX_DOCUMENT_SIZE * 1024 * 1024; // Convert MB to bytes
+        errorMessage = `Dokumen harus berupa ${allowedTypes.join(', ')} dan maks ${process.env.REACT_APP_MAX_DOCUMENT_SIZE} MB`;
         break;
       // case 'metadata':
       //   allowedTypes = ['.xml'];
-      //   maxSize = environment.MAX_METADATA_SIZE * 1024 * 1024;
-      //   errorMessage = `Metadata harus berupa .xml dan maks ${environment.MAX_METADATA_SIZE} MB`;
+      //   maxSize = process.env.REACT_APP_MAX_METADATA_SIZE * 1024 * 1024;
+      //   errorMessage = `Metadata harus berupa .xml dan maks ${process.env.REACT_APP_MAX_METADATA_SIZE} MB`;
       //   break;
       // case 'dataSpasial':
       //   allowedTypes = ['.zip'];
-      //   maxSize = environment.MAX_SPASIAL_SIZE * 1024 * 1024;
-      //   errorMessage = `Data Spasial harus berupa .zip dan maks ${environment.MAX_SPASIAL_SIZE} MB`;
+      //   maxSize = process.env.REACT_APP_MAX_SPASIAL_SIZE * 1024 * 1024;
+      //   errorMessage = `Data Spasial harus berupa .zip dan maks ${process.env.REACT_APP_MAX_SPASIAL_SIZE} MB`;
       //   break;
       default:
         return false;
     }
 
     // Check file extension
-    const fileExtension = '.' + file.name.split('.').pop().toLowerCase();
+    const fileExtension = '.' + file?.name.split('.').pop().toLowerCase();
     if (!allowedTypes.includes(fileExtension)) {
       setFileErrors(prev => ({ ...prev, [type]: errorMessage }));
       return false;
     }
 
     // Check file size
-    if (file.size > maxSize) {
+    if (file?.size > maxSize) {
       setFileErrors(prev => ({ ...prev, [type]: errorMessage }));
       return false;
     }
@@ -175,7 +164,7 @@ function KategoriDialog(props) {
     const file = e.target.files[0];
     if (validateFile(file, 'document')) {
       setSelectedDocumentFiles(e.target.files);
-      setDocumentName(file.name);
+      setDocumentName(file?.name);
     }
     //const file = e.target.files[0];
     //const { name } = file;
@@ -215,18 +204,20 @@ function KategoriDialog(props) {
   };
 
   const handleClose = () => {
-    onClose();
-    // Reset file errors when closing
-    setFileErrors({
-      document: "",
-    });
+    if (!isLoading) {
+      onClose();
+      // Reset file errors when closing
+      setFileErrors({
+        document: "",
+      });
 
-    // Reset form data to initial state
-    setData(initialState);
-  
-    // Reset file-related states
-    setSelectedDocumentFiles(undefined);
-    setDocumentName(undefined);
+      // Reset form data to initial state
+      setData(initialState);
+    
+      // Reset file-related states
+      setSelectedDocumentFiles(undefined);
+      setDocumentName(undefined);
+    }
   };
 
   useEffect(() => {
@@ -265,6 +256,7 @@ function KategoriDialog(props) {
 
     if (isValidated()) {
       //console.log(currentUser);
+      setIsLoading(true);
       let kat = kategori;
       let us = user;
 
@@ -280,16 +272,19 @@ function KategoriDialog(props) {
         .then((data) => {
           console.log(data);
           //setSubmitted(true);
-
+          setIsLoading(false);
           swal("Success", "Data berhasil disimpan!", "success", {
             buttons: false,
             timer: 2000,
           });
           onClose();
+          setSelectedDocumentFiles();
+          setDocumentName("");
 
           //console.log(data);
         })
         .catch((e) => {
+          setIsLoading(false);
           swal("Error", e.response.data.message, "error", {
             buttons: false,
             timer: 2000,
@@ -305,9 +300,11 @@ function KategoriDialog(props) {
   };
 
   const updateContent = () => {
+    setIsLoading(true);
     dispatch(update(data.uuid, data))
       .then((response) => {
         console.log(response);
+        setIsLoading(false);
         swal("Success", "Data berhasil diperbarui!", "success", {
           buttons: false,
           timer: 2000,
@@ -316,6 +313,7 @@ function KategoriDialog(props) {
         onClose();
       })
       .catch((e) => {
+        setIsLoading(false);
         swal("Error", e.response.data.message, "error", {
           buttons: false,
           timer: 2000,
@@ -325,8 +323,10 @@ function KategoriDialog(props) {
   };
 
   const removeData = () => {
+    setIsLoading(true);
     dispatch(remove(data.uuid))
       .then(() => {
+        setIsLoading(false);
         swal("Success", "Data berhasil dihapus!", "success", {
           buttons: false,
           timer: 2000,
@@ -334,6 +334,7 @@ function KategoriDialog(props) {
         onClose();
       })
       .catch((e) => {
+        setIsLoading(false);
         swal("Error", e.response.data.message, "error", {
           buttons: false,
           timer: 2000,
@@ -405,7 +406,7 @@ function KategoriDialog(props) {
         </FormControl>
 
         <Typography variant="body2" color="textSecondary" sx={{ mb: 1 }}>
-      Maksimal ukuran: {environment.MAX_DOCUMENT_SIZE} MB. Tipe file yang diperbolehkan: {environment.ALLOWED_DOCUMENT_TYPES}
+      Maksimal ukuran: {process.env.REACT_APP_MAX_DOCUMENT_SIZE} MB. Tipe file yang diperbolehkan: {process.env.REACT_APP_ALLOWED_DOCUMENT_TYPES}
     </Typography>
     <Box
       className="mb25"
@@ -420,8 +421,13 @@ function KategoriDialog(props) {
           startIcon={<UploadFileIcon />}
           sx={{ marginRight: "1rem" }}
         >
-          Upload Dokumen Referensi
-          <input type="file" hidden onChange={selectDocumentFile} accept={environment.ALLOWED_DOCUMENT_TYPES} />
+          Upload Dokumen QA&nbsp;
+            <Tooltip title="Wajib diisi">
+              <Typography component="span" color="error">
+                *
+              </Typography>
+            </Tooltip>
+          <input type="file" hidden onChange={selectDocumentFile} accept={process.env.REACT_APP_ALLOWED_DOCUMENT_TYPES} />
         </Button>
       </Box>
       {documentName ? <Box mr={1}>{documentName}</Box> : ""}
@@ -433,21 +439,33 @@ function KategoriDialog(props) {
     )}
       </DialogContent>
       <DialogActions>
-        <Button onClick={handleClose} variant="outlined">
+        <Button onClick={handleClose} variant="outlined" disabled={isLoading}>
           Cancel
         </Button>
         {config.mode == "periksa" ? (
-          <Button onClick={save} variant="contained">
-            {config.action}
-          </Button>
+          isLoading ? (
+            <CircularProgress size={24} />
+          ) : (
+            <Button onClick={save} variant="contained">
+              {config.action}
+            </Button>
+          )
         ) : config.mode == "edit" ? (
-          <Button onClick={updateContent} variant="contained">
-            {config.action}
-          </Button>
+          isLoading ? (
+            <CircularProgress size={24} />
+          ) : (
+            <Button onClick={updateContent} variant="contained">
+              {config.action}
+            </Button>
+          )
         ) : (
-          <Button onClick={removeData} variant="contained">
-            {config.action}
-          </Button>
+          isLoading ? (
+            <CircularProgress size={24} />
+          ) : (
+            <Button onClick={removeData} variant="contained">
+              {config.action}
+            </Button>
+          )
         )}
       </DialogActions>
     </Dialog>

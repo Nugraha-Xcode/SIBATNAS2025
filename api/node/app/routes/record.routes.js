@@ -23,6 +23,7 @@ module.exports = (app) => {
   //app.get("/api/kategori/", kategori.findAll);
   app.get(base, [authJwt.verifyToken], controller.findAll);
   app.get(base + "publik", controller.findAllPublik);
+  app.get(base + "publik/katalog", controller.findAllPublikPaginated);
   app.get(base + "count-all", controller.countAll);
 
   //
@@ -45,5 +46,11 @@ module.exports = (app) => {
     base + ":identifier",
     [authJwt.verifyToken, authJwt.isWalidataOrAdmin],
     controller.delete
+  );
+
+  app.get(
+    base + "unduh/:uuid",
+    //[authJwt.verifyToken],
+    controller.unduhPublik
   );
 };

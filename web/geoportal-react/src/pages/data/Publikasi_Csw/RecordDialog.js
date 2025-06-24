@@ -1,5 +1,5 @@
 import { forwardRef, useState, useEffect } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 import { create, remove, update } from "src/redux/actions/record";
 
@@ -25,7 +25,8 @@ const Transition = forwardRef(function Transition(props, ref) {
 });
 
 function RecordDialog(props) {
-  const { onClose, open, config } = props;
+  const { user: currentUser } = useSelector((state) => state.auth);
+  const { onClose, open, config, onRefresh } = props; // Add onRefresh prop
   const initialDataState = {
     nama_record: "",
   };
@@ -72,6 +73,10 @@ function RecordDialog(props) {
           });
           onClose();
           setData(initialDataState);
+          // Refresh data after successful creation
+          if (onRefresh) {
+            onRefresh();
+          }
         })
         .catch((e) => {
           setLoading(false);
@@ -104,6 +109,10 @@ function RecordDialog(props) {
         });
 
         onClose();
+        // Refresh data after successful update
+        if (onRefresh) {
+          onRefresh();
+        }
       })
       .catch((e) => {
         setLoading(false);
@@ -119,7 +128,7 @@ function RecordDialog(props) {
     e.preventDefault();
     setLoading(true);
 
-    dispatch(remove(data.identifier))
+    dispatch(remove(data.identifier, currentUser))
       .then(() => {
         setLoading(false);
 
@@ -128,9 +137,13 @@ function RecordDialog(props) {
           timer: 2000,
         });
         onClose();
+        // Refresh data after successful deletion
+        if (onRefresh) {
+          onRefresh();
+        }
       })
       .catch((e) => {
-        setLoading(true);
+        setLoading(false);
 
         swal("Error", e.response.data.message, "error", {
           buttons: false,
@@ -206,6 +219,7 @@ RecordDialog.propTypes = {
   onClose: PropTypes.func.isRequired,
   open: PropTypes.bool.isRequired,
   config: PropTypes.object.isRequired,
+  onRefresh: PropTypes.func, // Optional prop for refresh callback
 };
 
 export default RecordDialog;

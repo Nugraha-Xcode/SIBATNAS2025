@@ -1,3 +1,6 @@
+import React, { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+
 import {
   Avatar,
   Button,
@@ -18,9 +21,11 @@ import { Search, Menu, Apps, MoreVert } from "@mui/icons-material";
 import logo from "./logo.png";
 import sdi from "./sdi.png";
 import big from "./big.png";
-import { useState } from "react";
 import { styled } from "@mui/system";
 import { useLocation } from "react-router-dom";
+
+// Site Settings
+import { retrievePublicSiteSettings } from "src/redux/actions/siteSetting";
 import environment from "src/config/environment";
 
 // Styles with MUI sx or styled API
@@ -117,6 +122,16 @@ export default function TopMenu({ idx }) {
 
   const location = useLocation();
 
+  // Site Settings
+  const siteSetting = useSelector((state) => state.siteSetting);
+  
+  const dispatch = useDispatch();
+
+  // Site Settings
+    useEffect(() => {
+      dispatch(retrievePublicSiteSettings());
+    }, []);
+
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
     let btn = document.getElementById("app");
@@ -138,10 +153,10 @@ export default function TopMenu({ idx }) {
       <LeftTopMenu>
         <Logo>
           <img
-            src={process.env.PUBLIC_URL + "/static/images/logo/kukar-logo.png"}
+            src={`${environment.api}site-settings/logo`}
             width="30"
             height="30"
-            alt="Geoportal SJ"
+            alt={`logo ${siteSetting?.name || 'SIBATNAS'}`}
           />
         </Logo>
         <h2
@@ -155,7 +170,7 @@ export default function TopMenu({ idx }) {
             lineHeight: 1.2,
           }}
         >
-          Geoportal Kutai Kartanegara
+          {siteSetting?.name}
         </h2>
       </LeftTopMenu>
       <TopSearch>{/* Search Bar Component can go here */}</TopSearch>
@@ -166,7 +181,7 @@ export default function TopMenu({ idx }) {
 
           <Tab
             value={2}
-            label="Penyaji Peta"
+            label="Peta"
             component={RouterLink}
             to="/peta"
           />

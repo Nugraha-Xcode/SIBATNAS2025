@@ -4,6 +4,7 @@ const axios = require("axios");
 const { v4: uuidv4 } = require("uuid");
 const { Op } = require("sequelize");
 const uploadCSW = require("../middleware/uploadCSW");
+const path = require('path');
 
 const { publishMetadata } = require("../utils/xml_to_csw");
 
@@ -18,6 +19,7 @@ const Produsen = db.produsen;
 
 const dataProdusen = db.dataProdusen;
 const dataPemeriksaan = db.dataPemeriksaan;
+const dataPerbaikanProdusen = db.dataPerbaikanProdusen;
 const dataPublikasi = db.dataPublikasi;
 const record = db.record;
 const statusPemeriksaan = db.statusPemeriksaan;
@@ -30,13 +32,12 @@ const province = db.province;
 exports.create = async (req, res) => {
   try {
     //console.log(objectValue);
+    // console.log("Request Body:", req.body);
+    // console.log("Request Files:", req.files);
+    // console.log("Request File:", req.file);
     await uploadCSW(req, res);
     //await uploadMetadata(req, res);
-    //console.log(req.files);
     //return res.status(200).send({ message: "Debugging File!" });
-    //console.log(req.body.data);
-    //console.log(req.file.filename);
-    //console.log(req.documentFile);
     if (req.file == undefined) {
       return res.status(400).send({ message: "Please upload a file!" });
     }
@@ -75,9 +76,12 @@ exports.create = async (req, res) => {
         const match = result.match(regex);
 
         if (match) {
-          console.log("dc:identifier:", match[1]); // Output: Atlas_250K_BatuBara
+          // console.log("dc:identifier:", match[1]); // Output: Atlas_250K_BatuBara
+          const identifier = match[1];
+          // console.log("identifier", identifier);
+          // console.log("objectValue.uuid", objectValue.uuid);
           const update = {
-            identifier: match[1],
+            identifier: identifier,
           };
           dataPublikasi
             .update(update, {
@@ -85,26 +89,43 @@ exports.create = async (req, res) => {
             })
             .then(async (num) => {
               if (num == 1) {
-                /*let users = await User.
-findAll({ attributes: ["id"] });
-                      for (let i = 0; i < users.length; i++) {
-                        let notif = {
-                          uuid: uuidv4(),
-                          waktuKirim: new Date(),
-                          subjek: "Publikasi IGT Baru - " + publikasi.tematik.name,
-                          pesan:
-                            "Walidata baru saja melakukan publikasi data IGT " +
-                            publikasi.tematik.name +
-                            " (" +
-                            publikasi.deskripsi +
-                            "). Cek ke menu Data Publikasi ya!",
-                          sudahBaca: false,
-                          userId: users[i].id,
-                        };
-        
-                        notifikasi.create(notif);
-                      }
-                        */
+                // Ambil data publikasi untuk dipakai di notifikasi
+                const publikasi = await dataPublikasi.findOne({
+                  where: { uuid: objectValue.uuid },
+                  include: [
+                    {
+                      model: Tematik,
+                      as: "tematik",
+                      attributes: ["name"],
+                    },
+                  ],
+                });
+
+                if (!publikasi) {
+                  return res.status(404).send({
+                    message: "Publikasi tidak ditemukan.",
+                  });
+                }
+
+                let users = await User.findAll({ attributes: ["id"] });
+                for (let i = 0; i < users.length; i++) {
+                  let notif = {
+                    uuid: uuidv4(),
+                    waktuKirim: new Date(),
+                    subjek: "Publikasi IGT Baru - " + publikasi.tematik.name,
+                    pesan:
+                      "Walidata baru saja melakukan publikasi metadata IGT " +
+                      publikasi.tematik.name +
+                      " (" +
+                      publikasi.deskripsi +
+                      "). Cek ke menu Data Publikasi dan Katalog ya!",
+                    sudahBaca: false,
+                    userId: users[i].id,
+                  };
+
+                  notifikasi.create(notif);
+                }
+
                 res.send({
                   message: "Record was published successfully!",
                 });
@@ -530,6 +551,7 @@ exports.deactivate = async (req, res) => {
       res.status(500).send({ message: err.message });
     });
 };
+
 exports.unduhRegion = async (req, res) => {
   const uuid = req.params.uuid;
   const kode = req.params.kode;
@@ -857,114 +879,269 @@ exports.viewPhotoByUUID = (req, res) => {
     });
 };
 
+// Update method findAll untuk support search dan pagination (untuk admin)
 exports.findAll = (req, res) => {
+  // Get pagination parameters from query
+  const { page = 0, size = 20, keyword = "" } = req.query;
+  const pageInt = parseInt(page);
+  const sizeInt = parseInt(size);
+  const offset = pageInt * sizeInt;
+  const limit = sizeInt;
+
+  // Build where condition for search
+  const whereConditions = {
+    identifier: null,
+    is_active: true,
+    is_published: true,
+  };
+  
+  // Add search condition if keyword provided
+  const searchConditions = keyword ? {
+    [Op.or]: [
+      { deskripsi: { [Op.iLike]: `%${keyword}%` } },
+      { "$dataPemeriksaan.dataProdusen.tematik.name$": { [Op.iLike]: `%${keyword}%` } }
+    ]
+  } : {};
+
+  // Get total count first for pagination metadata
   dataPublikasi
-    .findAll({
-      order: [["deskripsi", "ASC"]],
+    .count({
       where: {
-        identifier: null,
-        is_active: true,
-        is_published: true,
+        ...whereConditions,
+        ...searchConditions
       },
-      offset: 0,
-      limit: 100,
       include: [
-        { model: User, as: "user", attributes: ["id", "username"] },
         {
           model: dataPemeriksaan,
           as: "dataPemeriksaan",
-          attributes: ["id", "uuid", "kategori"],
+          required: true,
           include: [
             {
               model: dataProdusen,
               as: "dataProdusen",
-              attributes: ["id", "uuid", "deskripsi", "urlGeoserver"],
+              required: true,
               include: [
                 {
                   model: Tematik,
                   as: "tematik",
-                  attributes: ["id", "name", "is_series"],
+                  required: true,
                 },
               ],
             },
           ],
         },
       ],
-      attributes: [
-        "id",
-        "uuid",
-        "deskripsi",
-        "is_published",
-        "is_active",
-        "identifier",
-        "urlGeoserver",
-        "waktuPublish",
-        "createdAt",
-      ],
     })
-    .then((data) => {
-      //console.log(data);
-      res.send(data);
+    .then(totalItems => {
+      // Then get paginated data
+      dataPublikasi
+        .findAll({
+          where: {
+            ...whereConditions,
+            ...searchConditions
+          },
+          order: [
+            [{ model: dataPemeriksaan, as: "dataPemeriksaan" }, 
+             { model: dataProdusen, as: "dataProdusen" }, 
+             { model: Tematik, as: "tematik" }, 
+             "name", "ASC"],
+            ["deskripsi", "ASC"]
+          ],
+          include: [
+            { model: User, as: "user", attributes: ["id", "username"] },
+            {
+              model: dataPemeriksaan,
+              as: "dataPemeriksaan",
+              attributes: ["id", "uuid", "kategori"],
+              include: [
+                {
+                  model: dataProdusen,
+                  as: "dataProdusen",
+                  attributes: ["id", "uuid", "deskripsi", "urlGeoserver"],
+                  include: [
+                    {
+                      model: Tematik,
+                      as: "tematik",
+                      attributes: ["id", "name", "is_series"],
+                    },
+                  ],
+                },
+                {
+                  model: dataPerbaikanProdusen,
+                  as: "dataPerbaikanProdusen",
+                  attributes: ["id", "uuid", "kategori"],
+                  order: [["createdAt", "DESC"]],  // Urutkan dari yang terbaru
+                  limit: 1, // Ambil hanya satu data terakhir
+                  separate: true, // Pastikan pengambilan dilakukan terpisah agar limit berlaku
+                },
+              ],
+            },
+          ],
+          attributes: [
+            "id",
+            "uuid",
+            "deskripsi",
+            "is_published",
+            "is_active",
+            "identifier",
+            "urlGeoserver",
+            "waktuPublish",
+            "createdAt",
+          ],
+          offset,
+          limit,
+        })
+        .then((data) => {
+          // Send pagination metadata along with the data
+          res.send({
+            totalItems,
+            records: data,
+            totalPages: Math.ceil(totalItems / sizeInt),
+            currentPage: pageInt,
+          });
+        })
+        .catch((err) => {
+          res.status(500).send({
+            message: err.message || "Some error occurred while retrieving data.",
+          });
+        });
     })
-    .catch((err) => {
+    .catch(err => {
       res.status(500).send({
-        message:
-          err.message || "Some error occurred while retrieving publikasi.",
+        message: err.message || "Some error occurred while counting records.",
       });
     });
 };
 
 exports.findAllPublik = (req, res) => {
+  // Get pagination parameters from query
+  const { page = 0, size = 20, keyword = "" } = req.query;
+  const pageInt = parseInt(page);
+  const sizeInt = parseInt(size);
+  const offset = pageInt * sizeInt;
+  const limit = sizeInt;
+
+  // Build where condition for search
+  const whereConditions = {
+    identifier: { [Op.ne]: null },
+    is_active: true,
+    is_published: true,
+  };
+  
+  // Add search condition if keyword provided
+  const searchConditions = keyword ? {
+    [Op.or]: [
+      { deskripsi: { [Op.iLike]: `%${keyword}%` } },
+      { "$dataPemeriksaan.dataProdusen.tematik.name$": { [Op.iLike]: `%${keyword}%` } }
+    ]
+  } : {};
+
+  // Get total count first for pagination metadata
   dataPublikasi
-    .findAll({
-      order: [["deskripsi", "ASC"]],
+    .count({
       where: {
-        identifier: { [Op.ne]: "" },
-        is_active: true,
-        is_published: true,
+        ...whereConditions,
+        ...searchConditions
       },
-      offset: 0,
-      limit: 100,
       include: [
-        { model: User, as: "user", attributes: ["id", "username"] },
         {
           model: dataPemeriksaan,
           as: "dataPemeriksaan",
-          attributes: ["id", "uuid", "kategori"],
+          required: true,
           include: [
             {
               model: dataProdusen,
               as: "dataProdusen",
-              attributes: ["id", "uuid", "deskripsi", "urlGeoserver"],
+              required: true,
               include: [
                 {
                   model: Tematik,
                   as: "tematik",
-                  attributes: ["id", "name", "is_series"],
+                  required: true,
                 },
               ],
             },
           ],
         },
       ],
-      attributes: [
-        "id",
-        "uuid",
-        "deskripsi",
-        "is_published",
-        "is_active",
-        "identifier",
-        "urlGeoserver",
-        "waktuPublish",
-        "createdAt",
-      ],
     })
-    .then((data) => {
-      res.send(data);
+    .then(totalItems => {
+      // Then get paginated data
+      dataPublikasi
+        .findAll({
+          where: {
+            ...whereConditions,
+            ...searchConditions
+          },
+          order: [
+            [{ model: dataPemeriksaan, as: "dataPemeriksaan" }, 
+             { model: dataProdusen, as: "dataProdusen" }, 
+             { model: Tematik, as: "tematik" }, 
+             "name", "ASC"],
+            ["deskripsi", "ASC"]
+          ],
+          include: [
+            { model: User, as: "user", attributes: ["id", "username"] },
+            {
+              model: dataPemeriksaan,
+              as: "dataPemeriksaan",
+              attributes: ["id", "uuid", "kategori"],
+              include: [
+                {
+                  model: dataProdusen,
+                  as: "dataProdusen",
+                  attributes: ["id", "uuid", "deskripsi", "urlGeoserver"],
+                  include: [
+                    {
+                      model: Tematik,
+                      as: "tematik",
+                      attributes: ["id", "name", "is_series"],
+                    },
+                  ],
+                },
+                {
+                  model: dataPerbaikanProdusen,
+                  as: "dataPerbaikanProdusen",
+                  attributes: ["id", "uuid", "kategori"],
+                  order: [["createdAt", "DESC"]],  // Urutkan dari yang terbaru
+                  limit: 1, // Ambil hanya satu data terakhir
+                  separate: true, // Pastikan pengambilan dilakukan terpisah agar limit berlaku
+                },
+              ],
+            },
+          ],
+          attributes: [
+            "id",
+            "uuid",
+            "deskripsi",
+            "is_published",
+            "is_active",
+            "identifier",
+            "urlGeoserver",
+            "waktuPublish",
+            "createdAt",
+          ],
+          offset,
+          limit,
+        })
+        .then((data) => {
+          // Send pagination metadata along with the data
+          res.send({
+            totalItems,
+            records: data,
+            totalPages: Math.ceil(totalItems / sizeInt),
+            currentPage: pageInt,
+          });
+        })
+        .catch((err) => {
+          res.status(500).send({
+            message: err.message || "Some error occurred while retrieving data.",
+          });
+        });
     })
-    .catch((err) => {
+    .catch(err => {
       res.status(500).send({
-        message: err.message || "Some error occurred while retrieving lokasi.",
+        message: err.message || "Some error occurred while counting records.",
       });
     });
 };
@@ -1652,4 +1829,41 @@ exports.delete = (req, res) => {
         message: "Could not Data Publikasi with id=" + id,
       });
     });
+};
+
+exports.downloadMetadata = async (req, res) => {
+  const uuid = req.params.uuid;
+  let data = await dataPerbaikanProdusen.findOne({
+    where: { uuid },
+  });
+
+  let folder = 'perbaikan'; // default
+
+  // Jika tidak ditemukan di perbaikan, cari di produsen
+  if (!data) {
+    data = await dataProdusen.findOne({
+      where: { uuid },
+    });
+    folder = 'produsen';
+  }
+
+  if (!data) {
+    return res.status(404).json({ message: 'Data tidak ditemukan.' });
+  }
+
+  if (!data.metadatafilename) {
+    return res.status(400).json({ message: 'File metadata tidak tersedia.' });
+  }
+
+  const filePath = path.join(
+    __basedir,
+    'app',
+    'resources',
+    'static',
+    'assets',
+    folder,
+    data.metadatafilename
+  );
+
+  res.download(filePath, data.metadatafilename);
 };

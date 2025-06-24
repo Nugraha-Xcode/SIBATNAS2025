@@ -78,7 +78,7 @@ function SidebarMinimalis() {
         <Divider sx={{ background: theme.colors.alpha.trueWhite[10] }} />
         <Box p={2}>
           <Button
-            href="https://tanahair.indonesia.go.id/palapa-p/"
+            href="https://sibatnas.big.go.id/"
             target="_blank"
             rel="noopener noreferrer"
             variant="contained"
@@ -86,7 +86,7 @@ function SidebarMinimalis() {
             size="small"
             fullWidth
           >
-            Powered by Palapa-P
+            Powered by SIBATNAS
           </Button>
         </Box>
       </SidebarWrapper>

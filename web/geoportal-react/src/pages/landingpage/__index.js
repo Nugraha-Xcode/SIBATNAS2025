@@ -109,7 +109,7 @@ function Overview() {
             <Tabs textColor="secondary" indicatorColor="secondary">
               <Tab label="Beranda" component={RouterLink} to="/" />
               <Tab label="Katalog" component={RouterLink} to="/katalog" />
-              <Tab label="Penyaji Peta" component={RouterLink} to="/peta" />
+              <Tab label="Peta" component={RouterLink} to="/peta" />
               <Tab label="Tentang" component={RouterLink} to="/tentang" />
               <Tab
                 label="Tata Kelola"

@@ -86,6 +86,23 @@ exports.findAll = (req, res) => {
     });
 };
 
+exports.findAllPublik = (req, res) => {
+  kategoriTematik
+    .findAll({
+      order: [["name", "ASC"]],
+      attributes: ["id", "uuid", "name"],
+    })
+    .then((data) => {
+      res.send(data);
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message:
+          err.message || "Some error occurred while retrieving Kategori.",
+      });
+    });
+};
+
 // Update a Kategori by the id in the request
 exports.update = (req, res) => {
   const uuid = req.params.uuid;

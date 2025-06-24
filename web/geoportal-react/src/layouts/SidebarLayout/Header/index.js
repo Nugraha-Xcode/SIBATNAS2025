@@ -54,7 +54,7 @@ function Header() {
       alignItems="center"
       sx={{
         boxShadow:
-          theme.palette.mode === "dark"
+          theme.palette.mode === "light"
             ? `0 1px 0 ${alpha(
                 lighten(theme.colors.primary.main, 0.7),
                 0.15
@@ -78,7 +78,7 @@ function Header() {
           //<HeaderMenu />
         }
         <TypographyH1 sx={{ mb: 2 }} variant="h1">
-          Tata Kelola DG/IG Simpul Jaringan
+          Tata Kelola SIBATNAS
         </TypographyH1>
       </Stack>
       <Box display="flex" alignItems="center">

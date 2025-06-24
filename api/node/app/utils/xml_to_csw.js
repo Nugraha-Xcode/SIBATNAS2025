@@ -1,7 +1,7 @@
 const axios = require("axios");
 const fs = require("fs");
 
-const CSW_URL = "http://localhost/csw/"; //http://pycsw_docker:8000/csw/"; // Change to your pycsw URL
+const CSW_URL = "http://pycsw_docker:8000/csw/"; // Change to your pycsw URL
 //http://localhost/csw/
 async function publishMetadata(filePath = "metadata.xml") {
   try {

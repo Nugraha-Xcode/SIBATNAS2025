@@ -86,6 +86,10 @@ import DataContainer from "./Map/DataContainer";
 import AreaContainer from "./Map/AreaContainer";
 import GroupLayer from "./Map/Layers/GroupLayer";
 import LegendaContainer from "./Map/LegendaContainer";
+import Metadata from "./Metadata";
+
+// Site Settings
+import { retrievePublicSiteSettings } from "src/redux/actions/siteSetting";
 
 const OverviewWrapper = styled(Box)(
   () => `
@@ -227,20 +231,67 @@ function Penyaji() {
   const [showMetadata, setShowMetadata] = useState(false);
 
   const [identifierDelete, setIdentifierDelete] = useState("");
-  const [identifierVisible, setIdentifierVisible] = useState("");
-  const [center, setCenter] = useState([115, -1.93]);
-  const [zoom, setZoom] = useState(5.5);
+  const [identifierZoom, setIdentifierZoom] = useState("");
 
-  const datas = useSelector((state) => state.record);
+  // Site Settings
+  const siteSetting = useSelector((state) => state.siteSetting);
+
+  const [identifierVisible, setIdentifierVisible] = useState("");
+  const [center, setCenter] = useState(() => {
+    // Check if siteSetting and coverage_area exist
+    if (siteSetting && siteSetting.coverage_area) {
+      try {
+        // Parse the coverage_area JSON string
+        const coverageArea = JSON.parse(siteSetting.coverage_area);
+        return [parseFloat(coverageArea.longitude), parseFloat(coverageArea.latitude)];
+      } catch (e) {
+        console.error("Error parsing coverage area:", e);
+        return [115, -1.93]; // Default to Indonesia center
+      }
+    }
+    return [115, -1.93]; // Default to Indonesia center
+  });
+
+  const [zoom, setZoom] = useState(() => {
+    if (siteSetting && siteSetting.coverage_area) {
+      try {
+        const coverageArea = JSON.parse(siteSetting.coverage_area);
+        const name = coverageArea.name?.toUpperCase() || "";
+  
+        if (name === "INDONESIA") {
+          return 5.5;
+        } else if (name.startsWith("KABUPATEN ") || name.startsWith("KOTA ")) {
+          return 13;
+        } else {
+          return 9;
+        }
+      } catch (e) {
+        console.error("Error parsing coverage area:", e);
+        return 5.5;
+      }
+    }
+    return 5.5;
+  });
+  
+  // const [center, setCenter] = useState([115, -1.93]);
+  // const [zoom, setZoom] = useState(5.5);
+  const [row, setRow] = useState();
+
+  const datas = useSelector((state) => state.record.allRecords);
 
   const dispatch = useDispatch();
 
+  // Site Settings
+  useEffect(() => {
+    dispatch(retrievePublicSiteSettings());
+  }, []);
+
   const handleClick = (event, row) => {
     setAnchorEl(event.currentTarget);
-    //setRow(row);
+    setRow(row);
     setId(row.id);
     setUrlWMS(row.url);
-    //console.log(row)
+    console.log(row);
   };
 
   const handleClose = () => {
@@ -254,7 +305,8 @@ function Penyaji() {
     }
   };
   const handleSetZoomMap = () => {
-    setZoomToMap(id);
+    //setZoomToMap(id);
+    setIdentifierZoom(id);
     setAnchorEl(null);
   };
 
@@ -396,8 +448,8 @@ function Penyaji() {
   function getListLayers() {
     if (mapLayer !== "undefined") {
       if (mapLayer.length > 0) {
-        let reverseLayer = mapLayer.reverse();
-        return reverseLayer.map((row, index) => {
+        let reverseLayer = mapLayer; //.reverse();
+        return mapLayer.map((row, index) => {
           //console.log(row)
           //console.log(row.id.includes('uploader'))
           //onChange={(e) => props.setLayerVisible(row.id)}
@@ -441,7 +493,7 @@ function Penyaji() {
               </ListItemIcon>
               <ListItemText
                 id={labelId}
-                primary={`${row.title}`}
+                primary={shorten(row.title, 20)}
                 style={{ fontSize: "10px", maxWidth: "185px" }}
               />
               <ListItemSecondaryAction style={{ right: "0px" }}>
@@ -483,6 +535,11 @@ function Penyaji() {
       }
     }
   }
+  function shorten(str, maxLen) {
+    console.log(str);
+    if (str.length <= maxLen) return str;
+    return str.substr(0, maxLen - 1) + " ...";
+  }
 
   return (
     <>
@@ -497,6 +554,8 @@ function Penyaji() {
               mapLayer={mapLayer}
               identifierDelete={identifierDelete}
               setIdentifierDelete={setIdentifierDelete}
+              identifierZoom={identifierZoom}
+              setIdentifierZoom={setIdentifierZoom}
             />
             <MenuContainer id="menuContainer">
               <CustomButton
@@ -658,7 +717,12 @@ function Penyaji() {
                         </Typography>
                       </AccordionSummary>
                       <AccordionDetails>
-                        <List>
+                        <List
+                          style={{
+                            overflow: "scroll",
+                            maxHeight: "340px",
+                          }}
+                        >
                           {
                             getListLayers()
                             /*
@@ -703,6 +767,7 @@ function Penyaji() {
                                 component="nav"
                                 aria-label="main mailbox folders"
                               >
+                                {/*
                                 <ListItem
                                   button
                                   style={{
@@ -716,6 +781,7 @@ function Penyaji() {
                                   </ListItemIcon>
                                   <ListItemText primary="Perbesar ke" />
                                 </ListItem>
+                                */}
                                 {!id.includes("uploader") && (
                                   <ListItem
                                     button
@@ -731,7 +797,7 @@ function Penyaji() {
                                     <ListItemText primary="Lihat Metadata" />
                                   </ListItem>
                                 )}
-                                {!id.includes("uploader") && (
+                                {/*!id.includes("uploader") && (
                                   <ListItem
                                     button
                                     style={{
@@ -745,7 +811,7 @@ function Penyaji() {
                                     </ListItemIcon>
                                     <ListItemText primary="Url Web Service" />
                                   </ListItem>
-                                )}
+                                )*/}
                               </List>
                             )
                           }
@@ -766,6 +832,12 @@ function Penyaji() {
                 </Card>
               </LayerContainer>
             </Slide>
+            <Metadata
+              open={showMetadata}
+              //id={identifier}
+              row={row?.metadata}
+              handleCloseMetadata={(e) => setShowMetadata(e)}
+            />
             <ScaleContainer />
             <CoordinateContainer />
             <BasemapContainer />
@@ -775,6 +847,10 @@ function Penyaji() {
               <GpsToolsContainer />
             </ButtonContainer>
           </MapContainer>
+          <div id="popup" className="ol-popup">
+            <a href="#" id="popup-closer" className="ol-popup-closer"></a>
+            <div id="popup-content"></div>
+          </div>
         </MapViewerProvider>
       </Grid>
     </>

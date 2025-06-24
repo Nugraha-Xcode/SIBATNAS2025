@@ -24,7 +24,7 @@ import DeleteTwoToneIcon from "@mui/icons-material/DeleteTwoTone";
 import { format, subHours, subWeeks, subDays, parseISO } from "date-fns";
 import AddTwoToneIcon from "@mui/icons-material/AddTwoTone";
 import RefreshIcon from "@mui/icons-material/Refresh";
-import { retrievePublik } from "src/redux/actions/record";
+import { retrievePublikPaginated } from "src/redux/actions/record";
 
 import DaftarDialog from "./DaftarDialog";
 
@@ -50,7 +50,7 @@ function RecordTab() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(retrievePublik());
+    dispatch(retrievePublikPaginated());
   }, []);
 
   const handleClickAdd = () => {

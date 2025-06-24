@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { Helmet } from "react-helmet-async";
+import { useSelector } from "react-redux";
+
 import PageHeader from "./PageHeader";
 import PageTitleWrapper from "src/components/PageTitleWrapper";
 
@@ -18,10 +20,19 @@ const TabsWrapper = styled(Tabs)(
 );
 
 function ManagementsPublikasi_csw() {
-  const [currentTab, setCurrentTab] = useState("daftar");
+  const { user: currentUser } = useSelector((state) => state.auth);
+  const [currentTab, setCurrentTab] = useState(
+    currentUser.roles.includes("ROLE_ADMIN") ||
+      currentUser.roles.includes("ROLE_WALIDATA")
+      ? "daftar"
+      : "publikasi"
+  );
 
   const tabs = [
-    { value: "daftar", label: "Daftar Siap Publikasi" },
+    currentUser.roles.includes("ROLE_ADMIN") ||
+    currentUser.roles.includes("ROLE_WALIDATA")
+      ? { value: "daftar", label: "Daftar Siap Publikasi" }
+      : null,
     { value: "publikasi", label: "Daftar Publikasi CSW" },
   ];
 
@@ -54,9 +65,11 @@ function ManagementsPublikasi_csw() {
               textColor="primary"
               indicatorColor="primary"
             >
-              {tabs.map((tab) => (
-                <Tab key={tab.value} label={tab.label} value={tab.value} />
-              ))}
+              {tabs.map((tab) =>
+                tab ? (
+                  <Tab key={tab?.value} label={tab?.label} value={tab?.value} />
+                ) : null
+              )}
             </TabsWrapper>
           </Grid>
           <Grid item xs={12}>

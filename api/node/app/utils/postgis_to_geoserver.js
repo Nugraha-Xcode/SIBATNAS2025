@@ -1,9 +1,9 @@
 // postgis_to_geoserver.js
-require("dotenv").config();
+require('dotenv').config();
 const axios = require("axios");
 
-const apiUrl = `http://${process.env.HOST}/api/geoserver/wms/reflect?layers=`;
-const geoserverUrl = `http://${process.env.GEOSERVER_HOST}:${process.env.GEOSERVER_PORT}/geoserver/rest/`;
+const apiUrl = `${process.env.HOST}/api/geoserver/wms/reflect?layers=`;
+const geoserverUrl = `${process.env.GEOSERVER_HOST}:${process.env.GEOSERVER_PORT}/geoserver/rest/`;
 const workspace = process.env.GEOSERVER_WORKSPACE;
 const storeName = process.env.GEOSERVER_STORE;
 const auth = {
@@ -29,6 +29,7 @@ async function listLayers() {
 // Function to check if a layer exists in the workspace
 async function layerExists(layerName) {
   const layers = await listLayers();
+  console.log("layerExists:", layers);
   if (layers) {
     const layerNames = layers.map((layer) => layer.name);
     return layerNames.includes(layerName);
@@ -56,12 +57,27 @@ async function listFeatureTypes(storeName) {
 
 // Function to check if a specific feature type exists in the store
 async function featureTypeExists(storeName, featureTypeName) {
-  const featureTypes = await listFeatureTypes(storeName);
-  if (featureTypes) {
-    const featureTypeNames = featureTypes.map((ft) => ft.name);
-    return featureTypeNames.includes(featureTypeName);
+  try {
+    const response = await axios.get(
+      `${geoserverUrl}workspaces/${workspace}/datastores/${storeName}/featuretypes/${featureTypeName}`,
+      { auth }
+    );
+    return response.status === 200;
+  } catch (error) {
+    // If it's a 404, the feature type doesn't exist (which is not an error for our purpose)
+    if (error.response && error.response.status === 404) {
+      console.log(`Feature type '${featureTypeName}' does not exist in the store.`);
+      return false;
+    }
+    // For store not found or other errors
+    if (error.response && error.response.status === 404) {
+      console.log(`Store '${storeName}' may not exist.`);
+      return false;
+    }
+    
+    console.error(`Error checking if feature type '${featureTypeName}' exists:`, error.message);
+    return false;
   }
-  return false;
 }
 
 // Function to activate the layer
@@ -210,6 +226,168 @@ async function publishFeatureStore(pgTable) {
   }
 }
 
+async function unpublishLayer(layerName) {
+  try {
+    // Check if layer exists
+    const exists = await layerExists(layerName);
+    console.log("LayerExist", exists);
+
+    if (!exists) {
+      console.log(`Layer '${layerName}' does not exist in the workspace.`);
+      return false;
+    }
+
+    // Attempt to get the layer's default style before deletion
+    let defaultStyleName = null;
+    try {
+      const layerResponse = await axios.get(
+        `${geoserverUrl}workspaces/${workspace}/layers/${layerName}`,
+        { auth }
+      );
+      
+      // Extract the default style name if it exists
+      if (layerResponse.data.layer.defaultStyle) {
+        // Remove workspace prefix if present
+        defaultStyleName = layerResponse.data.layer.defaultStyle.name.replace(`${workspace}:`, '');
+      }
+    } catch (styleError) {
+      console.log(`Could not retrieve default style for layer '${layerName}':`, styleError.message);
+    }
+
+    // Delete the layer first
+    try {
+      await axios.delete(
+        `${geoserverUrl}workspaces/${workspace}/layers/${layerName}`,
+        { 
+          auth,
+          params: {
+            recurse: true
+          }
+        }
+      );
+      console.log(`Layer '${layerName}' successfully unpublished.`);
+    } catch (layerDeleteError) {
+      console.error(`Error deleting layer '${layerName}':`, layerDeleteError.message);
+    }
+
+    // Try to delete the feature type if it exists
+    try {
+      // Check if store exists first to avoid unnecessary errors
+      const storeExists = await axios.get(
+        `${geoserverUrl}workspaces/${workspace}/datastores/${storeName}`,
+        { auth }
+      ).then(() => true).catch(() => false);
+      
+      if (storeExists) {
+        const ftExists = await featureTypeExists(storeName, layerName);
+        if (ftExists) {
+          await axios.delete(
+            `${geoserverUrl}workspaces/${workspace}/datastores/${storeName}/featuretypes/${layerName}`,
+            { 
+              auth,
+              params: {
+                recurse: true
+              }
+            }
+          );
+          console.log(`Feature type '${layerName}' successfully deleted from store '${storeName}'.`);
+        }
+      } else {
+        console.log(`Store '${storeName}' does not exist, skipping feature type deletion.`);
+      }
+    } catch (featureTypeDeleteError) {
+      console.error(`Error with feature type '${layerName}':`, featureTypeDeleteError.message);
+    }
+
+    // Delete the associated style if it exists
+    if (defaultStyleName) {
+      try {
+        await axios.delete(
+          `${geoserverUrl}workspaces/${workspace}/styles/${defaultStyleName}`,
+          { 
+            auth,
+            params: {
+              recurse: true
+            }
+          }
+        );
+        console.log(`Style '${defaultStyleName}' successfully deleted.`);
+      } catch (styleDeleteError) {
+        // Try without workspace prefix if first attempt fails
+        try {
+          await axios.delete(
+            `${geoserverUrl}styles/${defaultStyleName}`,
+            { 
+              auth,
+              params: {
+                recurse: true
+              }
+            }
+          );
+          console.log(`Style '${defaultStyleName}' successfully deleted without workspace prefix.`);
+        } catch (fallbackStyleDeleteError) {
+          console.error(`Error deleting style '${defaultStyleName}':`, styleDeleteError.message);
+        }
+      }
+    }
+
+    return true;
+  } catch (error) {
+    console.error(`Error unpublishing layer '${layerName}':`, error.message);
+    return false;
+  }
+}
+
+// Function to delete a feature type from a specific store
+// async function deleteFeatureType(storeName, featureTypeName) {
+//   try {
+//     const exists = await featureTypeExists(storeName, featureTypeName);
+//     if (!exists) {
+//       console.error(`Feature type '${featureTypeName}' does not exist in store '${storeName}'.`);
+//       return false;
+//     }
+
+//     // Delete the feature type
+//     const deleteFeatureTypeResponse = await axios.delete(
+//       `${geoserverUrl}workspaces/${workspace}/stores/${storeName}/featuretypes/${featureTypeName}`,
+//       { 
+//         auth,
+//         params: {
+//           recurse: true // This will delete any associated resources
+//         }
+//       }
+//     );
+
+//     console.log(`Feature type '${featureTypeName}' successfully deleted from store '${storeName}'.`);
+//     return true;
+//   } catch (error) {
+//     console.error(`Error deleting feature type '${featureTypeName}' from store '${storeName}':`, error);
+//     return false;
+//   }
+// }
+
+// // Function to completely remove a feature store
+// async function deleteFeatureStore(storeName) {
+//   try {
+//     // Delete the feature store with all its contents
+//     const deleteStoreResponse = await axios.delete(
+//       `${geoserverUrl}workspaces/${workspace}/datastores/${storeName}`,
+//       { 
+//         auth,
+//         params: {
+//           recurse: true // This will delete all associated feature types and layers
+//         }
+//       }
+//     );
+
+//     console.log(`Feature store '${storeName}' successfully deleted.`);
+//     return true;
+//   } catch (error) {
+//     console.error(`Error deleting feature store '${storeName}':`, error);
+//     return false;
+//   }
+// }
+
 // Export the functions
 module.exports = {
   listLayers,
@@ -220,4 +398,7 @@ module.exports = {
   publishTableAsLayer,
   publishFeatureStore,
   getUrlGeoserver,
+  unpublishLayer,
+  // deleteFeatureType,
+  // deleteFeatureStore,
 };

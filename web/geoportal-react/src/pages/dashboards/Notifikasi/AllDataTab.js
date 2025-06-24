@@ -172,7 +172,7 @@ function KategoriTab() {
                             "dd MMMM, yyyy - h:mm:ss a"
                           )}
                         </TableCell>
-                        <TableCell>{data.user.username}</TableCell>
+                        <TableCell>{data.user?.username}</TableCell>
                         <TableCell>{data.subjek}</TableCell>
                         <TableCell>
                           <Tooltip

@@ -7,6 +7,20 @@ const getAll = () => {
   return http.get(`/${base}`, { headers: authHeader() });
 };
 
+const getAllProdusenPaginated = (uuid, params) => {
+  return http.get(`/${base}/produsen/${uuid}`, { 
+    params, 
+    headers: authHeader() 
+  });
+};
+
+const getAllProdusenUserPaginated = (uuid, params) => {
+  return http.get(`/${base}/user/${uuid}`, { 
+    params, 
+    headers: authHeader() 
+  });
+};
+
 const getAllProdusen = (uuid) => {
   //return http.get("/tutorials");
   return http.get(`/${base}/produsen/${uuid}`, { headers: authHeader() });
@@ -76,6 +90,8 @@ const BukuTamuService = {
   updatePulang,
   update,
   remove,
+  getAllProdusenPaginated,
+  getAllProdusenUserPaginated,
   //removeAll,
   //findByTitle,
 };

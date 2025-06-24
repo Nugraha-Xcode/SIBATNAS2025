@@ -1,9 +1,9 @@
 import os
 
 POSTGRES_USER= os.getenv('CONNECTION_USER', 'postgres')
-POSTGRES_PW=os.getenv('CONNECTION_PASSWORD', 'postgres')
-POSTGRES_URL="{server}:{port}".format(server=os.getenv('CONNECTION_SERVER', 'localhost'),port=os.getenv('CONNECTION_PORT', '5432'))
-POSTGRES_DB_DEV=os.getenv('CONNECTION_DB', 'geoportal_db')
+POSTGRES_PW=os.getenv('CONNECTION_PASSWORD', 'postgre55')
+POSTGRES_URL="{server}:{port}".format(server=os.getenv('CONNECTION_SERVER', '10.10.171.9'),port=os.getenv('CONNECTION_PORT', '5432'))
+POSTGRES_DB_DEV=os.getenv('CONNECTION_DB', 'sibatnas_app')
 POSTGRES_DB_TEST="inageo_dev_test"
 
 DB_URL_DEV = 'postgresql://{user}:{pw}@{url}/{db}'.format(user=POSTGRES_USER,pw=POSTGRES_PW,url=POSTGRES_URL,db=POSTGRES_DB_DEV)

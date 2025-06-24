@@ -1,50 +1,40 @@
+import { useState } from "react";
 import { Helmet } from "react-helmet-async";
 import PageHeader from "./PageHeader";
 import PageTitleWrapper from "src/components/PageTitleWrapper";
-import {
-  Box,
-  Typography,
-  Card,
-  Grid,
-  Container,
-  ListItem,
-  List,
-  ListItemText,
-  Divider,
-  Button,
-  ListItemAvatar,
-  Avatar,
-  Switch,
-  CardHeader,
-  Tooltip,
-  IconButton,
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TablePagination,
-  TableRow,
-  TableContainer,
-  useTheme,
-  styled,
-} from "@mui/material";
 
+import { Container, Tabs, Tab, Grid, styled } from "@mui/material";
 import Footer from "src/components/Footer";
 
-import RecentOrders from "./RecentOrders";
+import SiteTab from "./SiteTab";
+import PanduanTab from "./PanduanTab";
+import BeritaTab from "./BeritaTab";
 
-const AvatarWrapper = styled(Avatar)(
-  ({ theme }) => `
-    width: ${theme.spacing(5)};
-    height: ${theme.spacing(5)};
+const TabsWrapper = styled(Tabs)(
+  () => `
+    .MuiTabs-scrollableX {
+      overflow-x: auto !important;
+    }
 `
 );
 
-function SystemsSettings() {
+function SystemsSite() {
+  const [currentTab, setCurrentTab] = useState("site");
+
+  const tabs = [
+    { value: "site", label: "Site Settings" },
+    { value: "panduan", label: "Panduan" },
+    { value: "berita", label: "Berita" },
+  ];
+
+  const handleTabsChange = (event, value) => {
+    setCurrentTab(value);
+  };
+
   return (
     <>
       <Helmet>
-        <title>Systems - Settings</title>
+        <title>Systems - Site</title>
       </Helmet>
       <PageTitleWrapper>
         <PageHeader />
@@ -57,45 +47,25 @@ function SystemsSettings() {
           alignItems="stretch"
           spacing={3}
         >
-          {/*
           <Grid item xs={12}>
-            <Box pb={2}>
-              <Typography variant="h3">Geoserver</Typography>
-              <Typography variant="subtitle2">
-                Opsi pengaturan Geoserver
-              </Typography>
-            </Box>
-            <Card>
-              <List>
-                <ListItem sx={{ p: 3 }}>
-                  <ListItemAvatar sx={{ pr: 2 }}>
-                    <AvatarWrapper
-                      src={
-                        process.env.PUBLIC_URL +
-                        "/static/images/logo/google.svg"
-                      }
-                    />
-                  </ListItemAvatar>
-                  <ListItemText
-                    primaryTypographyProps={{
-                      variant: "h5",
-                      gutterBottom: true,
-                    }}
-                    secondaryTypographyProps={{
-                      variant: "subtitle2",
-                      lineHeight: 1,
-                    }}
-                    primary="Geoserver"
-                    secondary="A Geoserver server hasn’t been yet added to your system"
-                  />
-                  <Button color="secondary" size="large" variant="contained">
-                    Connect
-                  </Button>
-                </ListItem>
-              </List>
-            </Card>
+            <TabsWrapper
+              onChange={handleTabsChange}
+              value={currentTab}
+              variant="scrollable"
+              scrollButtons="auto"
+              textColor="primary"
+              indicatorColor="primary"
+            >
+              {tabs.map((tab) => (
+                <Tab key={tab.value} label={tab.label} value={tab.value} />
+              ))}
+            </TabsWrapper>
           </Grid>
-          */}
+          <Grid item xs={12}>
+            {currentTab === "site" && <SiteTab />}
+            {currentTab === "panduan" && <PanduanTab />}
+            {currentTab === "berita" && <BeritaTab />}
+          </Grid>
         </Grid>
       </Container>
       <Footer />
@@ -103,4 +73,4 @@ function SystemsSettings() {
   );
 }
 
-export default SystemsSettings;
+export default SystemsSite;

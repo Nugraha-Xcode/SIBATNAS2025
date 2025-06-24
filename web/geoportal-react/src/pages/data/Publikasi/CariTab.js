@@ -517,7 +517,8 @@ function UserTab() {
                           ) : (
                             ""
                           )}
-                          {data.is_published &&
+                          {/*
+                          data.is_published &&
                           data.is_active &&
                           (currentUser.roles.includes("ROLE_ADMIN") ||
                             currentUser.roles.includes("ROLE_WALIDATA")) ? (
@@ -542,9 +543,10 @@ function UserTab() {
                             </Tooltip>
                           ) : (
                             ""
-                          )}
+                          )*/}
                           {data.is_published &&
-                          currentUser.roles.includes("ROLE_ADMIN") ? (
+                          (currentUser.roles.includes("ROLE_ADMIN") ||
+                            currentUser.roles.includes("ROLE_WALIDATA")) ? (
                             <Tooltip
                               placement="top"
                               title="Delete Data Publikasi"

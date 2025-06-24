@@ -1,7 +1,21 @@
+import React, { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Box, Container, Grid, Typography } from "@mui/material";
 import { Link as RouterLink } from "react-router-dom";
+// Site Settings
+import { retrievePublicSiteSettings } from "src/redux/actions/siteSetting";
 import environment from "src/config/environment";
 function BottomLink() {
+  // Site Settings
+    const siteSetting = useSelector((state) => state.siteSetting);
+    
+    const dispatch = useDispatch();
+  
+    // Site Settings
+      useEffect(() => {
+        dispatch(retrievePublicSiteSettings());
+      }, []);
+
   return (
     <Container maxWidth="md">
       <Grid
@@ -41,7 +55,7 @@ function BottomLink() {
               to="/peta"
               sx={{ color: "inherit", textDecoration: "none" }}
             >
-              Penyaji Peta
+              Peta
             </Box>
             <br />
 
@@ -120,15 +134,18 @@ function BottomLink() {
             Kontak Kami
           </Typography>
           <p>
-            Kabupaten Kutai Kartanegara <br />
-            Jl. Pahlawan No. 1, Bukit Biru, Tenggarong, Kab. Kutai Kartanegara
-            75511, Kalimantan Timur, Indonesia <br />
-            Email: diskominfo@kukarkab.go.id
+            {siteSetting?.institusi} 
             <br />
-            Telp: (0541) 661350
+            {siteSetting?.alamat}
+            <br />
+            Email: {siteSetting?.email}
+            <br />
+            Telp: {siteSetting?.telp}
+            <br />
+            Fax: {siteSetting?.fax}
           </p>
-          {/*
-              <Box
+          
+              {/* <Box
                 sx={{
                   display: "flex",
                   justifyContent: "space-around",
@@ -161,28 +178,26 @@ function BottomLink() {
                   alt="Logo Youtube"
                   sx={{ maxWidth: "100%" }}
                 />
-              </Box>
-              */}
+              </Box> */}
+             
         </Grid>
         <Grid item lg={3} xs={12}>
           <Typography variant="h4" gutterBottom color="white">
             Dikelola oleh:
           </Typography>
           <br />
-          <Box sx={{ display: "flex", flexDirection: "row" }}>
+          <Box sx={{ display: "flex", flexDirection: "row", gap: 1 }}>
             <Box
               component="img"
               src={process.env.PUBLIC_URL + "/static/images/logo/logo-big.png"}
               alt="Logo"
-              sx={{ width: "100px", height: "100px" }}
+              sx={{ width: "90px", height: "100px" }}
             />
             <Box
               component="img"
-              src={
-                process.env.PUBLIC_URL + "/static/images/logo/kukar-logo.png"
-              }
-              alt="Logo"
-              sx={{ width: "75px", height: "90px" }}
+              src={`${environment.api}site-settings/logo`}
+              alt={`logo ${siteSetting?.name || 'SIBATNAS'}`}
+              sx={{ width: "90px", height: "100px" }}
             />
           </Box>
         </Grid>

@@ -134,6 +134,7 @@ function KategoriTab() {
       <Grid item xs={12}>
         <Card>
           <CardContent>
+            {/*
             <Grid
               container
               justifyContent="end"
@@ -162,12 +163,13 @@ function KategoriTab() {
                     <RefreshIcon color="inherit" sx={{ display: "block" }} />
                   </IconButton>
                 </Tooltip>
-                */}
+                /
                 </Grid>
               ) : (
                 ""
-              )}
+              )
             </Grid>
+            */}
             <Divider />
             <TableContainer>
               <Table width={300}>
@@ -208,6 +210,7 @@ function KategoriTab() {
                                 <EditTwoToneIcon fontSize="small" />
                               </IconButton>
                             </Tooltip>
+                            {/*
                             <Tooltip
                               placement="top"
                               title="Delete Status Pemeriksaan"
@@ -227,6 +230,7 @@ function KategoriTab() {
                                 <DeleteTwoToneIcon fontSize="small" />
                               </IconButton>
                             </Tooltip>
+                            */}
                           </TableCell>
                         ) : (
                           ""

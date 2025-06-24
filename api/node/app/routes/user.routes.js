@@ -27,16 +27,7 @@ module.exports = (app) => {
     [authJwt.verifyToken, authJwt.isAdmin],
     user.findUserEksternal
   );
-  app.get(
-    base + "internal",
-    [authJwt.verifyToken, authJwt.isAdmin],
-    user.findUserInternal
-  );
-  app.get(
-    base + "bpkhtl",
-    [authJwt.verifyToken, authJwt.isAdmin],
-    user.findUserBpkhtl
-  );
+
   app.get(
     base + "produsen",
     [authJwt.verifyToken, authJwt.isAdmin],

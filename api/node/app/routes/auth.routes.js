@@ -10,6 +10,7 @@ module.exports = function (app) {
     next();
   });
 
+  /*
   app.post(
     "/api/auth/signup",
     [
@@ -18,8 +19,15 @@ module.exports = function (app) {
     ],
     controller.signup
   );
-
+  */
+  
+  // Regular login routes
   app.post("/api/auth/signin", controller.signin);
+  app.post("/api/auth/signinCaptcha", controller.signinCaptcha);
+  
+  // New INA Geo login route
+  app.post("/api/auth/signinInaGeo", controller.signinInaGeo);
+
   app.put(
     "/api/auth/password/" + ":uuid",
     [authJwt.verifyToken],

@@ -10,7 +10,7 @@ function PageHeader() {
           Settings
         </Typography>
         <Typography variant="subtitle2">
-          Pengaturan Konfigurasi Sistem
+          Pengaturan Konfigurasi Sistem Geoportal
         </Typography>
       </Grid>
     </Grid>

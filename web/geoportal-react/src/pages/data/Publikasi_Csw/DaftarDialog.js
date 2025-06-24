@@ -98,19 +98,19 @@ function Publikasi_cswDialog(props) {
       // Set restrictions based on file type
       switch (type) {
         // case 'document':
-        //   allowedTypes = environment.ALLOWED_DOCUMENT_TYPES.split(',');
-        //   maxSize = environment.MAX_DOCUMENT_SIZE * 1024 * 1024; // Convert MB to bytes
-        //   errorMessage = `Dokumen harus berupa ${allowedTypes.join(', ')} dan maks ${environment.MAX_DOCUMENT_SIZE} MB`;
+        //   allowedTypes = process.env.REACT_APP_ALLOWED_DOCUMENT_TYPES.split(',');
+        //   maxSize = process.env.REACT_APP_MAX_DOCUMENT_SIZE * 1024 * 1024; // Convert MB to bytes
+        //   errorMessage = `Dokumen harus berupa ${allowedTypes.join(', ')} dan maks ${process.env.REACT_APP_MAX_DOCUMENT_SIZE} MB`;
         //   break;
         case 'metadata':
           allowedTypes = ['.xml'];
-          maxSize = environment.MAX_METADATA_SIZE * 1024 * 1024;
-          errorMessage = `Metadata harus berupa .xml dan maks ${environment.MAX_METADATA_SIZE} MB`;
+          maxSize = process.env.REACT_APP_MAX_METADATA_SIZE * 1024 * 1024;
+          errorMessage = `Metadata harus berupa .xml dan maks ${process.env.REACT_APP_MAX_METADATA_SIZE} MB`;
           break;
         // case 'dataSpasial':
         //   allowedTypes = ['.zip'];
-        //   maxSize = environment.MAX_SPASIAL_SIZE * 1024 * 1024;
-        //   errorMessage = `Data Spasial harus berupa .zip dan maks ${environment.MAX_SPASIAL_SIZE} MB`;
+        //   maxSize = process.env.REACT_APP_MAX_SPASIAL_SIZE * 1024 * 1024;
+        //   errorMessage = `Data Spasial harus berupa .zip dan maks ${process.env.REACT_APP_MAX_SPASIAL_SIZE} MB`;
         //   break;
         default:
           return false;
@@ -256,7 +256,7 @@ function Publikasi_cswDialog(props) {
           ) : (
             <>
             <Typography variant="body2" color="textSecondary" sx={{ mb: 1 }}>
-              Maksimal ukuran: {environment.MAX_METADATA_SIZE} MB. Tipe file yang diperbolehkan: {environment.ALLOWED_METADATA_TYPES}
+              Maksimal ukuran: {process.env.REACT_APP_MAX_METADATA_SIZE} MB. Tipe file yang diperbolehkan: {process.env.REACT_APP_ALLOWED_METADATA_TYPES}
             </Typography>
             <Box
               className="mb25"
@@ -272,7 +272,7 @@ function Publikasi_cswDialog(props) {
                   sx={{ marginRight: "1rem" }}
                 >
                   Upload Metadata (.xml)
-                  <input type="file" hidden onChange={selectMetadataFile} accept={environment.ALLOWED_METADATA_TYPES} />
+                  <input type="file" hidden onChange={selectMetadataFile} accept={process.env.REACT_APP_ALLOWED_METADATA_TYPES} />
                 </Button>
               </Box>
               {metadataName ? <Box mr={1}>{metadataName}</Box> : null}

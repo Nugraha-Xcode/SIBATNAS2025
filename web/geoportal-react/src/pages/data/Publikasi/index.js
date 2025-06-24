@@ -26,8 +26,8 @@ function ManagementsLokasi() {
   const [currentTab, setCurrentTab] = useState("kategori");
 
   const tabs = [
-    { value: "kategori", label: "Kategori" },
-    { value: "pencarian", label: "Pencarian" },
+    // { value: "kategori", label: "Kategori" },
+    // { value: "pencarian", label: "Pencarian" },
   ];
 
   const handleTabsChange = (event, value) => {
@@ -49,7 +49,7 @@ function ManagementsLokasi() {
           alignItems="stretch"
           spacing={3}
         >
-          {(currentUser.roles.includes("ROLE_ADMIN") ||
+          {/* {(currentUser.roles.includes("ROLE_ADMIN") ||
             currentUser.roles.includes("ROLE_BPKHTL") ||
             currentUser.roles.includes("ROLE_PRODUSEN") ||
             currentUser.roles.includes("ROLE_WALIDATA")) && (
@@ -67,7 +67,7 @@ function ManagementsLokasi() {
                 ))}
               </TabsWrapper>
             </Grid>
-          )}
+          )} */}
           <Grid item xs={12}>
             {currentTab === "kategori" &&
               (currentUser.roles.includes("ROLE_ADMIN") ||
@@ -78,7 +78,7 @@ function ManagementsLokasi() {
               <DataEksternalTab />
             )}
             {currentUser.roles.includes("ROLE_INTERNAL") && <DataInternalTab />}
-            {currentTab === "pencarian" && <CariTab />}
+            {/* {currentTab === "pencarian" && <CariTab />} */}
           </Grid>
           <Grid item xs={12}></Grid>
         </Grid>

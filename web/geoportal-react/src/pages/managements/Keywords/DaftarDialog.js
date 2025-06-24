@@ -55,7 +55,8 @@ function KeywordsDialog(props) {
 
   function isValidated() {
     //console.log(user);
-    return data.name.length > 0;
+    const regex = /^[a-zA-Z0-9\s]+$/; // Hanya huruf, angka, dan spasi yang diperbolehkan
+    return data.name.length > 0 && regex.test(data.name);
   }
 
   const save = (e) => {
@@ -93,27 +94,36 @@ function KeywordsDialog(props) {
 
   const updateContent = (e) => {
     e.preventDefault();
-    setLoading(true);
-    dispatch(update(data.uuid, data))
-      .then((response) => {
-        console.log(response);
-        setLoading(false);
-        swal("Success", "Data berhasil diperbarui!", "success", {
-          buttons: false,
-          timer: 2000,
+  
+    if (isValidated()) { // Tambahkan validasi sebelum update
+      setLoading(true);
+      dispatch(update(data.uuid, data))
+        .then((response) => {
+          console.log(response);
+          setLoading(false);
+          swal("Success", "Data berhasil diperbarui!", "success", {
+            buttons: false,
+            timer: 2000,
+          });
+  
+          onClose();
+        })
+        .catch((e) => {
+          setLoading(false);
+          swal("Error", e.response?.data?.message || "Terjadi kesalahan!", "error", {
+            buttons: false,
+            timer: 2000,
+          });
+          console.log(e);
         });
-
-        onClose();
-      })
-      .catch((e) => {
-        setLoading(false);
-        swal("Error", e.response.data.message, "error", {
-          buttons: false,
-          timer: 2000,
-        });
-        console.log(e);
+    } else {
+      swal("Error", "Cek isian formulir!", "error", {
+        buttons: false,
+        timer: 2000,
       });
+    }
   };
+  
 
   const removeData = (e) => {
     e.preventDefault();

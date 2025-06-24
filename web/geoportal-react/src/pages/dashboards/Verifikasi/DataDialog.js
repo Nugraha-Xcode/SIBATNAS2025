@@ -303,7 +303,7 @@ function KategoriDialog(props) {
                 startIcon={<UploadFileIcon />}
                 sx={{ marginRight: "1rem" }}
               >
-                Upload Dokumen Referensi
+                Upload Dokumen QA
                 <input type="file" hidden onChange={selectDocumentFile} />
               </Button>
             </Box>

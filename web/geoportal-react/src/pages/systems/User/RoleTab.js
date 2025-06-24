@@ -101,10 +101,12 @@ function RoleTab() {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {roles.map((role) => (
-                    <TableRow key={role.id} hover>
-                      <TableCell>{role.name}</TableCell>
-                      {/*
+                  {roles.map((role) =>
+                    role.name == "eksternal" ||
+                    role.name == "walidata_pendukung" ? null : (
+                      <TableRow key={role.id} hover>
+                        <TableCell>{role.name}</TableCell>
+                        {/*
                       <TableCell align="right">
                         {role.name !== "admin" && (
                           <Tooltip title="Edit Role" arrow>
@@ -125,8 +127,9 @@ function RoleTab() {
                         }
                       </TableCell>
                       */}
-                    </TableRow>
-                  ))}
+                      </TableRow>
+                    )
+                  )}
                 </TableBody>
               </Table>
             </TableContainer>

@@ -1,0 +1,71 @@
+pembukaan oleh pak Deputi 
+- perpres no 27/2014 -- memberikan amanat keoada lembaga tinggi negara, instansi pemerintah, termasuk BAPETEN, TNI, POLRI sebagai SJ
+- Perpres No 23/2021 -- Perubahan atas Perpres 9 tahun 2016 ttg Percepatan Pelaksanaan Kebijakan Satu Peta
+
+- JIGN -- Simpul jaringan terdiri dari Unit Produksi
+- DG/IG pengawasan Ketanaganukliran
+- Unit Produksi 
+
+TANTANGAN BAPETEN
+- Belum ada payung hukum tingkat lembaga terkait penyelenggaraan SJ IG di BAPETEN
+- Data pengawasan ketenaganukliran terdapat di beberapa UK
+    - Keteknikan dan Kesiapsiagaan NUklir
+    - Perijinan (FRZR, IBN)
+    - Inspeksi (FRZR, IBN)
+    - Pengkajian (FRZR, IBN)
+    - Peraturan (FRZR, IBN)
+    - BHKK
+    - BPIK
+ - Transformasi Data pengawasan ketenaganukliran menjadi DG/IG
+	- standarisasi proses dan produk IG d Bapeten
+        - SDM
+ - Integrasi DG/IG pengawasan ketenaganukliran di iinternal BAPETEN
+ - Integrasi DG/IG pengawasan ketenaganukliran ke dalam JIGN
+ 
+TUJUAN Penyusunan Dokumen
+- memberikan panduan pembentukan dan penyelenggaraan SJ IG BAPETEN
+- mewujudkan IG BAPETEN yang terstandar, akurat, terpadu, dan berkualitas baik serta dilengkapi dengan metadta yang standar
+
+Bhakti Pengawasan pada PUBLIK
+ - mencari tempat berobat Radioterapi
+ - Jantung Paru dll
+
+Contoh Kedokteran Nuklir, radiologi diagnostik, beserta koordinatnya
+
+Paparan Penyelenggaraan SJ IG - Syamsul Hadi
+- Pengertian JIGN
+- Pengertian SJ IG terbagi menjadi dua unit kerja: unit produsen data dan walidata
+- Penyebarluasan Data 
+- Pedoman untuk 4 Perpres: JIGN, KSP, SDI, SPBE
+- Pasal 14 dan 15 tiap Lembaga menetapkan Produsen dan Walidata 
+- Inisasi UU Satu Data melibatkan swasta
+- Penambahan pasal 4 Perubahan KSP 23/2021 -- KSP Bagian tidak terpisahkan dari SDI
+- Domain Arsitektur SPBE
+- Standar data spasial -- Prinsip SDI -- Spesifikasi Produk Data (SNI ISO 19131)
+- Data dan Informasi Geospasial -- Metadata
+- KKP -- Perdirjen, ATR -- Permenatr, Peraturan perlu harmonisasi ke Presiden
+- Kode Unsur -- Kawasan Nuklir (BATAN) atau (BAPETEN)
+- Satuan Wilayah Sungai, DAS, Sungai -- 3 unsur yg sama
+- Pak Deputi: Pengampu -- Semua regulasi yg terkait PLTN dikoordinir oleh BAPETEN
+- Penjaminan Kualitas = Kontrol Kualitas + Evaluasi Kualitas
+- Tahapan Pembuatan (QC)
+- Sampling Hasil Quality Evaluation
+- Interoperabilitas Data
+- Tahapan Pemutakhiran KUGI
+	- Literasi dan Reviu
+	- Inventarisasi Usulan Spesifikasi Produk IG
+	- Uji Abstrak
+	- Analisis Hasil Uji Abstrak
+	- Penetapan Perubahan
+	- Penyiapan Basis Data
+- Uji Abstrak dilakukan dengan cara pengujian kasus dari beberapa model
+- Elemen A2-A16
+- Kode Referensi: sebagai data induk
+- BAPETEN sudah ada data statistiknya pada portal SDI
+- Indikator Pembangunan
+  RPJP, RKP
+- Laporan Indeks efektifitas Kesiapsiagaan Nuklir
+
+Bu Dewi
+2023 -- SK Kepala Bapeten ttg Walidata dan Produsen
+Membuat Perka? berangkat dari pedoman yg d susun

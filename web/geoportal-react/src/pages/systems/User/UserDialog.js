@@ -31,11 +31,15 @@ import {
   TextField,
   Typography,
   CircularProgress,
+  InputAdornment,
+  IconButton,
 } from "@mui/material";
 
 import swal from "sweetalert";
 import { blue, green } from "@mui/material/colors";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 
 const Transition = forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -45,6 +49,8 @@ function UserDialog(props) {
   const { onClose, open, config } = props;
   const roles = useSelector((state) => state.role);
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  
   const initialUserState = {
     uuid: null,
     username: "",
@@ -87,6 +93,12 @@ function UserDialog(props) {
   };
   const handleClose = () => {
     onClose();
+    setUser(initialUserState);
+    setShowPassword(false);
+  };
+
+  const handleTogglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
   };
 
   useEffect(() => {
@@ -165,6 +177,7 @@ function UserDialog(props) {
           timer: 2000,
         });
         onClose();
+        setUser(initialUserState);
       })
       .catch((e) => {
         setLoading(false);
@@ -191,6 +204,7 @@ function UserDialog(props) {
         });
 
         onClose();
+        setUser(initialUserState);
       })
       .catch((e) => {
         console.log(e);
@@ -215,6 +229,7 @@ function UserDialog(props) {
           timer: 2000,
         });
         onClose();
+        setUser(initialUserState);
       })
       .catch((e) => {
         setLoading(false);
@@ -241,28 +256,34 @@ function UserDialog(props) {
 
       <DialogContent>
         <DialogContentText>{config.description}</DialogContentText>
-        <FormControl
-          fullWidth
-          variant="outlined"
-          sx={{ mt: 1 }}
-          disabled={config.mode != "edit"}
-        >
-          <InputLabel>Role</InputLabel>
-          <Select
-            value={selectedRole ?? ""}
-            onChange={handleRoleChange}
-            label="Role"
-            autoWidth
+        {selectedRole != "admin" ? (
+          <FormControl
+            fullWidth
+            variant="outlined"
+            sx={{ mt: 1 }}
+            disabled={config.mode != "edit"}
           >
-            {roles.map((role) =>
-              role.name != "admin" ? (
-                <MenuItem key={role.id} value={role.name}>
-                  {role.name}
-                </MenuItem>
-              ) : null
-            )}
-          </Select>
-        </FormControl>
+            <InputLabel>Role</InputLabel>
+            <Select
+              value={selectedRole ?? ""}
+              onChange={handleRoleChange}
+              label="Role"
+              autoWidth
+            >
+              {roles.map((role) =>
+                role.name == "admin" ||
+                role.name == "eksternal" ||
+                role.name == "walidata_pendukung" ? null : (
+                  <MenuItem key={role.id} value={role.name}>
+                    {role.name}
+                  </MenuItem>
+                )
+              )}
+            </Select>
+          </FormControl>
+        ) : (
+          ""
+        )}
         <TextField
           helperText=""
           margin="normal"
@@ -303,9 +324,22 @@ function UserDialog(props) {
             name="password"
             value={user.password}
             onChange={handleInputChange}
-            type="password"
-            autoComplete="password"
+            type={showPassword ? "text" : "password"}
+            autoComplete="new-password"
             autoFocus
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton
+                    aria-label="toggle password visibility"
+                    onClick={handleTogglePasswordVisibility}
+                    edge="end"
+                  >
+                    {showPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }}
           />
         )}
       </DialogContent>

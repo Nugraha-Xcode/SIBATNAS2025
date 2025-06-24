@@ -1,4 +1,4 @@
-require("dotenv").config();
+require('dotenv').config();
 const db = require("../models");
 const User = db.user;
 const Role = db.role;
@@ -6,8 +6,12 @@ const Op = db.Sequelize.Op;
 
 const { v4: uuidv4 } = require("uuid");
 var bcrypt = require("bcryptjs");
+const {
+  userInputPasswordCheck,
+  isValidEmail,
+} = require("../utils/user_validation");
 // Create and Save a new User
-exports.create = (req, res) => {
+exports.create = async (req, res) => {
   // Validate request
   if (
     !req.body.username &&
@@ -19,6 +23,43 @@ exports.create = (req, res) => {
       message: "Content can not be empty!",
     });
     return;
+  }
+
+  let usernya = await User.findOne({
+    where: {
+      username: req.body.username,
+    },
+  });
+
+  if (usernya) {
+    return res.status(404).send({
+      message: "Username sudah pernah terdaftar",
+    });
+  }
+
+  if (!isValidEmail(req.body.email)) {
+    return res.status(404).send({
+      message: "Email yang diinput tidak valid.",
+    });
+  }
+
+  let emailnya = await User.findOne({
+    where: {
+      email: req.body.email,
+    },
+  });
+
+  if (emailnya) {
+    return res.status(404).send({
+      message: "Email sudah pernah terdaftar",
+    });
+  }
+
+  if (!userInputPasswordCheck(req.body.password)) {
+    return res.status(404).send({
+      message:
+        "Password minimal 8 karakter dengan kombinasi huruf besar, kecil, angka, dan simbol.",
+    });
   }
 
   // Create a Tutorial
@@ -142,126 +183,6 @@ exports.findUserEksternal = (req, res) => {
     });
 };
 
-exports.findUserInternal = (req, res) => {
-  Role.findOne({
-    where: {
-      name: "internal",
-    },
-  })
-    .then(async (role) => {
-      if (!role) {
-        return res.status(404).send({ message: "Role Not found." });
-      } else {
-        //role.getUsers();
-        let role_user = await role.getUsers();
-        console.log(role_user.length);
-        if (role_user.length == 0) {
-          res.send([]);
-        } else {
-          let users = [];
-          for (let i = 0; i < role_user.length; i++) {
-            //console.log(eks_tema[i]);
-            users.push(role_user[i].id);
-          }
-          User.findAll({
-            where: {
-              id: {
-                [Op.or]: users,
-              },
-            },
-            order: [["username", "ASC"]],
-            offset: 0,
-            limit: 100,
-            include: [
-              {
-                model: Role,
-                as: "roles",
-                attributes: ["id", "name"],
-                through: {
-                  attributes: [],
-                },
-              },
-            ],
-            attributes: { exclude: ["password"] },
-          })
-            .then((data) => {
-              res.send(data);
-            })
-            .catch((err) => {
-              res.status(500).send({
-                message:
-                  err.message || "Some error occurred while retrieving Users.",
-              });
-            });
-        }
-      }
-    })
-    .catch((err) => {
-      res.status(500).send({
-        message: err.message || "Some error occurred while retrieving users.",
-      });
-    });
-};
-exports.findUserBpkhtl = (req, res) => {
-  Role.findOne({
-    where: {
-      name: "bpkhtl",
-    },
-  })
-    .then(async (role) => {
-      if (!role) {
-        return res.status(404).send({ message: "Role Not found." });
-      } else {
-        //role.getUsers();
-        let role_user = await role.getUsers();
-        console.log(role_user.length);
-        if (role_user.length == 0) {
-          res.send([]);
-        } else {
-          let users = [];
-          for (let i = 0; i < role_user.length; i++) {
-            //console.log(eks_tema[i]);
-            users.push(role_user[i].id);
-          }
-          User.findAll({
-            where: {
-              id: {
-                [Op.or]: users,
-              },
-            },
-            order: [["username", "ASC"]],
-            offset: 0,
-            limit: 100,
-            include: [
-              {
-                model: Role,
-                as: "roles",
-                attributes: ["id", "name"],
-                through: {
-                  attributes: [],
-                },
-              },
-            ],
-            attributes: { exclude: ["password"] },
-          })
-            .then((data) => {
-              res.send(data);
-            })
-            .catch((err) => {
-              res.status(500).send({
-                message:
-                  err.message || "Some error occurred while retrieving Users.",
-              });
-            });
-        }
-      }
-    })
-    .catch((err) => {
-      res.status(500).send({
-        message: err.message || "Some error occurred while retrieving users.",
-      });
-    });
-};
 exports.findUserProdusen = (req, res) => {
   Role.findOne({
     where: {
@@ -524,6 +445,25 @@ exports.update = (req, res) => {
       if (!user) {
         return res.status(404).send({ message: "User Not found." });
       } else {
+        if (!isValidEmail(req.body.email)) {
+          return res.status(404).send({
+            message: "Email yang diinput tidak valid.",
+          });
+        }
+
+        let emailnya = await User.findOne({
+          where: {
+            email: req.body.email,
+            id: { [Op.ne]: user.id },
+          },
+        });
+
+        if (emailnya) {
+          return res.status(404).send({
+            message: "Email sudah pernah terdaftar",
+          });
+        }
+
         User.update(req.body, {
           where: { uuid: uuid },
         })
@@ -633,6 +573,24 @@ exports.profile = (req, res) => {
         return res.status(404).send({ message: "User Not found." });
       } else {
         console.log(req.body);
+        if (!isValidEmail(req.body.email)) {
+          return res.status(404).send({
+            message: "Email yang diinput tidak valid.",
+          });
+        }
+
+        let emailnya = await User.findOne({
+          where: {
+            email: req.body.email,
+          },
+        });
+
+        if (emailnya) {
+          return res.status(404).send({
+            message: "Email sudah pernah terdaftar",
+          });
+        }
+
         User.update(req.body, {
           where: { uuid: uuid },
         })

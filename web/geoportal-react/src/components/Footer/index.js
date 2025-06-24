@@ -1,4 +1,9 @@
+import React, { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Box, Container, Link, Typography, styled } from "@mui/material";
+
+// Site Settings
+import { retrievePublicSiteSettings } from "src/redux/actions/siteSetting";
 
 const FooterWrapper = styled(Container)(
   ({ theme }) => `
@@ -7,6 +12,16 @@ const FooterWrapper = styled(Container)(
 );
 
 function Footer() {
+  // Site Settings
+  const siteSetting = useSelector((state) => state.siteSetting);
+
+  const dispatch = useDispatch();
+  
+    // Site Settings
+  useEffect(() => {
+    dispatch(retrievePublicSiteSettings());
+  }, []);
+
   return (
     <FooterWrapper className="footer-wrapper">
       <Box
@@ -18,7 +33,7 @@ function Footer() {
       >
         <Box>
           <Typography variant="subtitle1">
-            &copy; 2024 - Geoportal Kutai Kartanegara Dashboard
+            &copy; 2024 - {siteSetting?.name} Dashboard
           </Typography>
         </Box>
         <Typography
@@ -29,11 +44,11 @@ function Footer() {
         >
           Powered by{" "}
           <Link
-            href="https://tanahair.indonesia.go.id/palapa-p/"
+            href="https://sibatnas.big.go.id/"
             target="_blank"
             rel="noopener noreferrer"
           >
-            Palapa-P
+            SIBATNAS
           </Link>
         </Typography>
       </Box>

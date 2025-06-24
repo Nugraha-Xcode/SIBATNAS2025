@@ -16,6 +16,7 @@ import produsen from "./produsen";
 import produsen_user from "./produsen-user";
 import role from "./role";
 import statusPemeriksaan from "./statusPemeriksaan";
+import siteSetting from "./siteSetting";
 import setting from "./setting";
 import tematik from "./tematik";
 import user from "./user";
@@ -24,6 +25,9 @@ import metadata from "./metadata";
 import publikasi_csw from "./publikasi_csw";
 import statistik from "./statistik";
 import record from "./record";
+import panduan from "./panduan";
+import berita from "./berita";
+import visitor from "./visitor";
 
 export default combineReducers({
   aktifitas_unduh,
@@ -42,6 +46,7 @@ export default combineReducers({
   produsen,
   produsen_user,
   role,
+  siteSetting,
   setting,
   statusPemeriksaan,
   tematik,
@@ -51,4 +56,7 @@ export default combineReducers({
   publikasi_csw,
   statistik,
   record,
+  panduan,
+  berita,
+  visitor,
 });

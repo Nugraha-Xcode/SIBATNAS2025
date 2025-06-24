@@ -1,3 +1,5 @@
+import React, { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import {
   Box,
   Tooltip,
@@ -7,6 +9,10 @@ import {
   useTheme,
 } from "@mui/material";
 import { Link } from "react-router-dom";
+
+// Site Settings
+import { retrievePublicSiteSettings } from "src/redux/actions/siteSetting";
+import environment from "src/config/environment";
 
 const LogoWrapper = styled(Link)(
   ({ theme }) => `
@@ -96,8 +102,18 @@ const TooltipWrapper = styled(({ className, ...props }) => (
 function Logo() {
   const theme = useTheme();
 
+  // Site Settings
+  const siteSetting = useSelector((state) => state.siteSetting);
+
+  const dispatch = useDispatch();
+
+  // Site Settings
+    useEffect(() => {
+      dispatch(retrievePublicSiteSettings());
+    }, []);
+
   return (
-    <TooltipWrapper title="Geoportal SJ Dashboard" arrow>
+    <TooltipWrapper title="SIBATNAS Dashboard" arrow>
       <LogoWrapper to="/">
         <Badge
           sx={{
@@ -109,14 +125,12 @@ function Logo() {
           }}
           overlap="circular"
           color="success"
-          badgeContent="2.0"
+          badgeContent="1.0"
         >
           <LogoSignWrapper>
             <img
-              src={
-                process.env.PUBLIC_URL + "/static/images/logo/kukar-logo.png"
-              }
-              alt="Logo Geoportal Kutai Kartanegara"
+              src={`${environment.api}site-settings/logo`}
+              alt={`Logo ${siteSetting?.name || 'SIBATNAS'}`}
               width="72px"
             />
           </LogoSignWrapper>

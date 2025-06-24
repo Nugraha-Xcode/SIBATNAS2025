@@ -2,6 +2,7 @@ import {
   CREATE_RECORD_SUCCESS,
   CREATE_RECORD_FAIL,
   RETRIEVE_RECORD_SUCCESS,
+  RETRIEVE_RECORD_PAGINATED_SUCCESS,
   RETRIEVE_RECORD_FAIL,
   UPDATE_RECORD_SUCCESS,
   UPDATE_RECORD_FAIL,
@@ -35,6 +36,22 @@ export const retrievePublik = () => async (dispatch) => {
 
     dispatch({
       type: RETRIEVE_RECORD_SUCCESS,
+      payload: res.data,
+    });
+  } catch (err) {
+    if (err.response && err.response.status === 401) {
+      EventBus.dispatch("logout");
+    }
+    console.log(err);
+  }
+};
+
+export const retrievePublikPaginated = (params = {}) => async (dispatch) => {
+  try {
+    const res = await Service.getAllPublikPaginated(params);
+
+    dispatch({
+      type: RETRIEVE_RECORD_PAGINATED_SUCCESS,
       payload: res.data,
     });
   } catch (err) {
@@ -81,9 +98,9 @@ export const update = (uuid, data) => async (dispatch) => {
   }
 };
 
-export const remove = (identifier) => async (dispatch) => {
+export const remove = (identifier, user) => async (dispatch) => {
   try {
-    await Service.remove(identifier);
+    await Service.remove(identifier, user);
 
     dispatch({
       type: DELETE_RECORD_SUCCESS,

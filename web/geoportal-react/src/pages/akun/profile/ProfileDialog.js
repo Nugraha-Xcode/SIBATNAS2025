@@ -35,11 +35,25 @@ function ProfileDialog(props) {
 
   const { onClose, open, config } = props;
   const initialDataState = {
-    email: currentUser.email,
+    email: currentUser?.email || "",
   };
   const [data, setData] = useState(initialDataState);
   // const [submitted, setSubmitted] = useState(false);
   const dispatch = useDispatch();
+
+  // Reset form data when the component mounts or currentUser changes
+  useEffect(() => {
+    if (currentUser) {
+      resetForm();
+    }
+  }, [currentUser]);
+
+  // Function to reset the form to initial state
+  const resetForm = () => {
+    setData({
+      email: currentUser?.email || "",
+    });
+  };
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
@@ -47,6 +61,7 @@ function ProfileDialog(props) {
   };
 
   const handleClose = () => {
+    resetForm(); // Reset form when dialog closes
     onClose();
   };
 
@@ -57,7 +72,8 @@ function ProfileDialog(props) {
           buttons: false,
           timer: 2000,
         });
-
+        
+        resetForm(); // Reset form after successful update
         onClose();
       })
       .catch((e) => {
@@ -92,7 +108,7 @@ function ProfileDialog(props) {
           id="uuid"
           label="UUID"
           name="uuid"
-          value={currentUser.uuid}
+          value={currentUser?.uuid || ""}
           autoComplete="uuid"
           disabled
         />
@@ -104,7 +120,7 @@ function ProfileDialog(props) {
           id="username"
           label="Username"
           name="username"
-          value={currentUser.username}
+          value={currentUser?.username || ""}
           autoComplete="username"
           disabled
         />

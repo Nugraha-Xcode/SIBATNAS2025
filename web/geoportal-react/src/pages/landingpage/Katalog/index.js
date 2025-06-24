@@ -1,3 +1,5 @@
+import React, { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import "./Landing.css";
 //import { styled } from "@mui/material/styles";
 import Box from "@mui/material/Box";
@@ -19,7 +21,6 @@ import SearchIcon from "@mui/icons-material/Search";
 import Search from "@mui/icons-material/Search";
 import environment from "src/config/environment";
 
-import { useState, useEffect } from "react";
 import Draggable from "react-draggable";
 
 import TopMenu from "src/components/TopMenu";
@@ -28,6 +29,8 @@ import TopSearch from "./TopSearch";
 //import Metadata from "./Metadata";
 import FilterMenu from "./FilterMenu";
 //import MediaCard from "./MediaCard";
+
+import { retrievePublicSiteSettings } from "src/redux/actions/siteSetting";
 
 function PaperComponent(props) {
   return (
@@ -49,6 +52,15 @@ function Katalog() {
   const [pagination, setPagination] = useState(1);
   const [query, setQuery] = useState("none");
   const [tag, setTag] = useState("Semua");
+
+   // Site Settings
+    const siteSetting = useSelector((state) => state.siteSetting);
+  
+    const dispatch = useDispatch();
+  
+    useEffect(() => {
+      dispatch(retrievePublicSiteSettings());
+    }, []);
 
   const handleChange = (event, value) => {
     setPage(value - 1);
@@ -193,7 +205,7 @@ function Katalog() {
               }}
             >
               <InputBase
-                placeholder="Cari data di katalog Geoportal Kutai Kartanegara"
+                placeholder={`Cari data di dataset ${siteSetting?.name || 'SIBATNAS'}`}
                 inputProps={{ "aria-label": "search dataset" }}
                 style={{ marginLeft: "10px", flex: 1 }}
                 id="search"

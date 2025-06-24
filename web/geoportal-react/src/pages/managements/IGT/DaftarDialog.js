@@ -116,7 +116,13 @@ function UserDialog(props) {
 
   const save = (e) => {
     e.preventDefault();
-    const { name, produsen, is_series } = data;
+    //const { name, produsen, is_series } = data;
+
+    const { name, is_series } = data;  
+    const produsen = produsens.find((el) => el.name === selectedProdusen) || {}; 
+  
+    //console.log("Data sebelum disimpan:", { name, produsen, is_series });
+
     if (isValidated()) {
       setLoading(true);
       dispatch(create(name, produsen, is_series))

@@ -22,6 +22,7 @@ module.exports = (app) => {
   // Retrieve all Lokasi
   //app.get("/api/kategori/", kategori.findAll);
   app.get(base, [authJwt.verifyToken], controller.findAll);
+  app.get(base + "publik", controller.findAllPublik);
 
   // Retrieve all published Users
   //router.get("/activated", lokasi.findAllActivated);

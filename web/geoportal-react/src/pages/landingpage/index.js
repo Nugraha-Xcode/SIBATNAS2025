@@ -1,550 +1,329 @@
-import React, { useState, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-
-import CountUp from "react-countup";
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
-import { styled, useTheme } from "@mui/material/styles";
 import {
   Box,
   Button,
+  ButtonGroup,
   Container,
   Card,
-  Grid,
-  Typography,
-  Tabs,
-  Tab,
-  IconButton,
-  Drawer,
+  CardMedia,
+  CardContent,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
+  FormControl,
+  InputLabel,
+  OutlinedInput,
+  Input,
   List,
   ListItem,
+  ListItemText,
   ListItemButton,
   ListItemIcon,
+  InputAdornment,
+  IconButton,
+  Typography,
+  styled,
+  Slide,
+  Stack,
+  Tabs,
+  TextField,
+  Tab,
+  Zoom,
   Divider,
-  ListItemText,
-  Menu,
-  MenuItem,
+  Drawer,
+  Chip,
+  Fade,
 } from "@mui/material";
-
-import useMediaQuery from "@mui/material/useMediaQuery";
-
-import MuiAppBar from "@mui/material/AppBar";
-import MenuIcon from "@mui/icons-material/Menu";
-import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
-import ChevronRightIcon from "@mui/icons-material/ChevronRight";
-import HomeIcon from "@mui/icons-material/Home";
-import BookIcon from "@mui/icons-material/Book";
-import PersonIcon from "@mui/icons-material/Person";
-
-import InboxIcon from "@mui/icons-material/MoveToInbox";
-import MailIcon from "@mui/icons-material/Mail";
-
+import { useRef, useState, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
-import { retrieveNumber } from "src/redux/actions/statistik";
 
 import { Link as RouterLink } from "react-router-dom";
-import environment from "src/config/environment";
-import BottomLink from "./BottomLink";
-import Footer from "./Footer";
+///import FullScreenImage from "./FullScreenImage";
 
-//import Hero from "./Hero";
-const drawerWidth = 240;
+import { MapViewerProvider } from "src/contexts/MapViewerContext";
 
-const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })(
-  ({ theme, open }) => ({
-    flexGrow: 1,
-    padding: theme.spacing(3),
-    transition: theme.transitions.create("margin", {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.leavingScreen,
-    }),
-    marginRight: -drawerWidth,
-    ...(open && {
-      transition: theme.transitions.create("margin", {
-        easing: theme.transitions.easing.easeOut,
-        duration: theme.transitions.duration.enteringScreen,
-      }),
-      marginRight: 0,
-    }),
-    /**
-     * This is necessary to enable the selection of content. In the DOM, the stacking order is determined
-     * by the order of appearance. Following this rule, elements appearing later in the markup will overlay
-     * those that appear earlier. Since the Drawer comes after the Main content, this adjustment ensures
-     * proper interaction with the underlying content.
-     */
-    position: "relative",
-  })
-);
+import {
+  Add as AddIcon,
+  Dashboard as DashboardIcon,
+  Inbox as InboxIcon,
+  Mail as MailIcon,
+  Remove as RemoveIcon,
+  Close,
+  ExpandLess,
+  ExpandMore,
+  Delete as DeleteIcon,
+  GpsFixed as GpsFixedIcon,
+  LayersRounded,
+  Print as PrintIcon,
+  Search as SearchIcon,
+  ExpandMore as ExpandMoreIcon,
+  Dashboard,
+  Menu as MenuIcon,
+  Apps as AppsIcon,
+} from "@mui/icons-material";
 
-const AppBar = styled(MuiAppBar, {
-  shouldForwardProp: (prop) => prop !== "open",
-})(({ theme, open }) => ({
-  transition: theme.transitions.create(["margin", "width"], {
-    easing: theme.transitions.easing.sharp,
-    duration: theme.transitions.duration.leavingScreen,
-  }),
-  ...(open && {
-    width: `calc(100% - ${drawerWidth}px)`,
-    transition: theme.transitions.create(["margin", "width"], {
-      easing: theme.transitions.easing.easeOut,
-      duration: theme.transitions.duration.enteringScreen,
-    }),
-    marginRight: drawerWidth,
-  }),
-}));
-
-const DrawerHeader = styled("div")(({ theme }) => ({
-  display: "flex",
-  alignItems: "center",
-  padding: theme.spacing(0, 1),
-  // necessary for content to be below app bar
-  ...theme.mixins.toolbar,
-  justifyContent: "flex-start",
-}));
+import VisitorStats from "src/components/VisitorStats";
+import CarouselsComponent from "src/components/Carousels";
+import LembagaComponent from "src/components/Lembaga";
+import BatimetriComponent from "src/components/BatimetriComponent";
+import BeritaComponent from "src/components/BeritaComponent";
+import LandingPageIndex from "src/components/Footer/landingPageIndex";
 
 const OverviewWrapper = styled(Box)(
   () => `
-    overflow: auto;
-    flex: 1;
-    overflow-x: hidden;
-    align-items: center;
-    background-color: #676a6e;
-`
+      overflow: auto;
+      flex: 1;
+      overflow-x: hidden;
+      align-items: center;
+  `
 );
 
 const TypographyH1 = styled(Typography)(
   ({ theme }) => `
-    font-size: ${theme.typography.pxToRem(50)};
-`
+      font-size: ${theme.typography.pxToRem(50)};
+  `
 );
 
 const LabelWrapper = styled(Box)(
   ({ theme }) => `
-    background-color: ${theme.colors.success.main};
-    color: ${theme.palette.success.contrastText};
-    font-weight: bold;
-    border-radius: 30px;
-    text-transform: uppercase;
-    display: inline-block;
-    font-size: ${theme.typography.pxToRem(11)};
-    padding: ${theme.spacing(0.5)} ${theme.spacing(1.5)};
-    margin-bottom: ${theme.spacing(2)};
-`
+      background-color: ${theme.colors.success.main};
+      color: ${theme.palette.success.contrastText};
+      font-weight: bold;
+      border-radius: 30px;
+      text-transform: uppercase;
+      display: inline-block;
+      font-size: ${theme.typography.pxToRem(11)};
+      padding: ${theme.spacing(0.5)} ${theme.spacing(1.5)};
+      margin-bottom: ${theme.spacing(2)};
+  `
 );
 
+const Banner = styled(Box)(
+  ({ theme }) => `
+    display: flex; 
+    width: 100%; 
+    height: 13vh; 
+    background-color: rgba(255, 255, 255, 1); 
+    z-index: 990; 
+    position: fixed; 
+    padding: 1em 3em;
+    align-items: center;
+  `
+);
+
+const SideMenu = styled(Box)(
+  ({ theme }) => `
+       width: 70px;
+       height: 100vh;
+       display: flex;
+       padding: 20px;
+       justify-content: center;
+       align-items: start;
+    `
+);
+
+const RightWrapper = styled(Box)(
+  ({ theme }) => `
+         width: 120px;
+         display: flex;
+         justify-content: space-between;
+         align-items: center;
+         z-index: 2;
+      `
+);
+
+const ButtonContainer = styled(Box)(
+  ({ theme }) => `
+      position: absolute;
+      z-index:1;
+      right: 15px;
+      bottom: 20px;
+      color: white;
+      transition: 0.8s;
+      height: 105px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+
+  `
+);
+
+const ScaleContainer = styled(Box)(
+  ({ theme }) => `
+      position: absolute;
+      z-index:1;
+      left: 15px;
+      bottom: 20px;
+      color: white;
+      transition: 0.8s;
+      padding-top: 5px;
+  `
+);
+
+const MenuContainer = styled(Box)(
+  ({ theme }) => `
+      position: absolute;
+      z-index:1;
+      left: 15px;
+      top: 110px;
+      background-color: "white";
+  `
+);
+
+const TagContainer = styled(Box)(
+  ({ theme }) => `
+        z-index:1;
+        color: white;
+        transition: 0.8s;
+    `
+);
+
+const SearchContainer = styled(Box)(
+  ({ theme }) => `
+   
+      z-index:1;
+      background-color: white;
+      border-radius: 30px;
+      transition: 0.8s;   
+  `
+);
+const WhiteBorderTextField = styled(TextField)`
+  & label.Mui-focused {
+    color: white;
+  }
+  & .MuiOutlinedInput-root {
+    &.Mui-focused fieldset {
+      border-color: white;
+    }
+  }
+`;
+const LayerContainer = styled(Box)(
+  ({ theme }) => `
+      position: absolute;
+      z-index:1;
+      left: 15px;
+      top: 170px;
+      color: white;
+      transition: 'opacity 1500ms ease-in-out';
+      padding-top: 5px;
+  `
+);
+
+const CustomButton = styled(Button)({
+  backgroundColor: "white", // Custom background color
+  "&:hover": {
+    backgroundColor: "#eee", // Custom background color on hover
+  },
+});
+
 function Overview() {
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
-  const [value, setValue] = useState(0);
+  const [isVisible, setIsVisible] = useState(true);
   const [open, setOpen] = useState(false);
-  const [currentIndex, setCurrentIndex] = useState(0);
-
-  var settings = {
-    dots: true,
-    className: "center",
-    centerPadding: isMobile ? "20px" : "80px",
-    centerMode: true,
-    infinite: true,
-    speed: 500,
-    autoplay: true,
-    autoplaySpeed: 4000,
-    slidesToShow: 1,
-    slidesToScroll: 1,
-    afterChange: (index) => setCurrentIndex(index),
+  const toggleDrawer = (newOpen) => () => {
+    setOpen(newOpen);
   };
 
-  const getThumbnailUrl = (videoId) =>
-    `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`;
-  //https://i.ytimg.com/vi/8hYlB38asDY/hqdefault.jpg
-
-  const [anchorEl, setAnchorEl] = useState(null);
-
-  const stats = useSelector((state) => state.statistik);
-
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    dispatch(retrieveNumber());
-  }, []);
-
-  const handleMenuOpen = (event) => {
-    setAnchorEl(event.currentTarget);
+  const handleToggle = () => {
+    setIsVisible((prev) => !prev);
   };
 
-  const handleDrawerOpen = () => {
-    setOpen(true);
-  };
-
-  const handleDrawerClose = () => {
-    setOpen(false);
-  };
-
-  const handleMenuClose = () => {
-    setAnchorEl(null);
+  const handleSearch = () => {
+    // Implement your search logic here
+    console.log("Searching...");
   };
 
   return (
-    <OverviewWrapper>
+    <>
       <Helmet>
-        <title>
-          Geoportal Palapa - Kabupaten Kutai Kartanegara | Landing Page
-        </title>
+        <title>Sistem Batimetri Nasional | Landing Page</title>
       </Helmet>
-      <video
-        autoPlay
-        muted
-        loop
-        style={{
-          position: "fixed",
-          left: 0,
-          top: 0,
-          minWidth: "100%",
-          minHeight: "100%",
-        }}
-      >
-        <source
-          src={process.env.PUBLIC_URL + "/static/KukarVideo.mp4"}
-          type="video/mp4"
-        />
-      </video>
-      <Container
-        maxWidth="xl"
-        sx={{
-          paddingBottom: "100px",
-          position: "relative",
-          zIndex: 2,
-        }}
-      >
-        <Container maxWidth="xl" sx={{ position: "relative", zIndex: 1 }}>
+
+      {/* <Drawer anchor="left" open={open} onClose={toggleDrawer(false)}>
+        <Box
+          sx={{ width: 300 }}
+          role="presentation"
+          onClick={toggleDrawer(false)}
+        >
           <Box
             sx={{
-              zIndex: 2,
-              position: "relative",
-              alignItems: "center",
-              top: isMobile ? "120px" : "180px",
-              margin: isMobile ? "30px 0%" : "30px 20%",
-              padding: isMobile ? "20px" : "30px",
               display: "flex",
               justifyContent: "space-between",
-              background: "rgba(255,255,255,0.5)",
-              borderRadius: "12px",
+              alignItems: "center",
+              padding: "10px",
             }}
           >
             <Box>
-              <h2
-                style={{
-                  fontSize: "28px",
-                  fontWeight: 800,
-                  fontFamily: "finalsix, sans-serif",
-                  marginTop: 0,
-                  marginBottom: "0.5rem",
-                  lineHeight: 1.2,
-                  color: isMobile ? "black" : "darkblue",
-                }}
+              <Typography
+                gutterBottom
+                variant="h4"
+                component="div"
+                sx={{ color: "#000", fontSize: "20px" }}
               >
-                Geoportal Simpul Jaringan
-              </h2>
-              <p
-                style={{
-                  fontSize: "16px",
-                  fontFamily: "Outfit, sans-serif",
-                  fontWeight: 200,
-                  marginTop: 0,
-                  marginBottom: "0.5rem",
-                  lineHeight: isMobile ? "18px" : "18px",
-                  color: isMobile ? "white" : "black",
-                }}
-              >
-                Geoportal SJ Kutai Kartanegara adalah sebuah platform
-                terintegrasi yang mengumpulkan, menyajikan, dan menyebarluaskan
-                data dan informasi geospasial yang menjadi tanggung jawab dan
-                kewenangan unit produksi dan walidata di Kabupaten Kutai
-                Kartanegara.
-              </p>
+                Sistem Batimetri Nasional
+              </Typography>
             </Box>
+            <IconButton size="small" onClick={toggleDrawer(false)}>
+              <Close size="small" />
+            </IconButton>
           </Box>
-        </Container>
-        <Container
-          maxWidth="xl"
-          sx={{
-            position: "relative",
-            zIndex: 1,
-            padding: isMobile ? "150px 0px 30px 50px" : "270px 0px 30px 0px",
-            color: "white",
-          }}
-        >
-          <Grid
-            container
-            direction="row"
-            justifyContent={isMobile ? "start" : "center"}
-            alignItems="stretch"
-            spacing={4}
-          >
-            <Grid item>
-              <Box
-                sx={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  maxWidth: "240px",
-                }}
-              >
-                <img
-                  src={process.env.PUBLIC_URL + "/static/images/building.png"}
-                />
-                <Box
-                  sx={{
-                    display: "flex",
-                    flexDirection: "column",
-                    justifyContent: "start",
-                    alignItems: "start",
-                  }}
-                >
-                  <Typography
-                    variant="h2"
-                    component="h1"
-                    textAlign="left"
-                    sx={{
-                      fontSize: "36px",
-                      fontWeight: 600,
-                      fontFamily: "finalsix, sans-serif",
-                      lineHeight: 1.2,
-                      color: "white",
-                    }}
-                  >
-                    <CountUp start={0} end={stats.produsen} duration={2.75} />
-                  </Typography>
-                  <Typography
-                    variant="h2"
-                    gutterBottom
-                    textAlign="left"
-                    sx={{
-                      fontSize: "14px",
-                      fontWeight: 400,
-                      fontFamily: "finalsix, sans-serif",
-                      lineHeight: 1.2,
-                      color: "white",
-                    }}
-                  >
-                    Total Produsen DG/IG
-                  </Typography>
-                </Box>
-              </Box>
-            </Grid>
-            <Grid item>
-              <Box
-                sx={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  maxWidth: "240px",
-                }}
-              >
-                <img
-                  src={process.env.PUBLIC_URL + "/static/images/profile.png"}
-                />
-
-                <Box
-                  sx={{
-                    display: "flex",
-                    flexDirection: "column",
-                    justifyContent: "start",
-                    alignItems: "start",
-                  }}
-                >
-                  <Typography
-                    variant="h2"
-                    component="h1"
-                    textAlign="left"
-                    sx={{
-                      fontSize: "36px",
-                      fontWeight: 600,
-                      fontFamily: "finalsix, sans-serif",
-                      lineHeight: 1.2,
-                      color: "white",
-                    }}
-                  >
-                    <CountUp start={0} end={stats.user} duration={2.75} />
-                  </Typography>
-                  <Typography
-                    variant="h2"
-                    gutterBottom
-                    textAlign="left"
-                    sx={{
-                      fontSize: "14px",
-                      fontWeight: 400,
-                      fontFamily: "finalsix, sans-serif",
-                      lineHeight: 1.2,
-                      color: "white",
-                    }}
-                  >
-                    Total pengguna
-                  </Typography>
-                </Box>
-              </Box>
-            </Grid>
-            <Grid item>
-              <Box
-                sx={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  maxWidth: "240px",
-                }}
-              >
-                <img
-                  src={process.env.PUBLIC_URL + "/static/images/dataset.png"}
-                />
-
-                <Box
-                  sx={{
-                    display: "flex",
-                    flexDirection: "column",
-                    justifyContent: "start",
-                    alignItems: "start",
-                  }}
-                >
-                  <Typography
-                    variant="h2"
-                    component="h1"
-                    textAlign="left"
-                    sx={{
-                      fontSize: "36px",
-                      fontWeight: 600,
-                      fontFamily: "finalsix, sans-serif",
-                      lineHeight: 1.2,
-                      color: "white",
-                    }}
-                  >
-                    <CountUp start={0} end={stats.dataset} duration={2.75} />
-                  </Typography>
-                  <Typography
-                    variant="h2"
-                    gutterBottom
-                    textAlign="left"
-                    sx={{
-                      fontSize: "14px",
-                      fontWeight: 400,
-                      fontFamily: "finalsix, sans-serif",
-                      lineHeight: 1.2,
-                      color: "white",
-                    }}
-                  >
-                    Total dataset terpublikasi
-                  </Typography>
-                </Box>
-              </Box>
-            </Grid>
-          </Grid>
-        </Container>
-      </Container>
-      <Container
-        maxWidth="xl"
-        sx={{
-          position: "relative",
-          backgroundColor: "black",
-          minHeight: "200px",
-          padding: "30px",
-          marginTop: "80px",
-        }}
-      >
-        <BottomLink />
-        <Footer />
-      </Container>
-
-      {/*
-      <Container
-        maxWidth="xl"
-        sx={{
-          position: "relative",
-          backgroundColor: "black",
-          minHeight: "200px",
-          padding: "30px",
-        }}
-      >
-        <Slider {...settings}>
-          {videoData.map((video, index) => (
-            <Box
-              key={video.id}
-              sx={{
-                position: "relative",
-                padding: "10px",
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                width: "350px",
-                height: "500px",
-                borderRadius: "30px",
-                cursor: "pointer",
-                zIndex: 3,
-              }}
-            >
-              <img
-                src={getThumbnailUrl(video.videoId)}
-                alt={video.title}
-                style={{
-                  width: "100%",
-                  height: "100%",
-                  borderRadius: "10px",
-                  filter: index === currentIndex ? "none" : "grayscale(100%)",
-                  opacity: index === currentIndex ? 1 : 0.5,
-                  transition: "all 0.3s ease-in-out",
-                }}
-              />
-            </Box>
-          ))}
-        </Slider>
-      </Container>
-      */}
-
-      <Drawer
-        sx={{
-          width: drawerWidth,
-          flexShrink: 0,
-          "& .MuiDrawer-paper": {
-            width: drawerWidth,
-          },
-        }}
-        variant="persistent"
-        anchor="right"
-        open={open}
-      >
-        <DrawerHeader>
-          <IconButton onClick={handleDrawerClose}>
-            {theme.direction === "rtl" ? (
-              <ChevronLeftIcon />
-            ) : (
-              <ChevronRightIcon />
+          <Divider />
+          <List>
+            {["Saved", "Recents", "Your contributions", "Location sharing"].map(
+              (text, index) => (
+                <ListItem key={text} disablePadding>
+                  <ListItemButton>
+                    <ListItemIcon>
+                      {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
+                    </ListItemIcon>
+                    <ListItemText primary={text} />
+                  </ListItemButton>
+                </ListItem>
+              )
             )}
-          </IconButton>
-        </DrawerHeader>
-        <Divider />
-        <List>
-          {["Beranda", "Panduan", "Login"].map((text, index) => (
-            <ListItem
-              key={text}
-              disablePadding
-              component={RouterLink}
-              to={text == "Login" ? "/auth/login" : "/"}
-            >
-              <ListItemButton>
-                <ListItemIcon>
-                  {index == 0 ? <HomeIcon /> : ""}
-                  {index == 1 ? <BookIcon /> : ""}
-                  {index == 2 ? <PersonIcon /> : ""}
-                </ListItemIcon>
-                <ListItemText primary={text} />
-              </ListItemButton>
-            </ListItem>
-          ))}
-        </List>
-      </Drawer>
-    </OverviewWrapper>
+          </List>
+          <Divider />
+          <List>
+            {["Share or embed map", "Print", "Spam"].map((text, index) => (
+              <ListItem key={text} disablePadding>
+                <ListItemButton>
+                  <ListItemIcon>
+                    {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
+                  </ListItemIcon>
+                  <ListItemText primary={text} />
+                </ListItemButton>
+              </ListItem>
+            ))}
+          </List>
+          <Divider />
+          <List>
+            {["Tips", "Get Help"].map((text, index) => (
+              <ListItem key={text} disablePadding>
+                <ListItemButton>
+                  <ListItemText primary={text} />
+                </ListItemButton>
+              </ListItem>
+            ))}
+          </List>
+        </Box>
+      </Drawer> */}
+      <Box sx={{ display: "flex", flexDirection: "column" }}>
+        <VisitorStats />
+      </Box>
+      <Box sx={{ display: "flex" }}>
+        <CarouselsComponent />
+      </Box>
+      <Box sx={{ display: "flex" }}>
+        <LembagaComponent />
+      </Box>
+      <Box sx={{ display: "flex" }}>
+        <BatimetriComponent />
+      </Box>
+      <Box sx={{ display: "flex" }}>
+        <BeritaComponent />
+      </Box>
+
+      <LandingPageIndex />
+    </>
   );
 }
-/*
 
-      <Container maxWidth="lg">
-        <Card sx={{ p: 10, my: 5, borderRadius: 12 }}>
-          <Hero />
-        </Card>
-      </Container>
-      */
 export default Overview;

@@ -3,8 +3,11 @@ import {
   CREATE_DATA_PUBLIKASI_FAIL,
   RETRIEVE_DATA_PUBLIKASI_SUCCESS,
   RETRIEVE_DATA_PUBLIKASI_FAIL,
+  RETRIEVE_DATA_PUBLIKASI_UNDUH_SUCCESS,
   UPDATE_DATA_PUBLIKASI_SUCCESS,
   UPDATE_DATA_PUBLIKASI_FAIL,
+  UNPUBLISH_DATA_PUBLIKASI_SUCCESS,
+  UNPUBLISH_DATA_PUBLIKASI_FAIL,
   DELETE_DATA_PUBLIKASI_SUCCESS,
   DELETE_DATA_PUBLIKASI_FAIL,
   SET_MESSAGE,
@@ -28,33 +31,70 @@ export const retrieveAllData = () => async (dispatch) => {
     console.log(err);
   }
 };
-export const retrieveByProdusen = (uuid) => async (dispatch) => {
+
+export const retrieveByProdusen = (uuid, params = {}) => async (dispatch) => {
   try {
-    const res = await Service.getAllProdusen(uuid);
+    const res = await Service.getAllProdusen(uuid, params);
+    
+    // Pastikan struktur data yang tepat
+    const payload = res.data.records 
+      ? res.data 
+      : { 
+          records: res.data, 
+          totalItems: res.data.length, 
+          totalPages: 1, 
+          currentPage: params.page || 0 
+        };
+        
     dispatch({
       type: RETRIEVE_DATA_PUBLIKASI_SUCCESS,
-      payload: res.data,
+      payload: payload,
     });
+    return Promise.resolve(payload);
   } catch (err) {
     if (err.response && err.response.status === 401) {
       EventBus.dispatch("logout");
     }
-    console.log(err);
+    console.error('Error in retrieveByProdusen:', err);
+    
+    dispatch({
+      type: RETRIEVE_DATA_PUBLIKASI_FAIL,
+    });
+    
+    return Promise.reject(err);
   }
 };
 
-export const retrieveByProdusenAdmin = (uuid) => async (dispatch) => {
+export const retrieveByProdusenAdmin = (uuid, params = {}) => async (dispatch) => {
   try {
-    const res = await Service.getAllProdusenAdmin(uuid);
+    const res = await Service.getAllProdusenAdmin(uuid, params);
+    
+    // Pastikan struktur data yang tepat
+    const payload = res.data.records 
+      ? res.data 
+      : { 
+          records: res.data, 
+          totalItems: res.data.length, 
+          totalPages: 1, 
+          currentPage: params.page || 0 
+        };
+        
     dispatch({
       type: RETRIEVE_DATA_PUBLIKASI_SUCCESS,
-      payload: res.data,
+      payload: payload,
     });
+    return Promise.resolve(payload);
   } catch (err) {
     if (err.response && err.response.status === 401) {
       EventBus.dispatch("logout");
     }
-    console.log(err);
+    console.error('Error in retrieveByProdusenAdmin:', err);
+    
+    dispatch({
+      type: RETRIEVE_DATA_PUBLIKASI_FAIL,
+    });
+    
+    return Promise.reject(err);
   }
 };
 
@@ -123,7 +163,7 @@ export const retrieveByUUID = (uuid) => async (dispatch) => {
     const res = await Service.getByUUID(uuid);
     console.log(res.data);
     dispatch({
-      type: RETRIEVE_DATA_PUBLIKASI_SUCCESS,
+      type: RETRIEVE_DATA_PUBLIKASI_UNDUH_SUCCESS,
       payload: res.data,
     });
   } catch (err) {
@@ -162,9 +202,15 @@ export const create =
     }
   };
 
-export const publish = (uuid, user) => async (dispatch) => {
+export const publish = (uuid, user, isPublic) => async (dispatch) => {
   try {
-    const res = await Service.publish(uuid, user);
+    const data = {
+      uuid,
+      user,
+      is_public: isPublic,
+    };
+
+    const res = await Service.publish(uuid, data);
 
     dispatch({
       type: UPDATE_DATA_PUBLIKASI_SUCCESS,
@@ -277,6 +323,25 @@ export const remove = (uuid) => async (dispatch) => {
     console.log(err);
   }
 };
+
+export const unpublish = (uuid, user) => async (dispatch) => {
+  try {
+    const res = await Service.unpublish(uuid, user);
+
+    dispatch({
+      type: UNPUBLISH_DATA_PUBLIKASI_SUCCESS,
+      payload: res.data,
+    });
+
+    return Promise.resolve(res.data);
+  } catch (err) {
+    if (err.response && err.response.status === 401) {
+      EventBus.dispatch("logout");
+    }
+    return Promise.reject(err);
+  }
+};
+
 /*
   export const create = (name) => (dispatch) => {
     return KategoriService.create({ name }).then(

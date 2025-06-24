@@ -76,7 +76,12 @@ db.aktifitasUnduh = require("./aktifitasUnduh.model.js")(sequelize, Sequelize);
 
 db.notifikasi = require("./notifikasi.model.js")(sequelize, Sequelize);
 db.setting = require("./setting.model.js")(sequelize, Sequelize);
+db.site_setting = require("./site_setting.model.js")(sequelize, Sequelize);
+db.panduan = require("./panduan.model.js")(sequelize, Sequelize);
 db.keywords = require("../models/keywords.model.js")(sequelize, Sequelize);
+db.berita = require("./berita.model.js")(sequelize, Sequelize);
+db.visitors = require("./visitor.model.js")(sequelize, Sequelize);
+db.downloads = require("./download.model.js")(sequelize, Sequelize);
 
 db.role.belongsToMany(db.user, {
   through: "user_roles",
@@ -232,6 +237,33 @@ db.user.hasMany(db.notifikasi, { as: "notifikasi" });
 db.notifikasi.belongsTo(db.user, {
   foreignKey: "userId",
   as: "user",
+});
+
+db.user.hasMany(db.berita, { as: "berita" });
+db.berita.belongsTo(db.user, {
+  foreignKey: "userId",
+  as: "user",
+});
+
+
+db.record.belongsTo(db.dataPublikasi, {
+  as: "dataPublikasi",
+  foreignKey: {
+    name: "identifier",
+    allowNull: true
+  },
+  constraints: false,
+  targetKey: "identifier"
+});
+
+db.dataPublikasi.hasOne(db.record, {
+  as: "record",
+  foreignKey: {
+    name: "identifier",
+    allowNull: true
+  },
+  constraints: false,
+  sourceKey: "identifier"
 });
 
 db.ROLES = ["admin", "walidata", "walidata_pendukung", "produsen", "eksternal"];

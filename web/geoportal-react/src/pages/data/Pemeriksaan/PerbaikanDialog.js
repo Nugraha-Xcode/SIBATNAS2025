@@ -34,6 +34,7 @@ import {
   Typography,
   CircularProgress,
   Divider,
+  Tooltip
 } from "@mui/material";
 import swal from "sweetalert";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
@@ -101,33 +102,33 @@ function KategoriDialog(props) {
       // Set restrictions based on file type
       switch (type) {
         case 'document':
-          allowedTypes = environment.ALLOWED_DOCUMENT_TYPES.split(',');
-          maxSize = environment.MAX_DOCUMENT_SIZE * 1024 * 1024; // Convert MB to bytes
-          errorMessage = `Dokumen harus berupa ${allowedTypes.join(', ')} dan maks ${environment.MAX_DOCUMENT_SIZE} MB`;
+          allowedTypes = process.env.REACT_APP_ALLOWED_DOCUMENT_TYPES.split(',');
+          maxSize = process.env.REACT_APP_MAX_DOCUMENT_SIZE * 1024 * 1024; // Convert MB to bytes
+          errorMessage = `Dokumen harus berupa ${allowedTypes.join(', ')} dan maks ${process.env.REACT_APP_MAX_DOCUMENT_SIZE} MB`;
           break;
         case 'metadata':
           allowedTypes = ['.xml'];
-          maxSize = environment.MAX_METADATA_SIZE * 1024 * 1024;
-          errorMessage = `Metadata harus berupa .xml dan maks ${environment.MAX_METADATA_SIZE} MB`;
+          maxSize = process.env.REACT_APP_MAX_METADATA_SIZE * 1024 * 1024;
+          errorMessage = `Metadata harus berupa .xml dan maks ${process.env.REACT_APP_MAX_METADATA_SIZE} MB`;
           break;
         case 'dataSpasial':
           allowedTypes = ['.zip'];
-          maxSize = environment.MAX_SPASIAL_SIZE * 1024 * 1024;
-          errorMessage = `Data Spasial harus berupa .zip dan maks ${environment.MAX_SPASIAL_SIZE} MB`;
+          maxSize = process.env.REACT_APP_MAX_SPASIAL_SIZE * 1024 * 1024;
+          errorMessage = `Data Spasial harus berupa .zip dan maks ${process.env.REACT_APP_MAX_SPASIAL_SIZE} MB`;
           break;
         default:
           return false;
       }
   
       // Check file extension
-      const fileExtension = '.' + file.name.split('.').pop().toLowerCase();
+      const fileExtension = '.' + file?.name.split('.').pop().toLowerCase();
       if (!allowedTypes.includes(fileExtension)) {
         setFileErrors(prev => ({ ...prev, [type]: errorMessage }));
         return false;
       }
   
       // Check file size
-      if (file.size > maxSize) {
+      if (file?.size > maxSize) {
         setFileErrors(prev => ({ ...prev, [type]: errorMessage }));
         return false;
       }
@@ -142,7 +143,7 @@ function KategoriDialog(props) {
     const file = e.target.files[0];
     if (validateFile(file, 'document')) {
       setSelectedDocumentFiles(e.target.files);
-      setDocumentName(file.name);
+      setDocumentName(file?.name);
     }
   };
   const selectMetadataFile = (e) => {
@@ -152,7 +153,7 @@ function KategoriDialog(props) {
     const file = e.target.files[0];
     if (validateFile(file, 'metadata')) {
       setSelectedMetadataFiles(e.target.files);
-      setMetadataName(file.name);
+      setMetadataName(file?.name);
     }
   };
   const selectDataSpasialFile = (e) => {
@@ -162,7 +163,7 @@ function KategoriDialog(props) {
     const file = e.target.files[0];
     if (validateFile(file, 'dataSpasial')) {
       setSelectedDataSpasialFiles(e.target.files);
-      setDataSpasialName(file.name);
+      setDataSpasialName(file?.name);
     }
   };
 
@@ -324,7 +325,7 @@ function KategoriDialog(props) {
         <>
     {/* Note for Document Upload */}
     <Typography variant="body2" color="textSecondary" sx={{ mb: 1 }}>
-      Maksimal ukuran: {environment.MAX_DOCUMENT_SIZE} MB. Tipe file yang diperbolehkan: {environment.ALLOWED_DOCUMENT_TYPES}
+      Maksimal ukuran: {process.env.REACT_APP_MAX_DOCUMENT_SIZE} MB. Tipe file yang diperbolehkan: {process.env.REACT_APP_ALLOWED_DOCUMENT_TYPES}
     </Typography>
     <Box
       className="mb25"
@@ -339,8 +340,13 @@ function KategoriDialog(props) {
           startIcon={<UploadFileIcon />}
           sx={{ marginRight: "1rem" }}
         >
-          Upload Dokumen Referensi
-          <input type="file" hidden onChange={selectDocumentFile} accept={environment.ALLOWED_DOCUMENT_TYPES} />
+          Upload Dokumen Referensi&nbsp;
+            <Tooltip title="Wajib diisi">
+              <Typography component="span" color="error">
+                *
+              </Typography>
+            </Tooltip>
+          <input type="file" hidden onChange={selectDocumentFile} accept={process.env.REACT_APP_ALLOWED_DOCUMENT_TYPES} />
         </Button>
       </Box>
       {documentName ? <Box mr={1}>{documentName}</Box> : ""}
@@ -356,7 +362,7 @@ function KategoriDialog(props) {
 
     {/* Note for Metadata Upload */}
     <Typography variant="body2" color="textSecondary" sx={{ mb: 1 }}>
-      Maksimal ukuran: {environment.MAX_METADATA_SIZE} MB. Tipe file yang diperbolehkan: {environment.ALLOWED_METADATA_TYPES}
+      Maksimal ukuran: {process.env.REACT_APP_MAX_METADATA_SIZE} MB. Tipe file yang diperbolehkan: {process.env.REACT_APP_ALLOWED_METADATA_TYPES}
     </Typography>
     <Box
       className="mb25"
@@ -371,8 +377,13 @@ function KategoriDialog(props) {
           startIcon={<UploadFileIcon />}
           sx={{ marginRight: "1rem" }}
         >
-          Upload Metadata (.xml)
-          <input type="file" hidden onChange={selectMetadataFile} accept={environment.ALLOWED_METADATA_TYPES} />
+          Upload Metadata (.xml)&nbsp;
+            <Tooltip title="Wajib diisi">
+              <Typography component="span" color="error">
+                *
+              </Typography>
+            </Tooltip>
+          <input type="file" hidden onChange={selectMetadataFile} accept={process.env.REACT_APP_ALLOWED_METADATA_TYPES} />
         </Button>
       </Box>
       {metadataName ? <Box mr={1}>{metadataName}</Box> : ""}
@@ -388,7 +399,7 @@ function KategoriDialog(props) {
 
     {/* Note for Spatial Data Upload */}
     <Typography variant="body2" color="textSecondary" sx={{ mb: 1 }}>
-      Maksimal ukuran: {environment.MAX_SPASIAL_SIZE} MB. Tipe file yang diperbolehkan: {environment.ALLOWED_SPASIAL_TYPES}
+      Maksimal ukuran: {process.env.REACT_APP_MAX_SPASIAL_SIZE} MB. Tipe file yang diperbolehkan: {process.env.REACT_APP_ALLOWED_SPASIAL_TYPES}
     </Typography>
     <Box
       className="mb25"
@@ -403,8 +414,13 @@ function KategoriDialog(props) {
           startIcon={<UploadFileIcon />}
           sx={{ marginRight: "1rem" }}
         >
-          Upload Data Spasial (.zip)
-          <input type="file" hidden onChange={selectDataSpasialFile} accept={environment.ALLOWED_SPASIAL_TYPES} />
+          Upload Data Spasial (.zip)&nbsp;
+            <Tooltip title="Wajib diisi">
+              <Typography component="span" color="error">
+                *
+              </Typography>
+            </Tooltip>
+          <input type="file" hidden onChange={selectDataSpasialFile} accept={process.env.REACT_APP_ALLOWED_SPASIAL_TYPES} />
         </Button>
       </Box>
       {dataSpasialName ? <Box mr={1}>{dataSpasialName}</Box> : ""}

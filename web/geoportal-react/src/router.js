@@ -9,14 +9,14 @@ import LoggedArea from "./utils/LoggedArea";
 import AdminArea from "./utils/AdminArea";
 
 const Loader = (Component) => (props) =>
-  (
-    <Suspense fallback={<SuspenseLoader />}>
-      <Component {...props} />
-    </Suspense>
-  );
+(
+  <Suspense fallback={<SuspenseLoader />}>
+    <Component {...props} />
+  </Suspense>
+);
 
 //Auth
-const Login = Loader(lazy(() => import("src/pages/auth/Login")));
+const Login = Loader(lazy(() => import("src/pages/auth/LoginCaptcha")));
 const Logout = Loader(lazy(() => import("src/pages/auth/Logout")));
 // Pages
 const LandingPage = Loader(lazy(() => import("src/pages/landingpage")));
@@ -24,6 +24,8 @@ const LandingPage = Loader(lazy(() => import("src/pages/landingpage")));
 const Katalog = Loader(lazy(() => import("src/pages/landingpage/Record")));
 const Peta = Loader(lazy(() => import("src/pages/landingpage/Map")));
 const Panduan = Loader(lazy(() => import("src/pages/landingpage/Panduan")));
+const BeritaPage = Loader(lazy(() => import("src/pages/landingpage/Berita")));
+const BeritaDetailPage = Loader(lazy(() => import("src/pages/landingpage/Berita/Detail")));
 
 // Status
 
@@ -78,6 +80,16 @@ const Unduh = Loader(lazy(() => import("src/pages/data/Unduh")));
 const Metadata = Loader(lazy(() => import("src/pages/metadata/Metadata")));
 //const UnduhMetadata = Loader(lazy(() => import("src/pages/metadata/Unduh")));
 
+// batnas
+const Upload = Loader(lazy(() => import("src/pages/batnas/Upload")));
+const Verifikasi = Loader(lazy(() => import("src/pages/batnas/Verifikasi")));
+const Publikasi = Loader(lazy(() => import("src/pages/batnas/Publikasi")));
+const RencanaSurvei = Loader(
+  lazy(() => import("src/pages/batnas/RencanaSurvei"))
+);
+const Berita = Loader(lazy(() => import("src/pages/batnas/Berita")));
+const Komentar = Loader(lazy(() => import("src/pages/batnas/Komentar")));
+
 const UnduhEksternal = Loader(
   lazy(() => import("src/pages/data/UnduhEksternal"))
 );
@@ -94,6 +106,19 @@ const routes = [
       {
         path: "katalog",
         element: <Katalog />,
+      },
+      {
+        path: "berita",
+        children: [
+          {
+            path: "",
+            element: <BeritaPage />,
+          },
+          {
+            path: ":uuid",
+            element: <BeritaDetailPage />,
+          },
+        ],
       },
       {
         path: "panduan",
@@ -330,6 +355,44 @@ const routes = [
           //  element: <Unduh tab="role" />,
           // },
         ],
+      },
+    ],
+  },
+  {
+    path: "batnas",
+    element: (
+      <LoggedArea>
+        <SidebarLayout />
+      </LoggedArea>
+    ),
+    children: [
+      {
+        path: "",
+        element: <Navigate to="upload" replace />,
+      },
+      {
+        path: "upload",
+        element: <Upload />,
+      },
+      {
+        path: "verifikasi",
+        element: <Verifikasi />,
+      },
+      {
+        path: "publikasi",
+        element: <Publikasi />,
+      },
+      {
+        path: "rencanaSurvei",
+        element: <RencanaSurvei />,
+      },
+      {
+        path: "berita",
+        element: <Berita />,
+      },
+      {
+        path: "komentar",
+        element: <Komentar />,
       },
     ],
   },

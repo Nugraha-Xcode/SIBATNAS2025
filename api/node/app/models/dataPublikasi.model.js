@@ -26,9 +26,13 @@ module.exports = (sequelize, DataTypes) => {
     },
     identifier: {
       type: DataTypes.STRING,
+      unique: true,
     },
     urlGeoserver: {
       type: DataTypes.STRING,
+    },
+    is_public: {
+      type: DataTypes.BOOLEAN,
     },
   });
 

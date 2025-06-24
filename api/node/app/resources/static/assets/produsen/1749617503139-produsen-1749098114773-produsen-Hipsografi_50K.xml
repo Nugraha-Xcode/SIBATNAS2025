@@ -1,0 +1,909 @@
+﻿<MD_Metadata xmlns="http://www.isotc211.org/2005/gmd" xmlns:gco="http://www.isotc211.org/2005/gco" xmlns:gts="http://www.isotc211.org/2005/gts" xmlns:srv="http://www.isotc211.org/2005/srv" xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <fileIdentifier>
+    <gco:CharacterString>Titik Kedalaman</gco:CharacterString>
+  </fileIdentifier>
+  <language>
+    <LanguageCode codeList="http://www.loc.gov/standards/iso639-2/php/code_list.php" codeListValue="ind" codeSpace="ISO639-2">ind</LanguageCode>
+  </language>
+  <characterSet>
+    <MD_CharacterSetCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_CharacterSetCode" codeListValue="utf8" codeSpace="ISOTC211/19115">utf8</MD_CharacterSetCode>
+  </characterSet>
+  <parentIdentifier>
+    <gco:CharacterString>Titik Kedalaman</gco:CharacterString>
+  </parentIdentifier>
+  <hierarchyLevel>
+    <MD_ScopeCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_ScopeCode" codeListValue="dataset" codeSpace="ISOTC211/19115">dataset</MD_ScopeCode>
+  </hierarchyLevel>
+  <hierarchyLevelName>
+    <gco:CharacterString>dataset</gco:CharacterString>
+  </hierarchyLevelName>
+  <contact>
+    <CI_ResponsibleParty>
+      <individualName>
+        <gco:CharacterString>Dheny Trie Wahyu Sampurno</gco:CharacterString>
+      </individualName>
+      <organisationName>
+        <gco:CharacterString>Badan Informasi Geospasial</gco:CharacterString>
+      </organisationName>
+      <positionName>
+        <gco:CharacterString>Plt. Direktur Atlas dan Penggunaan Informasi Geospasial</gco:CharacterString>
+      </positionName>
+      <contactInfo>
+        <CI_Contact>
+          <phone>
+            <CI_Telephone>
+              <voice>
+                <gco:CharacterString>021-8753155, 87908988</gco:CharacterString>
+              </voice>
+            </CI_Telephone>
+          </phone>
+          <address>
+            <CI_Address>
+              <deliveryPoint>
+                <gco:CharacterString>Jl. Raya Jakarta Bogor Km. 46, Kawasan Sains dan Teknologi Soekarno Cibinong, Koordinate:6° 29’ 27.79” LS. 106° 50’ 56.08” BT</gco:CharacterString>
+              </deliveryPoint>
+              <city>
+                <gco:CharacterString>Bogor</gco:CharacterString>
+              </city>
+              <administrativeArea>
+                <gco:CharacterString>Jawa Barat</gco:CharacterString>
+              </administrativeArea>
+              <postalCode>
+                <gco:CharacterString>16911</gco:CharacterString>
+              </postalCode>
+              <country>
+                <Country codeList="http://www.iso.org/iso/country_codes/iso_3166_code_lists.htm" codeListValue="ID" codeSpace="ISO3166-1">ID</Country>
+              </country>
+              <electronicMailAddress>
+                <gco:CharacterString>info@big.go.id</gco:CharacterString>
+              </electronicMailAddress>
+            </CI_Address>
+          </address>
+        </CI_Contact>
+      </contactInfo>
+      <role>
+        <CI_RoleCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_RoleCode" codeListValue="distributor" codeSpace="ISOTC211/19115">distributor</CI_RoleCode>
+      </role>
+    </CI_ResponsibleParty>
+  </contact>
+  <contact>
+    <CI_ResponsibleParty>
+      <individualName>
+        <gco:CharacterString>Astrit Rimayanti</gco:CharacterString>
+      </individualName>
+      <organisationName>
+        <gco:CharacterString>Badan Informasi Geospasial</gco:CharacterString>
+      </organisationName>
+      <positionName>
+        <gco:CharacterString>Direktur Pemetaan Rupabumi Wilayah Laut dan Pantai</gco:CharacterString>
+      </positionName>
+      <contactInfo>
+        <CI_Contact>
+          <address>
+            <CI_Address>
+              <deliveryPoint>
+                <gco:CharacterString>Jl. Raya Jakarta Bogor Km. 46, Kawasan Sains dan Teknologi Soekarno Cibinong, Koordinate:6° 29’ 27.79” LS. 106° 50’ 56.08” BT</gco:CharacterString>
+              </deliveryPoint>
+              <city>
+                <gco:CharacterString>Bogor</gco:CharacterString>
+              </city>
+              <administrativeArea>
+                <gco:CharacterString>Jawa Barat</gco:CharacterString>
+              </administrativeArea>
+              <postalCode>
+                <gco:CharacterString>16911</gco:CharacterString>
+              </postalCode>
+              <country>
+                <Country codeList="http://www.iso.org/iso/country_codes/iso_3166_code_lists.htm" codeListValue="ID" codeSpace="ISO3166-1">ID</Country>
+              </country>
+              <electronicMailAddress>
+                <gco:CharacterString>info@big.go.id</gco:CharacterString>
+              </electronicMailAddress>
+            </CI_Address>
+          </address>
+        </CI_Contact>
+      </contactInfo>
+      <role>
+        <CI_RoleCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_RoleCode" codeListValue="distributor" codeSpace="ISOTC211/19115">distributor</CI_RoleCode>
+      </role>
+    </CI_ResponsibleParty>
+  </contact>
+  <dateStamp>
+    <gco:Date>2024-12-06</gco:Date>
+  </dateStamp>
+  <metadataStandardName>
+    <gco:CharacterString>ISO 19139 Geographic Information - Metadata - Implementation Specification</gco:CharacterString>
+  </metadataStandardName>
+  <metadataStandardVersion>
+    <gco:CharacterString>2007</gco:CharacterString>
+  </metadataStandardVersion>
+  <locale>
+    <PT_Locale>
+      <languageCode>
+        <LanguageCode codeList="http://www.loc.gov/standards/iso639-2/php/code_list.php" codeListValue="ind" codeSpace="ISO639-2">ind</LanguageCode>
+      </languageCode>
+      <country>
+        <Country codeList="http://www.iso.org/iso/country_codes/iso_3166_code_lists.htm" codeListValue="ID" codeSpace="ISO3166-1">ID</Country>
+      </country>
+      <characterEncoding>
+        <MD_CharacterSetCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_CharacterSetCode" codeListValue="utf8" codeSpace="ISOTC211/19115">utf8</MD_CharacterSetCode>
+      </characterEncoding>
+    </PT_Locale>
+  </locale>
+  <spatialRepresentationInfo>
+    <MD_VectorSpatialRepresentation>
+      <topologyLevel>
+        <MD_TopologyLevelCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_TopologyLevelCode" codeListValue="geometryOnly" codeSpace="ISOTC211/19115">geometryOnly</MD_TopologyLevelCode>
+      </topologyLevel>
+      <geometricObjects>
+        <MD_GeometricObjects>
+          <geometricObjectType>
+            <MD_GeometricObjectTypeCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_GeometricObjectTypeCode" codeListValue="point" codeSpace="ISOTC211/19115">point</MD_GeometricObjectTypeCode>
+          </geometricObjectType>
+          <geometricObjectCount>
+            <gco:Integer>2181</gco:Integer>
+          </geometricObjectCount>
+        </MD_GeometricObjects>
+      </geometricObjects>
+      <geometricObjects>
+        <MD_GeometricObjects>
+          <geometricObjectType>
+            <MD_GeometricObjectTypeCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_GeometricObjectTypeCode" codeListValue="composite" codeSpace="ISOTC211/19115">composite</MD_GeometricObjectTypeCode>
+          </geometricObjectType>
+          <geometricObjectCount>
+            <gco:Integer>675</gco:Integer>
+          </geometricObjectCount>
+        </MD_GeometricObjects>
+      </geometricObjects>
+      <geometricObjects>
+        <MD_GeometricObjects>
+          <geometricObjectType>
+            <MD_GeometricObjectTypeCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_GeometricObjectTypeCode" codeListValue="composite" codeSpace="ISOTC211/19115">composite</MD_GeometricObjectTypeCode>
+          </geometricObjectType>
+          <geometricObjectCount>
+            <gco:Integer>10371</gco:Integer>
+          </geometricObjectCount>
+        </MD_GeometricObjects>
+      </geometricObjects>
+      <geometricObjects>
+        <MD_GeometricObjects>
+          <geometricObjectType>
+            <MD_GeometricObjectTypeCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_GeometricObjectTypeCode" codeListValue="point" codeSpace="ISOTC211/19115">point</MD_GeometricObjectTypeCode>
+          </geometricObjectType>
+          <geometricObjectCount>
+            <gco:Integer>235393</gco:Integer>
+          </geometricObjectCount>
+        </MD_GeometricObjects>
+      </geometricObjects>
+      <geometricObjects>
+        <MD_GeometricObjects>
+          <geometricObjectType>
+            <MD_GeometricObjectTypeCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_GeometricObjectTypeCode" codeListValue="point" codeSpace="ISOTC211/19115">point</MD_GeometricObjectTypeCode>
+          </geometricObjectType>
+          <geometricObjectCount>
+            <gco:Integer>47827</gco:Integer>
+          </geometricObjectCount>
+        </MD_GeometricObjects>
+      </geometricObjects>
+      <geometricObjects>
+        <MD_GeometricObjects>
+          <geometricObjectType>
+            <MD_GeometricObjectTypeCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_GeometricObjectTypeCode" codeListValue="point" codeSpace="ISOTC211/19115">point</MD_GeometricObjectTypeCode>
+          </geometricObjectType>
+          <geometricObjectCount>
+            <gco:Integer>330728</gco:Integer>
+          </geometricObjectCount>
+        </MD_GeometricObjects>
+      </geometricObjects>
+      <geometricObjects>
+        <MD_GeometricObjects>
+          <geometricObjectType>
+            <MD_GeometricObjectTypeCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_GeometricObjectTypeCode" codeListValue="point" codeSpace="ISOTC211/19115">point</MD_GeometricObjectTypeCode>
+          </geometricObjectType>
+          <geometricObjectCount>
+            <gco:Integer>151322</gco:Integer>
+          </geometricObjectCount>
+        </MD_GeometricObjects>
+      </geometricObjects>
+      <geometricObjects>
+        <MD_GeometricObjects>
+          <geometricObjectType>
+            <MD_GeometricObjectTypeCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_GeometricObjectTypeCode" codeListValue="composite" codeSpace="ISOTC211/19115">composite</MD_GeometricObjectTypeCode>
+          </geometricObjectType>
+          <geometricObjectCount>
+            <gco:Integer>1520</gco:Integer>
+          </geometricObjectCount>
+        </MD_GeometricObjects>
+      </geometricObjects>
+      <geometricObjects>
+        <MD_GeometricObjects>
+          <geometricObjectType>
+            <MD_GeometricObjectTypeCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_GeometricObjectTypeCode" codeListValue="composite" codeSpace="ISOTC211/19115">composite</MD_GeometricObjectTypeCode>
+          </geometricObjectType>
+          <geometricObjectCount>
+            <gco:Integer>675</gco:Integer>
+          </geometricObjectCount>
+        </MD_GeometricObjects>
+      </geometricObjects>
+      <geometricObjects>
+        <MD_GeometricObjects>
+          <geometricObjectType>
+            <MD_GeometricObjectTypeCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_GeometricObjectTypeCode" codeListValue="point" codeSpace="ISOTC211/19115">point</MD_GeometricObjectTypeCode>
+          </geometricObjectType>
+          <geometricObjectCount>
+            <gco:Integer>2181</gco:Integer>
+          </geometricObjectCount>
+        </MD_GeometricObjects>
+      </geometricObjects>
+      <geometricObjects>
+        <MD_GeometricObjects>
+          <geometricObjectType>
+            <MD_GeometricObjectTypeCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_GeometricObjectTypeCode" codeListValue="point" codeSpace="ISOTC211/19115">point</MD_GeometricObjectTypeCode>
+          </geometricObjectType>
+          <geometricObjectCount>
+            <gco:Integer>2181</gco:Integer>
+          </geometricObjectCount>
+        </MD_GeometricObjects>
+      </geometricObjects>
+      <geometricObjects>
+        <MD_GeometricObjects>
+          <geometricObjectType>
+            <MD_GeometricObjectTypeCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_GeometricObjectTypeCode" codeListValue="composite" codeSpace="ISOTC211/19115">composite</MD_GeometricObjectTypeCode>
+          </geometricObjectType>
+          <geometricObjectCount>
+            <gco:Integer>210</gco:Integer>
+          </geometricObjectCount>
+        </MD_GeometricObjects>
+      </geometricObjects>
+      <geometricObjects>
+        <MD_GeometricObjects>
+          <geometricObjectType>
+            <MD_GeometricObjectTypeCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_GeometricObjectTypeCode" codeListValue="composite" codeSpace="ISOTC211/19115">composite</MD_GeometricObjectTypeCode>
+          </geometricObjectType>
+          <geometricObjectCount>
+            <gco:Integer>1040</gco:Integer>
+          </geometricObjectCount>
+        </MD_GeometricObjects>
+      </geometricObjects>
+    </MD_VectorSpatialRepresentation>
+  </spatialRepresentationInfo>
+  <referenceSystemInfo>
+    <MD_ReferenceSystem>
+      <referenceSystemIdentifier>
+        <RS_Identifier>
+          <code>
+            <gco:CharacterString>4326</gco:CharacterString>
+          </code>
+          <codeSpace>
+            <gco:CharacterString>EPSG</gco:CharacterString>
+          </codeSpace>
+          <version>
+            <gco:CharacterString>6.14(3.0.1)</gco:CharacterString>
+          </version>
+        </RS_Identifier>
+      </referenceSystemIdentifier>
+    </MD_ReferenceSystem>
+  </referenceSystemInfo>
+  <identificationInfo>
+    <MD_DataIdentification>
+      <citation>
+        <CI_Citation>
+          <title>
+            <gco:CharacterString>Dataset Hipsografi Survei Batimetri TN Kepulauan Togean</gco:CharacterString>
+          </title>
+          <alternateTitle>
+            <gco:CharacterString>Titik dalam perum diperoleh dari hasil survei MBES, SBES, dan data lainnya</gco:CharacterString>
+          </alternateTitle>
+          <date>
+            <CI_Date>
+              <date>
+                <gco:DateTime>2024-11-29T10:00:00</gco:DateTime>
+              </date>
+              <dateType>
+                <CI_DateTypeCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode" codeListValue="creation" codeSpace="ISOTC211/19115">creation</CI_DateTypeCode>
+              </dateType>
+            </CI_Date>
+          </date>
+          <date>
+            <CI_Date>
+              <date>
+                <gco:Date>2024-12-13</gco:Date>
+              </date>
+              <dateType>
+                <CI_DateTypeCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode" codeListValue="publication" codeSpace="ISOTC211/19115">publication</CI_DateTypeCode>
+              </dateType>
+            </CI_Date>
+          </date>
+          <citedResponsibleParty>
+            <CI_ResponsibleParty>
+              <individualName>
+                <gco:CharacterString>Astrit Rimayanti</gco:CharacterString>
+              </individualName>
+              <organisationName>
+                <gco:CharacterString>Badan Informasi Geospasial</gco:CharacterString>
+              </organisationName>
+              <positionName>
+                <gco:CharacterString>Direktur Pemetaan Rupabumi Wilayah Laut dan Pantai</gco:CharacterString>
+              </positionName>
+              <contactInfo>
+                <CI_Contact>
+                  <address>
+                    <CI_Address>
+                      <deliveryPoint>
+                        <gco:CharacterString>Jl. Raya Jakarta Bogor Km. 46, Kawasan Sains dan Teknologi Soekarno Cibinong, Koordinate:6° 29’ 27.79” LS. 106° 50’ 56.08” BT</gco:CharacterString>
+                      </deliveryPoint>
+                      <city>
+                        <gco:CharacterString>Bogor</gco:CharacterString>
+                      </city>
+                      <administrativeArea>
+                        <gco:CharacterString>Jawa Barat</gco:CharacterString>
+                      </administrativeArea>
+                      <postalCode>
+                        <gco:CharacterString>16911</gco:CharacterString>
+                      </postalCode>
+                      <country>
+                        <Country codeList="http://www.iso.org/iso/country_codes/iso_3166_code_lists.htm" codeListValue="ID" codeSpace="ISO3166-1">ID</Country>
+                      </country>
+                      <electronicMailAddress>
+                        <gco:CharacterString>info@big.go.id</gco:CharacterString>
+                      </electronicMailAddress>
+                    </CI_Address>
+                  </address>
+                </CI_Contact>
+              </contactInfo>
+              <role>
+                <CI_RoleCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_RoleCode" codeListValue="distributor" codeSpace="ISOTC211/19115">distributor</CI_RoleCode>
+              </role>
+            </CI_ResponsibleParty>
+          </citedResponsibleParty>
+          <citedResponsibleParty>
+            <CI_ResponsibleParty>
+              <individualName>
+                <gco:CharacterString>Dheny Trie Wahyu Sampurno</gco:CharacterString>
+              </individualName>
+              <organisationName>
+                <gco:CharacterString>Badan Informasi Geospasial</gco:CharacterString>
+              </organisationName>
+              <positionName>
+                <gco:CharacterString>Plt. Direktur Atlas dan Penggunaan Informasi Geospasial</gco:CharacterString>
+              </positionName>
+              <contactInfo>
+                <CI_Contact>
+                  <phone>
+                    <CI_Telephone>
+                      <voice>
+                        <gco:CharacterString>021-8753155, 87908988</gco:CharacterString>
+                      </voice>
+                    </CI_Telephone>
+                  </phone>
+                  <address>
+                    <CI_Address>
+                      <deliveryPoint>
+                        <gco:CharacterString>Jl. Raya Jakarta Bogor Km. 46, Kawasan Sains dan Teknologi Soekarno Cibinong, Koordinate:6° 29’ 27.79” LS. 106° 50’ 56.08” BT</gco:CharacterString>
+                      </deliveryPoint>
+                      <city>
+                        <gco:CharacterString>Bogor</gco:CharacterString>
+                      </city>
+                      <administrativeArea>
+                        <gco:CharacterString>Jawa Barat</gco:CharacterString>
+                      </administrativeArea>
+                      <postalCode>
+                        <gco:CharacterString>16911</gco:CharacterString>
+                      </postalCode>
+                      <country>
+                        <Country codeList="http://www.iso.org/iso/country_codes/iso_3166_code_lists.htm" codeListValue="ID" codeSpace="ISO3166-1">ID</Country>
+                      </country>
+                      <electronicMailAddress>
+                        <gco:CharacterString>info@big.go.id</gco:CharacterString>
+                      </electronicMailAddress>
+                    </CI_Address>
+                  </address>
+                </CI_Contact>
+              </contactInfo>
+              <role>
+                <CI_RoleCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_RoleCode" codeListValue="distributor" codeSpace="ISOTC211/19115">distributor</CI_RoleCode>
+              </role>
+            </CI_ResponsibleParty>
+          </citedResponsibleParty>
+          <presentationForm>
+            <CI_PresentationFormCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_PresentationFormCode" codeListValue="mapDigital" codeSpace="ISOTC211/19115">mapDigital</CI_PresentationFormCode>
+          </presentationForm>
+        </CI_Citation>
+      </citation>
+      <abstract>
+        <gco:CharacterString>Dataset ini merupakan Dataset Hipsografi yang bersumber dari Survei Batimetri Tahun 2024. Peta dibuat dengan biaya APBN DIPA Badan Informasi Geospasial Tahun Anggaran 2024. Satker Sekretariat Utama kode DIPA- 083.01.1.017216/2024 melalui Pekerjaan Swakelola Survei Batimetri wilayah Taman Nasional Kepulauan Togean, Kabupaten Tojo Una Una, Provinsi Sulawesi Tengah dengan volume pekerjaan 1000 km2.</gco:CharacterString>
+      </abstract>
+      <purpose>
+        <gco:CharacterString>Dataset ini merupakan basis data spasial yang memiliki data spasial hipsografi yang ada di wilayah Taman Nasional Kepulauan Togean.  Dataset Hipsografi meliputi beberapa feature class, diantaranya : KONTURKEDALAMAN_LN, KEDALAMAN_AR, TITIKDALAMPERUM_MBES, TITIKDALAMPERUM_SBES, TITIKDALAMPERUM_SDB, TITIKDALAMPERUM_BATNAS, TITIKDALAMPERUM_PILIHAN</gco:CharacterString>
+      </purpose>
+      <credit>
+        <gco:CharacterString>Direktorat Pemetaan Rupabumi Wilayah Laut dan Pantai - Badan Informasi Geospasial</gco:CharacterString>
+      </credit>
+      <pointOfContact>
+        <CI_ResponsibleParty>
+          <individualName>
+            <gco:CharacterString>Dheny Trie Wahyu Sampurno</gco:CharacterString>
+          </individualName>
+          <organisationName>
+            <gco:CharacterString>Badan Informasi Geospasial</gco:CharacterString>
+          </organisationName>
+          <positionName>
+            <gco:CharacterString>Plt. Direktur Atlas dan Penggunaan Informasi Geospasial</gco:CharacterString>
+          </positionName>
+          <contactInfo>
+            <CI_Contact>
+              <phone>
+                <CI_Telephone>
+                  <voice>
+                    <gco:CharacterString>021-8753155, 87908988</gco:CharacterString>
+                  </voice>
+                </CI_Telephone>
+              </phone>
+              <address>
+                <CI_Address>
+                  <deliveryPoint>
+                    <gco:CharacterString>Jl. Raya Jakarta Bogor Km. 46, Kawasan Sains dan Teknologi Soekarno Cibinong, Koordinate:6° 29’ 27.79” LS. 106° 50’ 56.08” BT</gco:CharacterString>
+                  </deliveryPoint>
+                  <city>
+                    <gco:CharacterString>Bogor</gco:CharacterString>
+                  </city>
+                  <administrativeArea>
+                    <gco:CharacterString>Jawa Barat</gco:CharacterString>
+                  </administrativeArea>
+                  <postalCode>
+                    <gco:CharacterString>16911</gco:CharacterString>
+                  </postalCode>
+                  <country>
+                    <Country codeList="http://www.iso.org/iso/country_codes/iso_3166_code_lists.htm" codeListValue="ID" codeSpace="ISO3166-1">ID</Country>
+                  </country>
+                  <electronicMailAddress>
+                    <gco:CharacterString>info@big.go.id</gco:CharacterString>
+                  </electronicMailAddress>
+                </CI_Address>
+              </address>
+            </CI_Contact>
+          </contactInfo>
+          <role>
+            <CI_RoleCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_RoleCode" codeListValue="distributor" codeSpace="ISOTC211/19115">distributor</CI_RoleCode>
+          </role>
+        </CI_ResponsibleParty>
+      </pointOfContact>
+      <pointOfContact>
+        <CI_ResponsibleParty>
+          <individualName>
+            <gco:CharacterString>Astrit Rimayanti</gco:CharacterString>
+          </individualName>
+          <organisationName>
+            <gco:CharacterString>Badan Informasi Geospasial</gco:CharacterString>
+          </organisationName>
+          <positionName>
+            <gco:CharacterString>Direktur Pemetaan Rupabumi Wilayah Laut dan Pantai</gco:CharacterString>
+          </positionName>
+          <contactInfo>
+            <CI_Contact>
+              <address>
+                <CI_Address>
+                  <deliveryPoint>
+                    <gco:CharacterString>Jl. Raya Jakarta Bogor Km. 46, Kawasan Sains dan Teknologi Soekarno Cibinong, Koordinate:6° 29’ 27.79” LS. 106° 50’ 56.08” BT</gco:CharacterString>
+                  </deliveryPoint>
+                  <city>
+                    <gco:CharacterString>Bogor</gco:CharacterString>
+                  </city>
+                  <administrativeArea>
+                    <gco:CharacterString>Jawa Barat</gco:CharacterString>
+                  </administrativeArea>
+                  <postalCode>
+                    <gco:CharacterString>16911</gco:CharacterString>
+                  </postalCode>
+                  <country>
+                    <Country codeList="http://www.iso.org/iso/country_codes/iso_3166_code_lists.htm" codeListValue="ID" codeSpace="ISO3166-1">ID</Country>
+                  </country>
+                  <electronicMailAddress>
+                    <gco:CharacterString>info@big.go.id</gco:CharacterString>
+                  </electronicMailAddress>
+                </CI_Address>
+              </address>
+            </CI_Contact>
+          </contactInfo>
+          <role>
+            <CI_RoleCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_RoleCode" codeListValue="distributor" codeSpace="ISOTC211/19115">distributor</CI_RoleCode>
+          </role>
+        </CI_ResponsibleParty>
+      </pointOfContact>
+      <resourceMaintenance>
+        <MD_MaintenanceInformation>
+          <maintenanceAndUpdateFrequency>
+            <MD_MaintenanceFrequencyCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_MaintenanceFrequencyCode" codeListValue="asNeeded" codeSpace="ISOTC211/19115">asNeeded</MD_MaintenanceFrequencyCode>
+          </maintenanceAndUpdateFrequency>
+          <dateOfNextUpdate>
+            <gco:Date>2026-05-15</gco:Date>
+          </dateOfNextUpdate>
+          <userDefinedMaintenanceFrequency>
+            <gts:TM_PeriodDuration>Yearly</gts:TM_PeriodDuration>
+          </userDefinedMaintenanceFrequency>
+        </MD_MaintenanceInformation>
+      </resourceMaintenance>
+      <descriptiveKeywords>
+        <MD_Keywords>
+          <keyword>
+            <gco:CharacterString>2024</gco:CharacterString>
+          </keyword>
+          <type>
+            <MD_KeywordTypeCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_KeywordTypeCode" codeListValue="temporal" codeSpace="ISOTC211/19115">temporal</MD_KeywordTypeCode>
+          </type>
+        </MD_Keywords>
+      </descriptiveKeywords>
+      <descriptiveKeywords>
+        <MD_Keywords>
+          <keyword>
+            <gco:CharacterString>Muka Laut Rerata</gco:CharacterString>
+          </keyword>
+          <keyword>
+            <gco:CharacterString>Surut Terendah</gco:CharacterString>
+          </keyword>
+          <keyword>
+            <gco:CharacterString>Garis Pantai</gco:CharacterString>
+          </keyword>
+          <type>
+            <MD_KeywordTypeCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_KeywordTypeCode" codeListValue="theme" codeSpace="ISOTC211/19115">theme</MD_KeywordTypeCode>
+          </type>
+        </MD_Keywords>
+      </descriptiveKeywords>
+      <descriptiveKeywords>
+        <MD_Keywords>
+          <keyword>
+            <gco:CharacterString>Downloadable Data</gco:CharacterString>
+          </keyword>
+          <thesaurusName uuidref="723f6998-058e-11dc-8314-0800200c9a66" />
+        </MD_Keywords>
+      </descriptiveKeywords>
+      <resourceConstraints>
+        <MD_Constraints>
+          <useLimitation>
+            <gco:CharacterString>Data ini dapat dimanfaatkan sesuai dengan kebutuhan pengguna dengan skala maksimal 1:50.000, dan tidak digunakan untuk keperluan navigasi atau pelayaran</gco:CharacterString>
+          </useLimitation>
+        </MD_Constraints>
+      </resourceConstraints>
+      <spatialRepresentationType>
+        <MD_SpatialRepresentationTypeCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_SpatialRepresentationTypeCode" codeListValue="vector" codeSpace="ISOTC211/19115">vector</MD_SpatialRepresentationTypeCode>
+      </spatialRepresentationType>
+      <spatialResolution>
+        <MD_Resolution>
+          <equivalentScale>
+            <MD_RepresentativeFraction>
+              <denominator>
+                <gco:Integer>5000</gco:Integer>
+              </denominator>
+            </MD_RepresentativeFraction>
+          </equivalentScale>
+        </MD_Resolution>
+      </spatialResolution>
+      <language>
+        <LanguageCode codeList="http://www.loc.gov/standards/iso639-2/php/code_list.php" codeListValue="ind" codeSpace="ISO639-2">ind</LanguageCode>
+      </language>
+      <characterSet>
+        <MD_CharacterSetCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_CharacterSetCode" codeListValue="utf8" codeSpace="ISOTC211/19115">utf8</MD_CharacterSetCode>
+      </characterSet>
+      <topicCategory>
+        <MD_TopicCategoryCode>oceans</MD_TopicCategoryCode>
+      </topicCategory>
+      <topicCategory>
+        <MD_TopicCategoryCode>boundaries</MD_TopicCategoryCode>
+      </topicCategory>
+      <topicCategory>
+        <MD_TopicCategoryCode>inlandWaters</MD_TopicCategoryCode>
+      </topicCategory>
+      <topicCategory>
+        <MD_TopicCategoryCode>elevation</MD_TopicCategoryCode>
+      </topicCategory>
+      <environmentDescription>
+        <gco:CharacterString>Version 6.2 (Build 9200) ; Esri ArcGIS 10.6.1.9270</gco:CharacterString>
+      </environmentDescription>
+      <extent>
+        <EX_Extent>
+          <geographicElement>
+            <EX_GeographicBoundingBox>
+              <extentTypeCode>
+                <gco:Boolean>true</gco:Boolean>
+              </extentTypeCode>
+              <westBoundLongitude>
+                <gco:Decimal>117.15039</gco:Decimal>
+              </westBoundLongitude>
+              <eastBoundLongitude>
+                <gco:Decimal>117.959529</gco:Decimal>
+              </eastBoundLongitude>
+              <southBoundLatitude>
+                <gco:Decimal>-0.919403</gco:Decimal>
+              </southBoundLatitude>
+              <northBoundLatitude>
+                <gco:Decimal>2.211642</gco:Decimal>
+              </northBoundLatitude>
+            </EX_GeographicBoundingBox>
+          </geographicElement>
+        </EX_Extent>
+      </extent>
+      <extent>
+        <EX_Extent>
+          <description>
+            <gco:CharacterString>Sebagian wilayah pantai Kabupaten Kutai Kartanegara dan Berau</gco:CharacterString>
+          </description>
+          <geographicElement>
+            <EX_GeographicBoundingBox>
+              <extentTypeCode>
+                <gco:Boolean>true</gco:Boolean>
+              </extentTypeCode>
+              <westBoundLongitude>
+                <gco:Decimal>117.323206</gco:Decimal>
+              </westBoundLongitude>
+              <eastBoundLongitude>
+                <gco:Decimal>117.728126</gco:Decimal>
+              </eastBoundLongitude>
+              <southBoundLatitude>
+                <gco:Decimal>2.772693</gco:Decimal>
+              </southBoundLatitude>
+              <northBoundLatitude>
+                <gco:Decimal>3.12698</gco:Decimal>
+              </northBoundLatitude>
+            </EX_GeographicBoundingBox>
+          </geographicElement>
+        </EX_Extent>
+      </extent>
+      <extent>
+        <EX_Extent>
+          <geographicElement>
+            <EX_GeographicBoundingBox>
+              <extentTypeCode>
+                <gco:Boolean>true</gco:Boolean>
+              </extentTypeCode>
+              <westBoundLongitude>
+                <gco:Decimal>121.563052</gco:Decimal>
+              </westBoundLongitude>
+              <eastBoundLongitude>
+                <gco:Decimal>122.494154</gco:Decimal>
+              </eastBoundLongitude>
+              <southBoundLatitude>
+                <gco:Decimal>-0.594057</gco:Decimal>
+              </southBoundLatitude>
+              <northBoundLatitude>
+                <gco:Decimal>-0.121312</gco:Decimal>
+              </northBoundLatitude>
+            </EX_GeographicBoundingBox>
+          </geographicElement>
+        </EX_Extent>
+      </extent>
+      <extent>
+        <EX_Extent>
+          <geographicElement>
+            <EX_GeographicBoundingBox>
+              <extentTypeCode>
+                <gco:Boolean>true</gco:Boolean>
+              </extentTypeCode>
+              <westBoundLongitude>
+                <gco:Decimal>121.498394</gco:Decimal>
+              </westBoundLongitude>
+              <eastBoundLongitude>
+                <gco:Decimal>122.5</gco:Decimal>
+              </eastBoundLongitude>
+              <southBoundLatitude>
+                <gco:Decimal>-0.667881</gco:Decimal>
+              </southBoundLatitude>
+              <northBoundLatitude>
+                <gco:Decimal>-0.083</gco:Decimal>
+              </northBoundLatitude>
+            </EX_GeographicBoundingBox>
+          </geographicElement>
+        </EX_Extent>
+      </extent>
+    </MD_DataIdentification>
+  </identificationInfo>
+  <contentInfo>
+    <MD_FeatureCatalogueDescription>
+      <complianceCode>
+        <gco:Boolean>true</gco:Boolean>
+      </complianceCode>
+      <language>
+        <LanguageCode codeList="http://www.loc.gov/standards/iso639-2/php/code_list.php" codeListValue="ind" codeSpace="ISO639-2">ind</LanguageCode>
+      </language>
+      <includedWithDataset>
+        <gco:Boolean>true</gco:Boolean>
+      </includedWithDataset>
+      <featureTypes>
+        <gco:LocalName>GARIS PANTAI (GARIS)</gco:LocalName>
+      </featureTypes>
+      <featureCatalogueCitation>
+        <CI_Citation>
+          <title>
+            <gco:CharacterString>Katalog Unsur Geografi Indonesia</gco:CharacterString>
+          </title>
+          <alternateTitle>
+            <gco:CharacterString>KUGI</gco:CharacterString>
+          </alternateTitle>
+          <date>
+            <CI_Date>
+              <date>
+                <gco:Date>2017-01-01</gco:Date>
+              </date>
+              <dateType>
+                <CI_DateTypeCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode" codeListValue="creation" codeSpace="ISOTC211/19115">creation</CI_DateTypeCode>
+              </dateType>
+            </CI_Date>
+          </date>
+          <edition>
+            <gco:CharacterString>KUGI Versi 5</gco:CharacterString>
+          </edition>
+          <editionDate>
+            <gco:Date>2017-01-01</gco:Date>
+          </editionDate>
+          <presentationForm>
+            <CI_PresentationFormCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_PresentationFormCode" codeListValue="documentDigital" codeSpace="ISOTC211/19115">documentDigital</CI_PresentationFormCode>
+          </presentationForm>
+          <collectiveTitle>
+            <gco:CharacterString>KUGI</gco:CharacterString>
+          </collectiveTitle>
+        </CI_Citation>
+      </featureCatalogueCitation>
+    </MD_FeatureCatalogueDescription>
+  </contentInfo>
+  <distributionInfo>
+    <MD_Distribution>
+      <distributionFormat>
+        <MD_Format>
+          <name>
+            <gco:CharacterString>File Geodatabase Feature Class</gco:CharacterString>
+          </name>
+          <version>
+            <gco:CharacterString>KUGI 5.0</gco:CharacterString>
+          </version>
+        </MD_Format>
+      </distributionFormat>
+      <distributor>
+        <MD_Distributor>
+          <distributorContact>
+            <CI_ResponsibleParty>
+              <individualName>
+                <gco:CharacterString>Astrit Rimayanti</gco:CharacterString>
+              </individualName>
+              <organisationName>
+                <gco:CharacterString>Badan Informasi Geospasial</gco:CharacterString>
+              </organisationName>
+              <positionName>
+                <gco:CharacterString>Plt. Direktur Pemetaan Rupabumi Wilayah Laut dan Pantai</gco:CharacterString>
+              </positionName>
+              <contactInfo>
+                <CI_Contact>
+                  <address>
+                    <CI_Address>
+                      <deliveryPoint>
+                        <gco:CharacterString>Jl. Raya Jakarta Bogor Km. 46, Kawasan Sains dan Teknologi Soekarno Cibinong, Koordinate:6° 29’ 27.79” LS. 106° 50’ 56.08” BT</gco:CharacterString>
+                      </deliveryPoint>
+                      <city>
+                        <gco:CharacterString>Bogor</gco:CharacterString>
+                      </city>
+                      <administrativeArea>
+                        <gco:CharacterString>Jawa Barat</gco:CharacterString>
+                      </administrativeArea>
+                      <postalCode>
+                        <gco:CharacterString>16911</gco:CharacterString>
+                      </postalCode>
+                      <country>
+                        <Country codeList="http://www.iso.org/iso/country_codes/iso_3166_code_lists.htm" codeListValue="ID" codeSpace="ISO3166-1">ID</Country>
+                      </country>
+                      <electronicMailAddress>
+                        <gco:CharacterString>info@big.go.id</gco:CharacterString>
+                      </electronicMailAddress>
+                    </CI_Address>
+                  </address>
+                </CI_Contact>
+              </contactInfo>
+              <role>
+                <CI_RoleCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_RoleCode" codeListValue="distributor" codeSpace="ISOTC211/19115">distributor</CI_RoleCode>
+              </role>
+            </CI_ResponsibleParty>
+          </distributorContact>
+        </MD_Distributor>
+      </distributor>
+      <distributor>
+        <MD_Distributor>
+          <distributorContact>
+            <CI_ResponsibleParty>
+              <individualName>
+                <gco:CharacterString>Dheny Trie Wahyu Sampurno</gco:CharacterString>
+              </individualName>
+              <organisationName>
+                <gco:CharacterString>Badan Informasi Geospasial</gco:CharacterString>
+              </organisationName>
+              <positionName>
+                <gco:CharacterString>Plt. Direktur Atlas dan Penggunaan Informasi Geospasial</gco:CharacterString>
+              </positionName>
+              <contactInfo>
+                <CI_Contact>
+                  <phone>
+                    <CI_Telephone>
+                      <voice>
+                        <gco:CharacterString>021-8753155, 87908988</gco:CharacterString>
+                      </voice>
+                    </CI_Telephone>
+                  </phone>
+                  <address>
+                    <CI_Address>
+                      <deliveryPoint>
+                        <gco:CharacterString>Jl. Raya Jakarta Bogor Km. 46, Kawasan Sains dan Teknologi Soekarno Cibinong, Koordinate:6° 29’ 27.79” LS. 106° 50’ 56.08” BT</gco:CharacterString>
+                      </deliveryPoint>
+                      <city>
+                        <gco:CharacterString>Bogor</gco:CharacterString>
+                      </city>
+                      <administrativeArea>
+                        <gco:CharacterString>Jawa Barat</gco:CharacterString>
+                      </administrativeArea>
+                      <postalCode>
+                        <gco:CharacterString>16911</gco:CharacterString>
+                      </postalCode>
+                      <country>
+                        <Country codeList="http://www.iso.org/iso/country_codes/iso_3166_code_lists.htm" codeListValue="ID" codeSpace="ISO3166-1">ID</Country>
+                      </country>
+                      <electronicMailAddress>
+                        <gco:CharacterString>info@big.go.id</gco:CharacterString>
+                      </electronicMailAddress>
+                    </CI_Address>
+                  </address>
+                </CI_Contact>
+              </contactInfo>
+              <role>
+                <CI_RoleCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_RoleCode" codeListValue="distributor" codeSpace="ISOTC211/19115">distributor</CI_RoleCode>
+              </role>
+            </CI_ResponsibleParty>
+          </distributorContact>
+        </MD_Distributor>
+      </distributor>
+    </MD_Distribution>
+  </distributionInfo>
+  <dataQualityInfo>
+    <DQ_DataQuality>
+      <scope>
+        <DQ_Scope>
+          <level>
+            <MD_ScopeCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_ScopeCode" codeListValue="dataset" codeSpace="ISOTC211/19115">dataset</MD_ScopeCode>
+          </level>
+        </DQ_Scope>
+      </scope>
+      <lineage>
+        <LI_Lineage>
+          <statement>
+            <gco:CharacterString>Data ini disusun dari sumber data berupa: 1. Data survei hidrografi menggunakan singlebeam echosounder tahun 2024. 2. Data deliniasi citra satelit resolusi tinggi dan foto udara yang direkam dari tahun 2011 - 2023 (Garis pantai indikasi pasang tertinggi).</gco:CharacterString>
+          </statement>
+          <source>
+            <LI_Source>
+              <description>
+                <gco:CharacterString>1. Sumber data yang digunakan adalah Data survei batimetri SBES tahun akuisisi 2024 dengan akurasi horizontal sebesar 0,10 meter, akurasi vertikal sebesar 0,10 meter 2. Garis Pantai Indikatif yang dipakai adalah bersumber dari orthophoto/imagery dari tahun 2012-2021 yang diberikan oleh Pusat Pemetaan Kelautan dan Lingkungan Pantai 3. Model datum pasang surut yang dipakai MHWS, MSL, dan LAT serta model Geoid yang diberikan oleh Pusat Pemetaan Kelautan dan Lingkungan Pantai</gco:CharacterString>
+              </description>
+              <scaleDenominator>
+                <MD_RepresentativeFraction>
+                  <denominator>
+                    <gco:Integer>5000</gco:Integer>
+                  </denominator>
+                </MD_RepresentativeFraction>
+              </scaleDenominator>
+            </LI_Source>
+          </source>
+        </LI_Lineage>
+      </lineage>
+    </DQ_DataQuality>
+  </dataQualityInfo>
+  <metadataConstraints>
+    <MD_Constraints>
+      <useLimitation>
+        <gco:CharacterString>Data ini dapat dimanfaatkan sesuai dengan kebutuhan pengguna dengan skala maksimal 1:50.000, dan tidak digunakan untuk keperluan navigasi atau pelayaran</gco:CharacterString>
+      </useLimitation>
+    </MD_Constraints>
+  </metadataConstraints>
+  <metadataMaintenance>
+    <MD_MaintenanceInformation>
+      <maintenanceAndUpdateFrequency>
+        <MD_MaintenanceFrequencyCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_MaintenanceFrequencyCode" codeListValue="asNeeded" codeSpace="ISOTC211/19115">asNeeded</MD_MaintenanceFrequencyCode>
+      </maintenanceAndUpdateFrequency>
+      <updateScope>
+        <MD_ScopeCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_ScopeCode" codeListValue="feature" codeSpace="ISOTC211/19115">feature</MD_ScopeCode>
+      </updateScope>
+    </MD_MaintenanceInformation>
+  </metadataMaintenance>
+</MD_Metadata>

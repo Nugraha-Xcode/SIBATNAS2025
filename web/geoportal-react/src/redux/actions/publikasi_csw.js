@@ -13,9 +13,9 @@ import {
 import Service from "src/services/publikasi_csw.service";
 import EventBus from "src/utils/EventBus";
 
-export const retrieve = () => async (dispatch) => {
+export const retrieve = (params = {}) => async (dispatch) => {
   try {
-    const res = await Service.getAll();
+    const res = await Service.getAll(params);
 
     dispatch({
       type: RETRIEVE_PUBLIKASI_CSW_SUCCESS,
@@ -29,9 +29,9 @@ export const retrieve = () => async (dispatch) => {
   }
 };
 
-export const retrievePublik = () => async (dispatch) => {
+export const retrievePublik = (params = {}) => async (dispatch) => {
   try {
-    const res = await Service.getAllPublik();
+    const res = await Service.getAllPublik(params);
 
     dispatch({
       type: RETRIEVE_PUBLIKASI_CSW_SUCCESS,

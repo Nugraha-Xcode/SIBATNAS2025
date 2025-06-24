@@ -1,0 +1,884 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata xml:lang="en">
+	<dataIdInfo>
+		<idCitation>
+			<resTitle>TERMINAL_PT</resTitle>
+			<date>
+				<createDate>2022-06-01T00:00:00</createDate>
+			</date>
+			<citOnlineRes>
+				<linkage>https://sigita.dephub.go.id:6443/arcgis/rest/services/TERMINAL_PT/MapServer/0</linkage>
+				<protocol>ESRI:ArcGIS:MapServer</protocol>
+				<orName>Web Service Terminal_PT</orName>
+				<orDesc>Web Service Terminal_PT  dengan representasi point</orDesc>
+				<orFunct>
+					<OnFunctCd value="002"/>
+				</orFunct>
+			</citOnlineRes>
+			<citId>
+				<identCode>TERMINAL_PT</identCode>
+				<identAuth>
+					<resTitle>TERMINAL_PT</resTitle>
+				</identAuth>
+			</citId>
+			<resEd>Satu Data Indonesia</resEd>
+			<presForm>
+				<PresFormCd value="005"/>
+			</presForm>
+			<citRespParty>
+				<rpIndName>Capt. Avirianto S, S.Pd., M.M.</rpIndName>
+				<rpOrgName>Kementerian Perhubungan Republik Indonesia</rpOrgName>
+				<rpPosName>Kepala Pusat Data dan Informasi</rpPosName>
+				<role>
+					<RoleCd value="002"/>
+				</role>
+				<rpCntInfo>
+					<cntAddress>
+						<eMailAdd>pusdatin@kemenhub.go.id</eMailAdd>
+						<delPoint>Jalan Medan Merdeka Barat No. 8 Jakarta Pusat 10110, Gedung Karya Lt.24</delPoint>
+						<city>Jakarta Pusat</city>
+						<adminArea>DKI Jakarta</adminArea>
+						<postCode>10110</postCode>
+						<country>ID</country>
+					</cntAddress>
+					<cntPhone>
+						<voiceNum>(021) 3456919</voiceNum>
+						<faxNum>(021) 3857085</faxNum>
+					</cntPhone>
+					<cntHours>08.00 - 16.00 WIB</cntHours>
+					<cntInstr>1. Dapat dihubungi pada jam kantor; 2. Dapat berkirim surat resmi kepada Kepala Pusat Data dan Teknologi Informasi.</cntInstr>
+				</rpCntInfo>
+			</citRespParty>
+			<citRespParty>
+				<rpIndName>Ir. M. Popik Montanasyah, M.T.</rpIndName>
+				<rpOrgName>Direktorat Prasarana Transportasi Jalan</rpOrgName>
+				<rpPosName>Direktur Prasarana Transportasi Jalan</rpPosName>
+				<role>
+					<RoleCd value="003"/>
+				</role>
+				<rpCntInfo>
+					<cntAddress>
+						<delPoint>Jalan Medan Merdeka Barat No. 8 Jakarta Pusat 10110</delPoint>
+						<city>Jakarta Pusat</city>
+						<adminArea>DKI Jakarta</adminArea>
+						<postCode>10110</postCode>
+						<country>ID</country>
+					</cntAddress>
+					<cntPhone>
+						<voiceNum>(021) 3456919</voiceNum>
+						<faxNum>(021) 3857085</faxNum>
+					</cntPhone>
+					<cntHours>08.00 - 16.00 WIB</cntHours>
+					<cntInstr>1. Dapat dihubungi pada jam kantor; 2. Dapat berkirim surat resmi.</cntInstr>
+				</rpCntInfo>
+			</citRespParty>
+		</idCitation>
+		<idAbs>&lt;div style=&apos;text-align:Left;&apos;&gt;&lt;div&gt;&lt;div&gt;&lt;p&gt;&lt;span&gt;Terminal Tipe A adalah &lt;/span&gt;&lt;span&gt;Terminal Angkutan Jalan yang melayani kendaraan umum untuk angkutan lintas batas negara dan/atau angkutan antarkota antar provinsi&lt;/span&gt;&lt;/p&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;</idAbs>
+		<idPurp>data ini dibuat untuk memenuhi Data Prioritas Satu Data Indonesia</idPurp>
+		<idCredit>Kementerian Perhubungan</idCredit>
+		<envirDesc>Version 6.2 (Build 9200) ; Esri ArcGIS 10.5.0.6491</envirDesc>
+		<dataLang>
+			<languageCode value="ind"/>
+		</dataLang>
+		<dataChar>
+			<CharSetCd value="004"/>
+		</dataChar>
+		<spatRpType>
+			<SpatRepTypCd value="001"/>
+		</spatRpType>
+		<dataScale>
+			<equScale>
+				<rfDenom>500</rfDenom>
+			</equScale>
+		</dataScale>
+		<tpCat>
+			<TopicCatCd value='018'/>
+		</tpCat>
+		<searchKeys>
+			<keyword>Informasi geospasial darat</keyword>
+			<keyword>Terminal</keyword>
+			<keyword>Terminal tipe A</keyword>
+		</searchKeys>
+		<themeKeys>
+			<keyword>Informasi geospasial darat</keyword>
+		</themeKeys>
+		<placeKeys>
+			<keyword>Indonesia</keyword>
+		</placeKeys>
+		<dataExt>
+			<geoEle>
+				<GeoBndBox>
+					<exTypeCode>1</exTypeCode>
+					<westBL>95.329159</westBL>
+					<eastBL>140.694342</eastBL>
+					<southBL>-10.140278</southBL>
+					<northBL>5.529789</northBL>
+				</GeoBndBox>
+			</geoEle>
+		</dataExt>
+		<idPoC>
+			<rpIndName>Ir. M. Popik Montanasyah, M.T.</rpIndName>
+			<rpOrgName>Direktorat Prasarana Transportasi Jalan</rpOrgName>
+			<rpPosName>Direktur Prasarana Transportasi Jalan</rpPosName>
+			<role>
+				<RoleCd value="003"/>
+			</role>
+			<rpCntInfo>
+				<cntAddress>
+					<delPoint>Jalan Medan Merdeka Barat No. 8 Jakarta Pusat 10110</delPoint>
+					<city>Jakarta Pusat</city>
+					<adminArea>DKI Jakarta</adminArea>
+					<postCode>10110</postCode>
+					<country>ID</country>
+				</cntAddress>
+				<cntPhone>
+					<voiceNum>(021) 3456919</voiceNum>
+					<faxNum>(021) 3857085</faxNum>
+				</cntPhone>
+				<cntHours>08.00 - 16.00 WIB</cntHours>
+				<cntInstr>1. Dapat dihubungi pada jam kantor; 2. Dapat berkirim surat resmi.</cntInstr>
+			</rpCntInfo>
+		</idPoC>
+		<resMaint>
+			<maintFreq>
+				<MaintFreqCd value="009"/>
+			</maintFreq>
+			<maintScp>
+				<ScopeCd value="005"/>
+			</maintScp>
+		</resMaint>
+		<resConst>
+			<LegConsts>
+				<useConsts>
+					<RestrictCd value="005"/>
+				</useConsts>
+			</LegConsts>
+		</resConst>
+	</dataIdInfo>
+	<dqInfo>
+		<dqScope>
+			<scpLvl>
+				<ScopeCd value="005"/>
+			</scpLvl>
+		</dqScope>
+		<dataLineage>
+			<statement>data ini berasal dari Direktorat Prasarana Transportasi Jalan</statement>
+			<prcStep>
+				<stepDesc>1. Bersurat ke Direktorat Prasarana Transportasi Jalan dan Sekretaris Direktorat Jenderal Perhubungan Darat terkait permintaan data terminal 2. Sekretaris Direktorat Jenderal Perhubungan Darat menyampaikan SK Penetapan lokasi Terminal Tipe A 3. Konversi data tabular menjadi data spasial 4. Pengecekan kesesuaian lokasi terminal tipe A 5. Penyajian data terminal tipe A 6. Penyebarluasan data terminal tipe A</stepDesc>
+				<stepRat>Untuk memenuhi spesifikasi produk Terminal Tipe A</stepRat>
+			</prcStep>
+		</dataLineage>
+		<report type="DQFormConsis">
+			<measDesc>Format data harus geodatabase (gdb)</measDesc>
+			<evalMethDesc>pengecekan terhadap format data</evalMethDesc>
+			<evalMethType>
+				<EvalMethTypeCd value="001"/>
+			</evalMethType>
+			<measResult>
+				<ConResult>
+					<conExpl>Format data tersebut geodatabase (gdb)</conExpl>
+					<conPass>1</conPass>
+					<conSpec>
+						<resTitle>TERMINALTIPEA50000INDONESIA</resTitle>
+					</conSpec>
+				</ConResult>
+			</measResult>
+		</report>
+		<report type="DQDomConsis">
+			<measDesc>Kesesuaian atribut terhadap Kamus Data Geospasial Transportasi Darat</measDesc>
+			<evalMethDesc>Pengecekan atribut data terhadap Kamus Data Geospasial Transportasi Darat</evalMethDesc>
+			<evalMethType>
+				<EvalMethTypeCd value="001"/>
+			</evalMethType>
+			<measResult>
+				<ConResult>
+					<conExpl>atribut sesuai dengan Kamus Data Geospasial Transportasi Darat</conExpl>
+					<conPass>1</conPass>
+					<conSpec>
+						<resTitle>TERMINALTIPEA50000INDONESIA</resTitle>
+					</conSpec>
+				</ConResult>
+			</measResult>
+		</report>
+	</dqInfo>
+	<distInfo>
+		<distTranOps>
+			<onLineSrc>
+				<linkage>https://sigita.dephub.go.id:6443/arcgis/rest/services/TERMINAL_PT/MapServer/0</linkage>
+				<protocol>ESRI:ArcGIS:MapServer</protocol>
+				<orName>Web Service TERMINAL_PT</orName>
+				<orDesc>Web Service TERMINAL_PT</orDesc>
+				<orFunct>
+					<OnFunctCd value="002"/>
+				</orFunct>
+			</onLineSrc>
+		</distTranOps>
+		<distFormat>
+			<formatName>File Geodatabase Feature Class</formatName>
+			<formatVer>gdb</formatVer>
+		</distFormat>
+		<distributor>
+			<distorTran>
+				<onLineSrc>
+					<linkage>https://sigita.dephub.go.id:6443/arcgis/rest/services/TERMINAL_PT/MapServer/0</linkage>
+					<protocol>ESRI:ArcGIS:MapServer</protocol>
+					<orName>Web Service TERMINAL_PT</orName>
+					<orDesc>Web Service TERMINAL_PT</orDesc>
+					<orFunct>
+						<OnFunctCd value="002"/>
+					</orFunct>
+				</onLineSrc>
+			</distorTran>
+			<distorCont>
+				<rpIndName>Capt. Avirianto S, S.Pd., M.M.</rpIndName>
+				<rpOrgName>Kementerian Perhubungan Republik Indonesia</rpOrgName>
+				<rpPosName>Kepala Pusat Data dan Informasi</rpPosName>
+				<role>
+					<RoleCd value="002"/>
+				</role>
+				<rpCntInfo>
+					<cntAddress>
+						<eMailAdd>pusdatin@kemenhub.go.id</eMailAdd>
+						<delPoint>Jalan Medan Merdeka Barat No. 8 Jakarta Pusat 10110, Gedung Karya Lt.24</delPoint>
+						<city>Jakarta Pusat</city>
+						<adminArea>DKI Jakarta</adminArea>
+						<postCode>10110</postCode>
+						<country>ID</country>
+					</cntAddress>
+					<cntPhone>
+						<voiceNum>(021) 3456919</voiceNum>
+						<faxNum>(021) 3857085</faxNum>
+					</cntPhone>
+					<cntHours>08.00 - 16.00 WIB</cntHours>
+					<cntInstr>1. Dapat dihubungi pada jam kantor; 2. Dapat berkirim surat resmi kepada Kepala Pusat Data dan Teknologi Informasi.</cntInstr>
+				</rpCntInfo>
+			</distorCont>
+		</distributor>
+	</distInfo>
+	<spatRepInfo>
+		<VectSpatRep>
+			<topLvl>
+				<TopoLevCd value="001"/>
+			</topLvl>
+			<geometObjs Name="TERMINAL_PT">
+				<geoObjTyp>
+					<GeoObjTypCd value="004"/>
+				</geoObjTyp>
+				<geoObjCnt>127</geoObjCnt>
+			</geometObjs>
+		</VectSpatRep>
+	</spatRepInfo>
+	<eainfo>
+		<detailed Name="TERMINAL_PT">
+			<enttyp>
+				<enttypl>TERMINAL_PT</enttypl>
+				<enttypt>Feature Class</enttypt>
+				<enttypc>127</enttypc>
+			</enttyp>
+			<attr>
+				<attrlabl>objectid</attrlabl>
+				<attalias>OBJECTID_1</attalias>
+				<attrdef>Internal feature number.</attrdef>
+				<attrdefs>Esri</attrdefs>
+				<attrtype>OID</attrtype>
+				<attwidth>4</attwidth>
+				<atprecis>10</atprecis>
+				<attscale>0</attscale>
+				<attrdomv>
+					<udom>Sequential unique whole numbers that are automatically generated.</udom>
+				</attrdomv>
+			</attr>
+			<attr>
+				<attrlabl>Shape</attrlabl>
+				<attalias>shape</attalias>
+				<attrdef>Feature geometry.</attrdef>
+				<attrdefs>Esri</attrdefs>
+				<attrtype>Geometry</attrtype>
+				<attwidth>4</attwidth>
+				<atprecis>0</atprecis>
+				<attscale>0</attscale>
+				<attrdomv>
+					<udom>Coordinates defining the features.</udom>
+				</attrdomv>
+			</attr>
+			<attr>
+				<attrlabl>KODE</attrlabl>
+				<attalias>Kode Terminal</attalias>
+				<attrtype>String</attrtype>
+				<attwidth>254</attwidth>
+				<atprecis>0</atprecis>
+				<attscale>0</attscale>
+			</attr>
+			<attr>
+				<attrlabl>NAMOBJ</attrlabl>
+				<attalias>Nama Terminal</attalias>
+				<attrtype>String</attrtype>
+				<attwidth>254</attwidth>
+				<atprecis>0</atprecis>
+				<attscale>0</attscale>
+			</attr>
+			<attr>
+				<attrlabl>LAT</attrlabl>
+				<attalias>Koordinat Lintang</attalias>
+				<attrtype>Double</attrtype>
+				<attwidth>8</attwidth>
+				<atprecis>38</atprecis>
+				<attscale>8</attscale>
+			</attr>
+			<attr>
+				<attrlabl>LON</attrlabl>
+				<attalias>Koordinat Bujur</attalias>
+				<attrtype>Double</attrtype>
+				<attwidth>8</attwidth>
+				<atprecis>38</atprecis>
+				<attscale>8</attscale>
+			</attr>
+			<attr>
+				<attrlabl>FCODE</attrlabl>
+				<attalias>Feature Code</attalias>
+				<attrtype>String</attrtype>
+				<attwidth>254</attwidth>
+				<atprecis>0</atprecis>
+				<attscale>0</attscale>
+			</attr>
+			<attr>
+				<attrlabl>SRS_ID</attrlabl>
+				<attalias>Spatial Reference System Identifier</attalias>
+				<attrtype>String</attrtype>
+				<attwidth>254</attwidth>
+				<atprecis>0</atprecis>
+				<attscale>0</attscale>
+			</attr>
+			<attr>
+				<attrlabl>LCODE</attrlabl>
+				<attalias>Layer Code</attalias>
+				<attrtype>String</attrtype>
+				<attwidth>254</attwidth>
+				<atprecis>0</atprecis>
+				<attscale>0</attscale>
+			</attr>
+			<attr>
+				<attrlabl>METADATA</attrlabl>
+				<attalias>Metadata</attalias>
+				<attrtype>String</attrtype>
+				<attwidth>254</attwidth>
+				<atprecis>0</atprecis>
+				<attscale>0</attscale>
+			</attr>
+			<attr>
+				<attrlabl>PNYLGR</attrlabl>
+				<attalias>Penyelenggara</attalias>
+				<attrtype>String</attrtype>
+				<attwidth>254</attwidth>
+				<atprecis>0</atprecis>
+				<attscale>0</attscale>
+			</attr>
+			<attr>
+				<attrlabl>OPERATOR</attrlabl>
+				<attalias>Nama Penyelenggara</attalias>
+				<attrtype>String</attrtype>
+				<attwidth>254</attwidth>
+				<atprecis>0</atprecis>
+				<attscale>0</attscale>
+			</attr>
+			<attr>
+				<attrlabl>SK_TAP_LOK</attrlabl>
+				<attalias>SK Penetapan Lokasi</attalias>
+				<attrtype>String</attrtype>
+				<attwidth>254</attwidth>
+				<atprecis>0</atprecis>
+				<attscale>0</attscale>
+			</attr>
+			<attr>
+				<attrlabl>ALAMAT</attrlabl>
+				<attalias>Alamat</attalias>
+				<attrtype>String</attrtype>
+				<attwidth>254</attwidth>
+				<atprecis>0</atprecis>
+				<attscale>0</attscale>
+			</attr>
+			<attr>
+				<attrlabl>KODEPOS</attrlabl>
+				<attalias>Kode Pos</attalias>
+				<attrtype>String</attrtype>
+				<attwidth>254</attwidth>
+				<atprecis>0</atprecis>
+				<attscale>0</attscale>
+			</attr>
+			<attr>
+				<attrlabl>NOTELP</attrlabl>
+				<attalias>Telepon</attalias>
+				<attrtype>String</attrtype>
+				<attwidth>254</attwidth>
+				<atprecis>0</atprecis>
+				<attscale>0</attscale>
+			</attr>
+			<attr>
+				<attrlabl>SUREL</attrlabl>
+				<attalias>e-mail</attalias>
+				<attrtype>String</attrtype>
+				<attwidth>254</attwidth>
+				<atprecis>0</atprecis>
+				<attscale>0</attscale>
+			</attr>
+			<attr>
+				<attrlabl>STAT_OPS</attrlabl>
+				<attalias>Status Operasi</attalias>
+				<attrtype>String</attrtype>
+				<attwidth>254</attwidth>
+				<atprecis>0</atprecis>
+				<attscale>0</attscale>
+			</attr>
+			<attr>
+				<attrlabl>TIPE</attrlabl>
+				<attalias>Tipe Terminal</attalias>
+				<attrtype>String</attrtype>
+				<attwidth>254</attwidth>
+				<atprecis>0</atprecis>
+				<attscale>0</attscale>
+			</attr>
+			<attr>
+				<attrlabl>KELAS</attrlabl>
+				<attalias>Kelas Terminal</attalias>
+				<attrtype>String</attrtype>
+				<attwidth>254</attwidth>
+				<atprecis>0</atprecis>
+				<attscale>0</attscale>
+			</attr>
+			<attr>
+				<attrlabl>LAY_ALBN</attrlabl>
+				<attalias>Jumlah Trayek ALBN</attalias>
+				<attrtype>String</attrtype>
+				<attwidth>254</attwidth>
+				<atprecis>0</atprecis>
+				<attscale>0</attscale>
+			</attr>
+			<attr>
+				<attrlabl>LAY_AKAP</attrlabl>
+				<attalias>Jumlah Trayek AKAP</attalias>
+				<attrtype>Double</attrtype>
+				<attwidth>8</attwidth>
+				<atprecis>38</atprecis>
+				<attscale>8</attscale>
+			</attr>
+			<attr>
+				<attrlabl>LAY_AKDP</attrlabl>
+				<attalias>Jumlah Trayek AKDP</attalias>
+				<attrtype>Double</attrtype>
+				<attwidth>8</attwidth>
+				<atprecis>38</atprecis>
+				<attscale>8</attscale>
+			</attr>
+			<attr>
+				<attrlabl>LAY_ANGKOT</attrlabl>
+				<attalias>Jumlah Trayek Angkot</attalias>
+				<attrtype>Double</attrtype>
+				<attwidth>8</attwidth>
+				<atprecis>38</atprecis>
+				<attscale>8</attscale>
+			</attr>
+			<attr>
+				<attrlabl>LAY_ANGDES</attrlabl>
+				<attalias>Jumlah Trayek Angdes</attalias>
+				<attrtype>String</attrtype>
+				<attwidth>254</attwidth>
+				<atprecis>0</atprecis>
+				<attscale>0</attscale>
+			</attr>
+			<attr>
+				<attrlabl>JML_PNS</attrlabl>
+				<attalias>Jumlah Pegawai</attalias>
+				<attrtype>Double</attrtype>
+				<attwidth>8</attwidth>
+				<atprecis>38</atprecis>
+				<attscale>8</attscale>
+			</attr>
+			<attr>
+				<attrlabl>JML_PPNS</attrlabl>
+				<attalias>Jumlah PPNS</attalias>
+				<attrtype>Double</attrtype>
+				<attwidth>8</attwidth>
+				<atprecis>38</atprecis>
+				<attscale>8</attscale>
+			</attr>
+			<attr>
+				<attrlabl>JML_PKB</attrlabl>
+				<attalias>Jumlah Petugas PKB</attalias>
+				<attrtype>String</attrtype>
+				<attwidth>254</attwidth>
+				<atprecis>0</atprecis>
+				<attscale>0</attscale>
+			</attr>
+			<attr>
+				<attrlabl>JML_REGU</attrlabl>
+				<attalias>Jumlah Regu Operasi</attalias>
+				<attrtype>Double</attrtype>
+				<attwidth>8</attwidth>
+				<atprecis>38</atprecis>
+				<attscale>8</attscale>
+			</attr>
+			<attr>
+				<attrlabl>LS_LHN</attrlabl>
+				<attalias>Luas Lahan (m²)</attalias>
+				<attrtype>Double</attrtype>
+				<attwidth>8</attwidth>
+				<atprecis>38</atprecis>
+				<attscale>8</attscale>
+			</attr>
+			<attr>
+				<attrlabl>LS_BNG</attrlabl>
+				<attalias>Luas Terbangun (m²)</attalias>
+				<attrtype>String</attrtype>
+				<attwidth>254</attwidth>
+				<atprecis>0</atprecis>
+				<attscale>0</attscale>
+			</attr>
+			<attr>
+				<attrlabl>LJR_KDT_BB</attrlabl>
+				<attalias>Jalur Kedatangan Bus Besar</attalias>
+				<attrtype>String</attrtype>
+				<attwidth>254</attwidth>
+				<atprecis>0</atprecis>
+				<attscale>0</attscale>
+			</attr>
+			<attr>
+				<attrlabl>LJR_KDT_BS</attrlabl>
+				<attalias>Jalur Kedatangan Bus Sedang</attalias>
+				<attrtype>String</attrtype>
+				<attwidth>254</attwidth>
+				<atprecis>0</atprecis>
+				<attscale>0</attscale>
+			</attr>
+			<attr>
+				<attrlabl>LJR_KDT_BK</attrlabl>
+				<attalias>Jalur Kedatangan Bus Kecil</attalias>
+				<attrtype>String</attrtype>
+				<attwidth>254</attwidth>
+				<atprecis>0</atprecis>
+				<attscale>0</attscale>
+			</attr>
+			<attr>
+				<attrlabl>JUR_KBT_BB</attrlabl>
+				<attalias>Jalur Keberangkatan Bus Besar</attalias>
+				<attrtype>String</attrtype>
+				<attwidth>254</attwidth>
+				<atprecis>0</atprecis>
+				<attscale>0</attscale>
+			</attr>
+			<attr>
+				<attrlabl>JUR_KBT_BS</attrlabl>
+				<attalias>Jalur Keberangkatan Bus Sedang</attalias>
+				<attrtype>String</attrtype>
+				<attwidth>254</attwidth>
+				<atprecis>0</atprecis>
+				<attscale>0</attscale>
+			</attr>
+			<attr>
+				<attrlabl>JUR_KBT_BK</attrlabl>
+				<attalias>Jalur Keberangkatan Bus Kecil</attalias>
+				<attrtype>String</attrtype>
+				<attwidth>254</attwidth>
+				<atprecis>0</atprecis>
+				<attscale>0</attscale>
+			</attr>
+			<attr>
+				<attrlabl>LJR_KDT</attrlabl>
+				<attalias>Jalur Kedatangan</attalias>
+				<attrtype>String</attrtype>
+				<attwidth>254</attwidth>
+				<atprecis>0</atprecis>
+				<attscale>0</attscale>
+			</attr>
+			<attr>
+				<attrlabl>JUR_KBT</attrlabl>
+				<attalias>Jalur Keberangkatan</attalias>
+				<attrtype>String</attrtype>
+				<attwidth>254</attwidth>
+				<atprecis>0</atprecis>
+				<attscale>0</attscale>
+			</attr>
+			<attr>
+				<attrlabl>TMPT_PARK_</attrlabl>
+				<attalias>Tempat parkir kendaraan</attalias>
+				<attrtype>String</attrtype>
+				<attwidth>254</attwidth>
+				<atprecis>0</atprecis>
+				<attscale>0</attscale>
+			</attr>
+			<attr>
+				<attrlabl>PENG_PARK</attrlabl>
+				<attalias>Pengelola Fasilitas Parkir</attalias>
+				<attrtype>String</attrtype>
+				<attwidth>254</attwidth>
+				<atprecis>0</atprecis>
+				<attscale>0</attscale>
+			</attr>
+			<attr>
+				<attrlabl>TIPE_PARK</attrlabl>
+				<attalias>Tipe Parkir</attalias>
+				<attrtype>String</attrtype>
+				<attwidth>254</attwidth>
+				<atprecis>0</atprecis>
+				<attscale>0</attscale>
+			</attr>
+			<attr>
+				<attrlabl>SDIA_LOKET</attrlabl>
+				<attalias>Ketersedian Loket</attalias>
+				<attrtype>String</attrtype>
+				<attwidth>254</attwidth>
+				<atprecis>0</atprecis>
+				<attscale>0</attscale>
+			</attr>
+			<attr>
+				<attrlabl>SDIA_TOILE</attrlabl>
+				<attalias>Ketersedian Ruangan Toilet</attalias>
+				<attrtype>String</attrtype>
+				<attwidth>254</attwidth>
+				<atprecis>0</atprecis>
+				<attscale>0</attscale>
+			</attr>
+			<attr>
+				<attrlabl>SDIA_LKTS</attrlabl>
+				<attalias>Ketersedian Ruangan Laktasi</attalias>
+				<attrtype>String</attrtype>
+				<attwidth>254</attwidth>
+				<atprecis>0</atprecis>
+				<attscale>0</attscale>
+			</attr>
+			<attr>
+				<attrlabl>SDIA_KLINI</attrlabl>
+				<attalias>Ketersedian Ruangan Klinik</attalias>
+				<attrtype>String</attrtype>
+				<attwidth>254</attwidth>
+				<atprecis>0</atprecis>
+				<attscale>0</attscale>
+			</attr>
+			<attr>
+				<attrlabl>SDIA_ATM</attrlabl>
+				<attalias>Ketersedian ATM</attalias>
+				<attrtype>String</attrtype>
+				<attwidth>254</attwidth>
+				<atprecis>0</atprecis>
+				<attscale>0</attscale>
+			</attr>
+			<attr>
+				<attrlabl>SDIA_KANTI</attrlabl>
+				<attalias>Ketersedian Kantin</attalias>
+				<attrtype>String</attrtype>
+				<attwidth>254</attwidth>
+				<atprecis>0</atprecis>
+				<attscale>0</attscale>
+			</attr>
+			<attr>
+				<attrlabl>PROV</attrlabl>
+				<attalias>Provinsi</attalias>
+				<attrtype>String</attrtype>
+				<attwidth>100</attwidth>
+				<atprecis>0</atprecis>
+				<attscale>0</attscale>
+			</attr>
+			<attr>
+				<attrlabl>KABKOT</attrlabl>
+				<attalias>Kabupaten/Kota</attalias>
+				<attrtype>String</attrtype>
+				<attwidth>100</attwidth>
+				<atprecis>0</atprecis>
+				<attscale>0</attscale>
+			</attr>
+			<attr>
+				<attrlabl>KD_PROV</attrlabl>
+				<attalias>Kode Provinsi</attalias>
+				<attrtype>String</attrtype>
+				<attwidth>2</attwidth>
+				<atprecis>0</atprecis>
+				<attscale>0</attscale>
+			</attr>
+			<attr>
+				<attrlabl>KD_KABKOT</attrlabl>
+				<attalias>Kode Kabupaten/Kota</attalias>
+				<attrtype>String</attrtype>
+				<attwidth>5</attwidth>
+				<atprecis>0</atprecis>
+				<attscale>0</attscale>
+			</attr>
+			<attr>
+				<attrlabl>status</attrlabl>
+				<attalias>status</attalias>
+				<attrtype>Integer</attrtype>
+				<attwidth>4</attwidth>
+				<atprecis>10</atprecis>
+				<attscale>0</attscale>
+			</attr>
+		</detailed>
+	</eainfo>
+	<refSysInfo>
+		<RefSystem>
+			<refSysID>
+				<identCode code="4326"/>
+				<idCodeSpace>EPSG</idCodeSpace>
+				<idVersion>6.14(3.0.1)</idVersion>
+			</refSysID>
+		</RefSystem>
+	</refSysInfo>
+	<Esri>
+		<ArcGISstyle>ISO 19139 Metadata Implementation Specification GML3.2</ArcGISstyle>
+		<scaleRange>
+			<maxScale>5000</maxScale>
+			<minScale>150000000</minScale>
+		</scaleRange>
+		<CreaDate>2021-07-16</CreaDate>
+		<CreaTime>15171500</CreaTime>
+		<ModDate>2023-07-04</ModDate>
+		<ModTime>16:48:35.49</ModTime>
+		<SyncOnce>FALSE</SyncOnce>
+		<SyncDate>2023-05-31</SyncDate>
+		<SyncTime>14511600</SyncTime>
+		<ArcGISFormat>1.0</ArcGISFormat>
+		<ArcGISProfile>ISO19139</ArcGISProfile>
+		<PublishStatus>editor:esri.dijit.metadata.editor</PublishStatus>
+		<DataProperties>
+			<itemProps>
+				<imsContentType export="False">002</imsContentType>
+				<itemName>TERMINAL_PT</itemName>
+				<nativeExtBox>
+					<westBL>95.329159</westBL>
+					<eastBL>140.694342</eastBL>
+					<southBL>-10.140278</southBL>
+					<northBL>5.529789</northBL>
+					<exTypeCode>1</exTypeCode>
+				</nativeExtBox>
+			</itemProps>
+			<coordRef>
+				<type>Geographic</type>
+				<geogcsn>GCS_WGS_1984</geogcsn>
+				<csUnits>Angular Unit: Degree (0.017453)</csUnits>
+				<peXml>&lt;GeographicCoordinateSystem xsi:type=&apos;typens:GeographicCoordinateSystem&apos; xmlns:xsi=&apos;http://www.w3.org/2001/XMLSchema-instance&apos; xmlns:xs=&apos;http://www.w3.org/2001/XMLSchema&apos; xmlns:typens=&apos;http://www.esri.com/schemas/ArcGIS/10.5&apos;&gt;&lt;WKT&gt;GEOGCS[&amp;quot;GCS_WGS_1984&amp;quot;,DATUM[&amp;quot;D_WGS_1984&amp;quot;,SPHEROID[&amp;quot;WGS_1984&amp;quot;,6378137.0,298.257223563]],PRIMEM[&amp;quot;Greenwich&amp;quot;,0.0],UNIT[&amp;quot;Degree&amp;quot;,0.0174532925199433],AUTHORITY[&amp;quot;EPSG&amp;quot;,4326]]&lt;/WKT&gt;&lt;XOrigin&gt;-400&lt;/XOrigin&gt;&lt;YOrigin&gt;-400&lt;/YOrigin&gt;&lt;XYScale&gt;999999999.99999988&lt;/XYScale&gt;&lt;ZOrigin&gt;-100000&lt;/ZOrigin&gt;&lt;ZScale&gt;10000&lt;/ZScale&gt;&lt;MOrigin&gt;-100000&lt;/MOrigin&gt;&lt;MScale&gt;10000&lt;/MScale&gt;&lt;XYTolerance&gt;8.9831528411952199e-009&lt;/XYTolerance&gt;&lt;ZTolerance&gt;0.001&lt;/ZTolerance&gt;&lt;MTolerance&gt;0.001&lt;/MTolerance&gt;&lt;HighPrecision&gt;true&lt;/HighPrecision&gt;&lt;LeftLongitude&gt;-180&lt;/LeftLongitude&gt;&lt;WKID&gt;4326&lt;/WKID&gt;&lt;LatestWKID&gt;4326&lt;/LatestWKID&gt;&lt;/GeographicCoordinateSystem&gt;</peXml>
+			</coordRef>
+		</DataProperties>
+	</Esri>
+	<mdHrLv>
+		<ScopeCd value="005"/>
+	</mdHrLv>
+	<mdHrLvName>dataset</mdHrLvName>
+	<mdDateSt>2023-06-15</mdDateSt>
+	<mdFileID>TERMINALTIPEA50000INDONESIA</mdFileID>
+	<dataSetURI>https://sigita.dephub.go.id:6443/arcgis/rest/services/TERMINAL_PT/MapServer/0</dataSetURI>
+	<dataSetFn>
+		<OnFunctCd value="011"/>
+	</dataSetFn>
+	<mdLang>
+		<languageCode value="ind"/>
+	</mdLang>
+	<mdChar>
+		<CharSetCd value="004"/>
+	</mdChar>
+	<mdContact>
+		<rpIndName>Capt. Avirianto S, S.Pd., M.M.</rpIndName>
+		<rpOrgName>Kementerian Perhubungan Republik Indonesia</rpOrgName>
+		<rpPosName>Kepala Pusat Data dan Informasi</rpPosName>
+		<role>
+			<RoleCd value="002"/>
+		</role>
+		<rpCntInfo>
+			<cntAddress>
+				<eMailAdd>pusdatin@kemenhub.go.id</eMailAdd>
+				<delPoint>Jalan Medan Merdeka Barat No. 8 Jakarta Pusat 10110, Gedung Karya Lt.24</delPoint>
+				<city>Jakarta Pusat</city>
+				<adminArea>DKI Jakarta</adminArea>
+				<postCode>10110</postCode>
+				<country>ID</country>
+			</cntAddress>
+			<cntPhone>
+				<voiceNum>(021) 3456919</voiceNum>
+				<faxNum>(021) 3857085</faxNum>
+			</cntPhone>
+			<cntHours>08.00 - 16.00 WIB</cntHours>
+			<cntInstr>1. Dapat dihubungi pada jam kantor; 2. Dapat berkirim surat resmi kepada Kepala Pusat Data dan Teknologi Informasi.</cntInstr>
+		</rpCntInfo>
+	</mdContact>
+	<mdContact>
+		<rpIndName>Ir. M. Popik Montanasyah, M.T.</rpIndName>
+		<rpOrgName>Direktorat Prasarana Transportasi Jalan</rpOrgName>
+		<rpPosName>Direktur Prasarana Transportasi Jalan</rpPosName>
+		<role>
+			<RoleCd value="003"/>
+		</role>
+		<rpCntInfo>
+			<cntAddress>
+				<delPoint>Jalan Medan Merdeka Barat No. 8 Jakarta Pusat 10110</delPoint>
+				<city>Jakarta Pusat</city>
+				<adminArea>DKI Jakarta</adminArea>
+				<postCode>10110</postCode>
+				<country>ID</country>
+			</cntAddress>
+			<cntPhone>
+				<voiceNum>(021) 3456919</voiceNum>
+				<faxNum>(021) 3857085</faxNum>
+			</cntPhone>
+			<cntHours>08.00 - 16.00 WIB</cntHours>
+			<cntInstr>1. Dapat dihubungi pada jam kantor; 2. Dapat berkirim surat resmi.</cntInstr>
+		</rpCntInfo>
+	</mdContact>
+	<mdMaint>
+		<maintFreq>
+			<MaintFreqCd value="009"/>
+		</maintFreq>
+		<maintScp>
+			<ScopeCd value="005"/>
+		</maintScp>
+		<maintCont>
+			<rpIndName>Ir. M. Popik Montanasyah, M.T.</rpIndName>
+			<rpOrgName>Direktorat Prasarana Transportasi Jalan</rpOrgName>
+			<rpPosName>Direktur Prasarana Transportasi Jalan</rpPosName>
+			<role>
+				<RoleCd value="003"/>
+			</role>
+			<rpCntInfo>
+				<cntAddress>
+					<delPoint>Jalan Medan Merdeka Barat No. 8 Jakarta Pusat 10110</delPoint>
+					<city>Jakarta Pusat</city>
+					<adminArea>DKI Jakarta</adminArea>
+					<postCode>10110</postCode>
+					<country>ID</country>
+				</cntAddress>
+				<cntPhone>
+					<voiceNum>(021) 3456919</voiceNum>
+					<faxNum>(021) 3857085</faxNum>
+				</cntPhone>
+				<cntHours>08.00 - 16.00 WIB</cntHours>
+				<cntInstr>1. Dapat dihubungi pada jam kantor; 2. Dapat berkirim surat resmi.</cntInstr>
+			</rpCntInfo>
+		</maintCont>
+	</mdMaint>
+	<mdConst>
+		<LegConsts>
+			<useConsts>
+				<RestrictCd value="005"/>
+			</useConsts>
+		</LegConsts>
+	</mdConst>
+	<mdConst>
+		<SecConsts>
+			<class>
+				<ClasscationCd value="001"/>
+			</class>
+		</SecConsts>
+	</mdConst>
+	<Binary>
+		<Thumbnail>
+			<Data EsriPropertyType="PictureX">/9j/4AAQSkZJRgABAQEAAQABAAD/2wBDAAgGBgcGBQgHBwcJCQgKDBQNDAsLDBkSEw8UHRofHh0aHBwgJC4nICIsIxwcKDcpLDAxNDQ0Hyc5PTgyPC4zNDL/2wBDAQkJCQwLDBgNDRgyIRwhMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjL/wAARCADIASwDASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwD3+iiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACopXlV4hHEHVmw53Y2jHX3qWigBGYIhZjgAZNNhlSeFJYzlHAZTjGR+NQsJrlXTM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</Data>
+		</Thumbnail>
+	</Binary>
+	<spdoinfo>
+		<ptvctinf>
+			<esriterm Name="TERMINAL_PT">
+				<efeatyp>Simple</efeatyp>
+				<efeageom code="1"/>
+				<esritopo>FALSE</esritopo>
+				<efeacnt>127</efeacnt>
+				<spindex>TRUE</spindex>
+				<linrefer>FALSE</linrefer>
+			</esriterm>
+		</ptvctinf>
+	</spdoinfo>
+</metadata>

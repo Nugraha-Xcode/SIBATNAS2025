@@ -59,6 +59,12 @@ function KategoriDialog(props) {
     }
   }, []);
 
+  useEffect(() => {
+    if (!open) {
+      setData(initialDataState);
+    }
+  }, [open]);
+
   const handleInputChange = (event) => {
     const { name, value } = event.target;
     setData({ ...data, [name]: value });

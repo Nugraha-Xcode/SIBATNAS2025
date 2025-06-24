@@ -245,6 +245,8 @@ const DataContainer = ({
     type: "type",
     organization: "organization",
     subjects: null,
+    links: null,
+    date_publication: null,
   });
 
   const [layerName, setLayerName] = useState("");
@@ -379,14 +381,14 @@ const DataContainer = ({
     setMapLayer((oldArray) => [
       ...oldArray,
       {
-        id: identifier,
+        id: generateId(identifier),
         title: layerName,
         server: server,
         tipe: "wms",
         url: urlWMS,
         geom: "",
         layer: layerWMS,
-        metadata: true,
+        metadata: metadata,
         table: layerGeojson ? true : false,
         visible: true,
         opacity: 1,
@@ -395,18 +397,23 @@ const DataContainer = ({
     //setMapLayer(oldArray => [...oldArray, { id: 'xxxxx', title: 'test', server: 'esri', tipe: 'wms', url: 'https://services3.arcgis.com/q3g0HH9M99zRvCna/ArcGIS/rest/services/Area_Genangan/FeatureServer', geom:'', layer: 'AreaGenangan', metadata: true, table: false, visible: true, opacity: 1 }])
   }
 
+  function generateId(identifier) {
+    const randomSuffix = Math.floor(100 + Math.random() * 900); // Random 3-digit number
+    return `${identifier}${randomSuffix}`;
+  }
+
   function addAndKeep() {
     setMapLayer((oldArray) => [
       ...oldArray,
       {
-        id: identifier,
+        id: generateId(identifier),
         title: layerName,
         server: server,
         tipe: "wms",
         url: urlWMS,
         geom: "",
         layer: layerWMS,
-        metadata: true,
+        metadata: metadata,
         table: layerGeojson ? true : false,
         visible: true,
         opacity: 1,
@@ -623,8 +630,8 @@ const DataContainer = ({
             //console.log(row.id, index)
 
             return (
-              <MenuItem key={index} value={row.id}>
-                {row.name}
+              <MenuItem key={index} value={row?.id}>
+                {row?.name}
               </MenuItem>
             );
           });
@@ -646,8 +653,8 @@ const DataContainer = ({
             //console.log(row.id, index)
 
             return (
-              <MenuItem key={index} value={row.year}>
-                {row.year}
+              <MenuItem key={index} value={row?.year}>
+                {row?.year}
               </MenuItem>
             );
           });
@@ -669,8 +676,8 @@ const DataContainer = ({
             //console.log(row.id, index)
 
             return (
-              <MenuItem key={index} value={row.id}>
-                {row.name}
+              <MenuItem key={index} value={row?.id}>
+                {row?.name}
               </MenuItem>
             );
           });
@@ -705,19 +712,21 @@ const DataContainer = ({
                   className="bgKuning"
                   onClick={(e) => setDataAktif(e, row)}
                 >
-                  <TableCell>{row.title}</TableCell>
-                  <TableCell>{row.date_publication}</TableCell>
+                  <TableCell>{row?.title}</TableCell>
+                  <TableCell>{row?.date_publication}</TableCell>
                 </TableRow>
               );
             } else {
               return (
                 <TableRow
-                  key={row.identifier}
+                  key={row?.identifier}
                   className="data"
                   onClick={(e) => setDataAktif(e, row)}
                 >
-                  <TableCell>{row.title}</TableCell>
-                  <TableCell>{row.date_publication}</TableCell>
+                  <TableCell>{row?.title}</TableCell>
+                  <TableCell>
+                    {row?.date_publication?.replace("T", " ")}
+                  </TableCell>
                 </TableRow>
               );
             }
@@ -1001,23 +1010,25 @@ const DataContainer = ({
 
   function load_aktif(row) {
     if (row) {
-      // console.log(row.keywords)
+      console.log("INI ROW",row.keywords)
       setMetadata({
-        title: row.title,
-        abstract: row.abstract,
-        identifier: row.identifier,
-        type: row.type,
-        organization: row.organization,
-        keywords: row.keywords,
+        title: row?.title,
+        abstract: row?.abstract,
+        identifier: row?.identifier,
+        type: row?.type,
+        organization: row?.organization,
+        keywords: row?.keywords,
+        links: row?.links,
+        date_publication: row?.date_publication,
       });
 
-      setIdentifier(row.identifier);
+      setIdentifier(row?.identifier);
 
-      setLayerName(row.title);
+      setLayerName(row?.title);
       //console.log(row);
       //console.log(row.links);
       // Split by comma
-      const parts = row.links.split(",");
+      const parts = row?.links.split(",");
       //[
       //  'my_workspace:RBI25K_TITIKKONTROLGEODESI_PT_25K',
       //  'None',
@@ -1400,8 +1411,8 @@ const DataContainer = ({
             return (
               <TableRow key={"att" + index}>
                 <TableCell></TableCell>
-                <TableCell>{row.name}</TableCell>
-                <TableCell>{row.type}</TableCell>
+                <TableCell>{row?.name}</TableCell>
+                <TableCell>{row?.type}</TableCell>
                 <TableCell></TableCell>
               </TableRow>
             );

@@ -27,6 +27,8 @@ const GroupLayer = ({
   mapLayer,
   identifierDelete,
   setIdentifierDelete,
+  identifierZoom,
+  setIdentifierZoom,
 }) => {
   const { map } = useContext(MapViewerContext);
 
@@ -110,7 +112,7 @@ const GroupLayer = ({
       var group = layers[idx];
       //console.log(group);
       //ap.getView().setZoom(map.getView().getZoom() + 0.0001);
-      mapLayer.reverse().forEach(function (l, y) {
+      mapLayer.forEach(function (l, y) {
         console.log(l);
 
         var check = false;
@@ -237,6 +239,80 @@ const GroupLayer = ({
       //}
     }
   }, [identifierDelete]);
+
+  useEffect(() => {
+    if (!map) return;
+    //alert(props.showBbox)
+
+    if (identifierZoom) {
+      // alert('ok')
+      //console.log(map.getLayers().getArray().length)
+
+      var layers = map.getLayers().getArray();
+      //console.log(layers);
+      //console.log(layers[5])
+      var idx = 0;
+      layers.forEach(function (l, i) {
+        //console.log(l)
+        if (l instanceof LayerGroup) {
+          //console.log(i)
+          idx = i;
+        }
+      });
+      var group = layers[idx];
+
+      group.getLayers().forEach(function (layer, i) {
+        //alert('ya')
+        //console.log(layer);
+        if (layer) {
+          //console.log(layer.getKeys())
+          if (layer.getKeys().includes("id")) {
+            //console.log(layer);
+            //alert('wow')
+            //console.log(identifierDelete)
+            console.log(layer.get("id"));
+            if (layer.get("id") === identifierZoom) {
+              alert("oi");
+              //console.log(group.getLayers().array_)
+              //group.getLayers().array_.splice(i, 1);
+              //console.log(group.getLayers().array_)
+              console.log(layer.getSource());
+              //const extent = layer.getSource().getFeaturesExtent();
+              //map.getView().fit(extent, {
+              //  padding: [20, 20, 20, 20],
+              //  duration: 1000,
+              //});
+              //console.log(layer.getSource().getImageExtent());
+              //map.getView().fit(layer.getSource().getExtent());
+              const viewProjection = map.getView().getProjection();
+              let wmsSource = layer.getSource();
+              wmsSource.getImageExtent = () => {
+                return wmsSource.getParams().BBOX
+                  ? wmsSource.getParams().BBOX.split(",").map(Number)
+                  : viewProjection.getExtent();
+              };
+
+              map.getView().fit(wmsSource.getImageExtent(), {
+                padding: [20, 20, 20, 20],
+                duration: 1000,
+              });
+
+              setIdentifierZoom("");
+            }
+          }
+        }
+      });
+      map.render();
+      //map.getView().setZoom(map.getView().getZoom() + 1);
+      //map.getView().setZoom(map.getView().getZoom() - 1);
+      //map.updateSize();
+
+      //if (candidate) {
+      //map.removeLayer(candidate)
+      //group.getLayers().array_.pop(candidate)
+      //}
+    }
+  }, [identifierZoom]);
 
   /*
     useEffect(() => {

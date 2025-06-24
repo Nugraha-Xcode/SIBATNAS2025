@@ -10,6 +10,7 @@ import {
 
 import AuthService from "src/services/auth.service";
 import EventBus from "src/utils/EventBus";
+
 export const register = (username, email, password) => (dispatch) => {
   return AuthService.register(username, email, password).then(
     (response) => {
@@ -78,6 +79,71 @@ export const login = (username, password) => (dispatch) => {
   );
 };
 
+export const loginCaptcha = (email, password, token) => (dispatch) => {
+  return AuthService.loginCaptcha(email, password, token).then(
+    (data) => {
+      dispatch({
+        type: LOGIN_SUCCESS,
+        payload: { user: data },
+      });
+
+      return Promise.resolve();
+    },
+    (error) => {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+
+      dispatch({
+        type: LOGIN_FAIL,
+      });
+
+      dispatch({
+        type: SET_MESSAGE,
+        payload: message,
+      });
+
+      return Promise.reject();
+    }
+  );
+};
+
+// New action for INA Geo login
+export const loginInaGeo = (email, password, token) => (dispatch) => {
+  return AuthService.loginInaGeo(email, password, token).then(
+    (data) => {
+      dispatch({
+        type: LOGIN_SUCCESS,
+        payload: { user: data },
+      });
+
+      return Promise.resolve();
+    },
+    (error) => {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+
+      dispatch({
+        type: LOGIN_FAIL,
+      });
+
+      dispatch({
+        type: SET_MESSAGE,
+        payload: message,
+      });
+
+      return Promise.reject();
+    }
+  );
+};
+
 export const updatePassword = (uuid, data) => async (dispatch) => {
   try {
     const res = await AuthService.updatePassword(uuid, data);
@@ -89,9 +155,6 @@ export const updatePassword = (uuid, data) => async (dispatch) => {
 
     return Promise.resolve(res.data);
   } catch (err) {
-    //if (err.response && err.response.status === 401) {
-    //EventBus.dispatch("logout");
-    //}
     return Promise.reject(err);
   }
 };

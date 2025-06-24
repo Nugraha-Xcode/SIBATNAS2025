@@ -7,7 +7,7 @@ import { Container, Tabs, Tab, Grid, styled } from "@mui/material";
 import BottomLink from "../BottomLink";
 import Footer from "../Footer";
 
-import DaftarTab from "./DaftarTab";
+import DaftarCardTab from "./DaftarCardTab";
 
 const TabsWrapper = styled(Tabs)(
   () => `
@@ -20,20 +20,20 @@ const TabsWrapper = styled(Tabs)(
 function ManagementsRecord() {
   const [currentTab, setCurrentTab] = useState("daftar");
 
-  const tabs = [{ value: "daftar", label: "Daftar Record" }];
+  //const tabs = [{ value: "daftar", label: "Daftar Record" }];
 
-  const handleTabsChange = (event, value) => {
-    setCurrentTab(value);
-  };
+  //const handleTabsChange = (event, value) => {
+  //  setCurrentTab(value);
+  //};
 
   return (
-    <div style={{ background: "#fff", height: "86vh" }}>
+    <div style={{ background: "#fff" }}>
       <Helmet>
         <title>Katalog - Dataset Publikasi</title>
       </Helmet>
-      <PageTitleWrapper>
-        <PageHeader />
-      </PageTitleWrapper>
+      <br />
+      <br />
+
       <Container maxWidth="lg">
         <Grid
           container
@@ -42,6 +42,7 @@ function ManagementsRecord() {
           alignItems="stretch"
           spacing={3}
         >
+          {/*
           <Grid item xs={12}>
             <TabsWrapper
               onChange={handleTabsChange}
@@ -56,8 +57,9 @@ function ManagementsRecord() {
               ))}
             </TabsWrapper>
           </Grid>
+          */}
           <Grid item xs={12}>
-            {currentTab === "daftar" && <DaftarTab />}
+            {currentTab === "daftar" && <DaftarCardTab />}
           </Grid>
         </Grid>
       </Container>

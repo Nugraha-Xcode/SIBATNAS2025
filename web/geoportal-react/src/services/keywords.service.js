@@ -6,6 +6,10 @@ const getAll = () => {
   return http.get(`/${base}`, { headers: authHeader() });
 };
 
+const getAllPublik = () => {
+  return http.get(`/${base}/publik`);
+};
+
 const get = (uuid) => {
   return http.get(`/${base}/${uuid}`);
 };
@@ -24,6 +28,7 @@ const remove = (uuid) => {
 
 const Service = {
   getAll,
+  getAllPublik,
   get,
   create,
   update,

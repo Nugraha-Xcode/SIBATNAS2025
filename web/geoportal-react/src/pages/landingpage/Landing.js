@@ -402,7 +402,7 @@ function Landing() {
                 }}
               >
                 - SIKAMBING
-                <br />- Palapa BIG
+                <br />- SIBATNAS BIG
               </p>
             </div>
             <div style={{ color: "white", textAlign: "right" }}>

@@ -16,6 +16,7 @@ module.exports = (app) => {
 
   // Create a new Lokasi
   app.post(base, [authJwt.verifyToken], controller.create);
+  app.get(base + "unduhMetadata/:uuid", controller.downloadMetadata);
 
   app.put(base + "publish/:uuid", [authJwt.verifyToken], controller.publish);
   app.put(

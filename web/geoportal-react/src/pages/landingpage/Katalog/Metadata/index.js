@@ -170,15 +170,15 @@ export default function Metadata({ open, handleCloseMetadata, id }) {
         </Row>
         <Row>
           <Col3>Kata kunci</Col3>
-          <Col6>{row ? viewSubjects(row.keywords) : null}</Col6>
+          <Col6>{row ? viewSubjects(row?.keywords) : null}</Col6>
         </Row>
         <Row>
           <Col3>Info Distribusi</Col3>
-          <Col6>{row ? viewReferences(row.distributions) : null}</Col6>
+          <Col6>{row ? viewReferences(row?.distributions) : null}</Col6>
         </Row>
         <Row>
           <Col3>Pratinjau Peta</Col3>
-          <Col6>{row ? viewImage(row.distributions) : null}</Col6>
+          <Col6>{row ? viewImage(row?.distributions) : null}</Col6>
         </Row>
         <Row>
           <Col6>
@@ -191,7 +191,7 @@ export default function Metadata({ open, handleCloseMetadata, id }) {
                 window.open(
                   environment.baseUrl +
                     "csw/?request=GetRecordById&service=CSW&version=2.0.2&elementSetName=full&outputSchema=http://www.isotc211.org/2005/gmd&id=" +
-                    row.identifier
+                    row?.identifier
                 )
               }
             >

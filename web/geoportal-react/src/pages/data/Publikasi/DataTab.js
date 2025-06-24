@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { NavLink as RouterLink } from "react-router-dom";
 import {
@@ -31,6 +31,9 @@ import {
   useTheme,
   styled,
   CardContent,
+  TextField,
+  InputAdornment,
+  CircularProgress,
 } from "@mui/material";
 
 import DoneTwoToneIcon from "@mui/icons-material/DoneTwoTone";
@@ -44,7 +47,9 @@ import PublicTwoToneIcon from "@mui/icons-material/PublicTwoTone";
 import FactCheckIcon from "@mui/icons-material/FactCheck";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import SyncIcon from "@mui/icons-material/Sync";
+import PublicOffIcon from '@mui/icons-material/PublicOff';
 import UnpublishedIcon from "@mui/icons-material/Unpublished";
+import SearchIcon from '@mui/icons-material/Search';
 
 import { retrieve } from "src/redux/actions/kategoriTematik";
 import { retrieveProdusenKategori } from "src/redux/actions/produsen";
@@ -87,10 +92,13 @@ const AvatarWrapper = styled(Avatar)(
 function UserTab() {
   const theme = useTheme();
 
-  const [page, setPage] = useState(2);
+  const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [open, setOpen] = useState(false);
   const [openEdit, setOpenEdit] = useState(false);
+  const [keyword, setKeyword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [searchTimeout, setSearchTimeout] = useState(null);
 
   const initialConfig = {
     data: null,
@@ -104,8 +112,9 @@ function UserTab() {
   const [configEdit, setConfigEdit] = useState(initialConfig);
   const datas = useSelector((state) => state.data_publikasi);
 
+  //console.log("datas", datas);
+
   const { user: currentUser } = useSelector((state) => state.auth);
-  //const produsens = useSelector((state) => state.produsen);
   const kategoris = useSelector((state) => state.kategoriTematik);
 
   const [listKategori, setListKategori] = useState([]);
@@ -116,56 +125,81 @@ function UserTab() {
   const [selectedProdusen, setSelectedProdusen] = useState(
     "Pilih Produsen Data Geospasial"
   );
-  const [produsen, setProdusen] = useState();
+  const [produsen, setProdusen] = useState(null);
 
   const dispatch = useDispatch();
 
+  // Fetch data with pagination and search
+  const fetchData = useCallback(async () => {
+    setLoading(true);
+    try {
+      // Safe access to produsen UUID and currentUser
+      const produsenUuid = produsen?.uuid !== "0" ? produsen?.uuid : "0";
+      const userUuid = currentUser?.uuid || "";
+      
+      console.log('Fetching data with parameters:', {
+        userUuid,
+        page,
+        rowsPerPage,
+        keyword,
+        produsenUuid
+      });
+  
+      let result;
+      if (
+        currentUser?.roles?.includes("ROLE_ADMIN") ||
+        currentUser?.roles?.includes("ROLE_WALIDATA")
+      ) {
+        // For admin/walidata, use selected produsen UUID
+        result = await dispatch(
+          retrieveByProdusenAdmin(produsenUuid, {
+            page,
+            size: rowsPerPage,
+            keyword,
+          })
+        );
+      } else {
+        // For other roles
+        result = await dispatch(
+          retrieveByProdusen(produsenUuid, {
+            page,
+            size: rowsPerPage,
+            keyword,
+          })
+        );
+      }
+      
+      if (result) {
+        console.log('Fetch successful. Records count:', result.records?.length || 0);
+      } else {
+        console.warn('Fetch completed but no result returned');
+      }
+      
+      return result;
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    } finally {
+      setLoading(false);
+    }
+  }, [dispatch, page, rowsPerPage, keyword, currentUser, produsen]);
+
+  // Load data on component mount or when parameters change
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
+  // Initial data load and filter options
   useEffect(() => {
     dispatch(retrieve());
     dispatch(retrieveProdusenKategori("0"));
-    if (
-      currentUser.roles.includes("ROLE_ADMIN") ||
-      currentUser.roles.includes("ROLE_WALIDATA")
-    ) {
-      dispatch(retrieveByProdusenAdmin("0"));
-    } else {
-      dispatch(retrieveByProdusen("0"));
-    }
+    
     var list = [];
     list.push({ uuid: "0", name: "Pilih Produsen Data Geospasial" });
     setListProdusen(list);
   }, []);
-  /*
-  useEffect(() => {
-    if (produsens.length > 0) {
-      //console.log(kategoriTematiks);
-      //console.log(kategoriTematiks[0].name);
-      //var a = kategoriTematiks.filter(function (el) {
-      //  return el.name == kategoriTematiks[0].name;
-      //});
-      var list = [];
-      list.push({ uuid: "0", name: "Pilih Produsen Data Geospasial" });
-      produsens.map((data) => {
-        list.push(data);
-      });
-      setListProdusen(list);
-      setProdusen(produsens[0]);
-      setConfig({ ...config, ["produsen"]: produsens[0] });
-      //setSelectedProvinsi(provinsis[0].name);
-      //setData({ ...data, ["province"]: provinsis[0] });
-      //dispatch(retrieveRegionProvinsi(provinsis[0].uuid));
 
-      //dispatch(retrieveByKategori(kategoriTematiks[0].uuid));
-    }
-  }, [produsens]);
-  */
   useEffect(() => {
     if (kategoris.length > 0) {
-      //console.log(kategoriTematiks);
-      //console.log(kategoriTematiks[0].name);
-      //var a = kategoriTematiks.filter(function (el) {
-      //  return el.name == kategoriTematiks[0].name;
-      //});
       var list = [];
       list.push({ uuid: "0", name: "Pilih Kategori Bidang IGT" });
       kategoris.map((provinsi) => {
@@ -180,51 +214,85 @@ function UserTab() {
     value = e.target.value;
 
     if (value !== "Pilih Kategori Bidang IGT") {
+      // Find the selected kategori object
+      const selectedKategoriObj = kategoris.find(el => el.name === value);
+      
+      if (!selectedKategoriObj) {
+        console.error("Selected kategori not found in list");
+        return;
+      }
+      
       setSelectedKategori(value);
-      var a = kategoris.filter(function (el) {
-        return el.name == value;
-      });
+      
+      // Clear existing data while loading
+      setLoading(true);
+      
+      // Reset search and pagination
+      setKeyword("");
+      setPage(0);
 
-      dispatch(retrieveProdusenKategori(a[0].uuid))
+      dispatch(retrieveProdusenKategori(selectedKategoriObj.uuid))
         .then((datas) => {
           var list = [];
           list.push({ uuid: "0", name: "Pilih Produsen Data Geospasial" });
-          datas.map((data) => {
-            list.push(data);
-          });
-          setListProdusen(list);
-          setProdusen(list[1]);
-          setConfig({ ...config, ["produsen"]: list[1] });
-          setSelectedProdusen(list[0].name);
-          if (
-            currentUser.roles.includes("ROLE_ADMIN") ||
-            currentUser.roles.includes("ROLE_WALIDATA")
-          ) {
-            dispatch(retrieveByProdusenAdmin("0"));
-          } else {
-            dispatch(retrieveByProdusen("0"));
+          
+          if (datas && Array.isArray(datas)) {
+            datas.forEach((data) => {
+              list.push(data);
+            });
           }
+          
+          setListProdusen(list);
+          
+          // Clear produsen selection
+          setProdusen(null);
+          setConfig(prevConfig => ({ ...prevConfig, produsen: null }));
+          setSelectedProdusen("Pilih Produsen Data Geospasial");
+          
+          // Clear the data display until a produsen is selected
+          dispatch({
+            type: "RETRIEVE_DATA_PUBLIKASI_SUCCESS",
+            payload: { records: [], totalItems: 0, totalPages: 0, currentPage: 0 }
+          });
+          
+          setLoading(false);
         })
         .catch((e) => {
-          console.log(e);
+          console.error("Error fetching produsen for kategori:", e);
+          setLoading(false);
         });
     } else {
+      // Clear kategori selection
       setSelectedKategori(value);
-      dispatch(retrieveProdusenKategori("0"));
-      var list = [];
-      list.push({ uuid: "0", name: "Pilih Produsen Data Geospasial" });
-      setListProdusen(list);
-      setProdusen(null);
-      setConfig({ ...config, ["produsen"]: null });
-
-      if (
-        currentUser.roles.includes("ROLE_ADMIN") ||
-        currentUser.roles.includes("ROLE_WALIDATA")
-      ) {
-        dispatch(retrieveByProdusenAdmin("0"));
-      } else {
-        dispatch(retrieveByProdusen("0"));
-      }
+      
+      // Reset search and pagination
+      setKeyword("");
+      setPage(0);
+      
+      // Clear existing data while loading
+      setLoading(true);
+      
+      dispatch(retrieveProdusenKategori("0"))
+        .then(() => {
+          var list = [];
+          list.push({ uuid: "0", name: "Pilih Produsen Data Geospasial" });
+          setListProdusen(list);
+          setProdusen(null);
+          setConfig(prevConfig => ({ ...prevConfig, produsen: null }));
+          setSelectedProdusen("Pilih Produsen Data Geospasial");
+          
+          // Clear the data display
+          dispatch({
+            type: "RETRIEVE_DATA_PUBLIKASI_SUCCESS",
+            payload: { records: [], totalItems: 0, totalPages: 0, currentPage: 0 }
+          });
+          
+          setLoading(false);
+        })
+        .catch((e) => {
+          console.error("Error clearing produsen list:", e);
+          setLoading(false);
+        });
     }
   };
 
@@ -233,35 +301,153 @@ function UserTab() {
     value = e.target.value;
 
     if (value !== "Pilih Produsen Data Geospasial") {
-      setSelectedProdusen(value);
-      var a = listProdusen.filter(function (el) {
-        return el.name == value;
-      });
-
-      //setData({ ...data, ["province"]: a[0] });
-      setConfig({ ...config, ["produsen"]: a[0] });
-      setProdusen(a[0]);
-      if (
-        currentUser.roles.includes("ROLE_ADMIN") ||
-        currentUser.roles.includes("ROLE_WALIDATA")
-      ) {
-        dispatch(retrieveByProdusenAdmin(a[0].uuid));
-      } else {
-        dispatch(retrieveByProdusen(a[0].uuid));
+      // Find the selected produsen object
+      const selectedProdusenObj = listProdusen.find(el => el.name === value);
+      
+      if (!selectedProdusenObj) {
+        console.error("Selected produsen not found in list");
+        return;
       }
-    } else {
+      
+      // Update state in a single batch to prevent race conditions
       setSelectedProdusen(value);
-      setConfig({ ...config, ["produsen"]: null });
-      setProdusen(null);
+      setConfig(prevConfig => ({ ...prevConfig, produsen: selectedProdusenObj }));
+      
+      // Important: set produsen first, then fetch data directly
+      // This ensures we're using the correct produsen UUID
+      setProdusen(selectedProdusenObj);
+      
+      // Reset pagination and search when changing filters
+      setKeyword("");
+      setPage(0);
+      
+      console.log("Selected produsen:", selectedProdusenObj);
+      
+      // Directly fetch data with the new produsen UUID
       if (
-        currentUser.roles.includes("ROLE_ADMIN") ||
-        currentUser.roles.includes("ROLE_WALIDATA")
+        currentUser?.roles?.includes("ROLE_ADMIN") ||
+        currentUser?.roles?.includes("ROLE_WALIDATA")
       ) {
-        dispatch(retrieveByProdusenAdmin("0"));
+        dispatch(
+          retrieveByProdusenAdmin(selectedProdusenObj.uuid, {
+            page: 0,
+            size: rowsPerPage,
+            keyword: "",
+          })
+        ).then(result => {
+          console.log("Fetched data for produsen:", result);
+        }).catch(error => {
+          console.error("Error fetching data for produsen:", error);
+        });
       } else {
-        dispatch(retrieveByProdusen("0"));
+        dispatch(
+          retrieveByProdusen(selectedProdusenObj.uuid, {
+            page: 0,
+            size: rowsPerPage,
+            keyword: "",
+          })
+        ).then(result => {
+          console.log("Fetched data for produsen:", result);
+        }).catch(error => {
+          console.error("Error fetching data for produsen:", error);
+        });
+      }
+      
+    } else {
+      // Clear produsen selection
+      setSelectedProdusen(value);
+      setConfig(prevConfig => ({ ...prevConfig, produsen: null }));
+      setProdusen(null);
+      
+      // Reset pagination and search when clearing filters
+      setKeyword("");
+      setPage(0);
+      
+      // Directly fetch data with default UUID "0"
+      if (
+        currentUser?.roles?.includes("ROLE_ADMIN") ||
+        currentUser?.roles?.includes("ROLE_WALIDATA")
+      ) {
+        dispatch(
+          retrieveByProdusenAdmin("0", {
+            page: 0,
+            size: rowsPerPage,
+            keyword: "",
+          })
+        ).then(result => {
+          console.log("Fetched data with cleared filters:", result);
+        }).catch(error => {
+          console.error("Error fetching data with cleared filters:", error);
+        });
+      } else {
+        dispatch(
+          retrieveByProdusen("0", {
+            page: 0,
+            size: rowsPerPage,
+            keyword: "",
+          })
+        ).then(result => {
+          console.log("Fetched data with cleared filters:", result);
+        }).catch(error => {
+          console.error("Error fetching data with cleared filters:", error);
+        });
       }
     }
+  };
+
+  // Search handler with debounce
+  const handleSearchChange = (event) => {
+    const value = event.target.value;
+    
+    // Update the search keyword state
+    setKeyword(value);
+    
+    // Reset to first page when searching
+    setPage(0);
+    
+    // Clear any existing timeout
+    if (searchTimeout) {
+      clearTimeout(searchTimeout);
+    }
+    
+    // Set a new timeout to trigger the search
+    const timeoutId = setTimeout(() => {
+      // Log the search parameters for debugging
+      console.log("Searching with:", {
+        keyword: value,
+        page: 0,
+        size: rowsPerPage,
+        produsenUuid: produsen?.uuid || "0"
+      });
+      
+      // Determine which API to call based on user role
+      if (
+        currentUser?.roles?.includes("ROLE_ADMIN") ||
+        currentUser?.roles?.includes("ROLE_WALIDATA")
+      ) {
+        const produsenUuid = produsen?.uuid !== "0" ? produsen?.uuid : "0";
+        
+        dispatch(
+          retrieveByProdusenAdmin(produsenUuid, {
+            page: 0,
+            size: rowsPerPage,
+            keyword: value,
+          })
+        );
+      } else {
+        const produsenUuid = produsen?.uuid !== "0" ? produsen?.uuid : "0";
+        
+        dispatch(
+          retrieveByProdusen(produsenUuid, {
+            page: 0,
+            size: rowsPerPage,
+            keyword: value,
+          })
+        );
+      }
+    }, 300);
+    
+    setSearchTimeout(timeoutId);
   };
 
   const handleClickPublish = (data) => {
@@ -295,6 +481,23 @@ function UserTab() {
     });
     setOpen(true);
   };
+
+  const handleClickUnpublish = (data) => {
+    setConfig({
+      data: data,
+      title:
+        "Process Unpublish Data " +
+        data.tematik?.name +
+        " (" +
+        data.deskripsi +
+        ")",
+      mode: "unpublish",
+      action: "Unpublish",
+      description: "Silahkan klik untuk melakukan proses unpublikasi data",
+    });
+    setOpen(true);
+  };
+
   const handleEdit = (data) => {
     setConfigEdit({
       data: data,
@@ -313,30 +516,36 @@ function UserTab() {
 
   const handleClose = () => {
     setOpen(false);
+    // Refresh data after closing dialog
+    fetchData();
   };
 
   const handleCloseEdit = () => {
     setOpenEdit(false);
+    // Refresh data after closing dialog
+    fetchData();
   };
 
   const handleUnduh = (data) => {
-    if (
-      currentUser.roles.includes("ROLE_ADMIN") ||
-      currentUser.roles.includes("ROLE_WALIDATA")
-    ) {
-      dispatch(retrieveByProdusenAdmin("0"));
-    } else {
-      dispatch(retrieveByProdusen("0"));
-    }
     window.location.href = "publikasi/unduh/" + data.uuid;
   };
+
+  // Pagination handlers
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
+    // fetchData will be triggered by useEffect due to page dependency
   };
 
   const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
+    const newRowsPerPage = parseInt(event.target.value, 10);
+    setRowsPerPage(newRowsPerPage);
+    setPage(0); // Reset to first page when changing rows per page
+    // fetchData will be triggered by useEffect due to rowsPerPage dependency
+  };
+
+  // Handle refresh button click
+  const handleRefresh = () => {
+    fetchData();
   };
 
   return (
@@ -399,7 +608,98 @@ function UserTab() {
       <Grid item xs={12}>
         <Card>
           <CardContent>
-            <TableContainer>
+            {/* Search and Action Controls */}
+            <Box sx={{ 
+              display: 'flex', 
+              justifyContent: 'space-between', 
+              alignItems: 'center', 
+              mb: 2 
+            }}>
+              <TextField
+                placeholder="Cari berdasarkan deskripsi atau nama tematik..."
+                variant="outlined"
+                size="small"
+                value={keyword}
+                onChange={handleSearchChange}
+                sx={{ minWidth: 300 }}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <SearchIcon />
+                    </InputAdornment>
+                  ),
+                  endAdornment: keyword && (
+                    <InputAdornment position="end">
+                      <IconButton
+                        aria-label="clear search"
+                        onClick={() => {
+                          // Clear the search field
+                          setKeyword("");
+                          setPage(0);
+                          
+                          // Explicitly fetch data with empty keyword
+                          const produsenUuid = produsen?.uuid !== "0" ? produsen?.uuid : "0";
+                          
+                          if (
+                            currentUser?.roles?.includes("ROLE_ADMIN") ||
+                            currentUser?.roles?.includes("ROLE_WALIDATA")
+                          ) {
+                            dispatch(
+                              retrieveByProdusenAdmin(produsenUuid, {
+                                page: 0,
+                                size: rowsPerPage,
+                                keyword: "",
+                              })
+                            );
+                          } else {
+                            dispatch(
+                              retrieveByProdusen(produsenUuid, {
+                                page: 0,
+                                size: rowsPerPage,
+                                keyword: "",
+                              })
+                            );
+                          }
+                        }}
+                        edge="end"
+                        size="small"
+                      >
+                        <Typography variant="caption">×</Typography>
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
+              />
+
+              <Button
+                variant="outlined"
+                startIcon={<RefreshIcon />}
+                onClick={handleRefresh}
+              >
+                Refresh
+              </Button>
+            </Box>
+
+            {/* Table Container with Loading */}
+            <TableContainer sx={{ position: 'relative', minHeight: 200 }}>
+              {loading && (
+                <Box
+                  sx={{
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    backgroundColor: 'rgba(255, 255, 255, 0.7)',
+                    zIndex: 1,
+                  }}
+                >
+                  <CircularProgress />
+                </Box>
+              )}
               <Table>
                 <TableHead>
                   <TableRow>
@@ -420,37 +720,31 @@ function UserTab() {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {datas.length == 0 ? (
+                  {!loading && (!datas.records || datas.records.length === 0) ? (
                     <TableRow key={0}>
-                      <TableCell colSpan={9}>
-                        {selectedProdusen == "Pilih Produsen Data Geospasial"
-                          ? "Filter belum dipilih"
-                          : "Data tidak ditemukan"}
+                      <TableCell colSpan={10} align="center">
+                        {selectedProdusen === "Pilih Produsen Data Geospasial" && !keyword
+                          ? "Silakan pilih filter terlebih dahulu"
+                          : keyword 
+                            ? `Tidak ada data yang cocok dengan pencarian "${keyword}"`
+                            : "Data tidak ditemukan"}
                       </TableCell>
                     </TableRow>
-                  ) : null}
-                  {datas &&
-                    Array.isArray(datas) &&
-                    datas.map((data) => (
+                  ) : (
+                    datas.records && datas.records.map((data) => (
                       <TableRow key={data.id} hover>
                         <TableCell>{data.tematik?.name}</TableCell>
                         <TableCell>{data.deskripsi}</TableCell>
                         <TableCell align="center">
-                          {data.dataPemeriksaan?.dataPerbaikanProdusen?.length >
-                          0
+                          {data.dataPemeriksaan?.dataPerbaikanProdusen?.length > 0
                             ? data.dataPemeriksaan?.dataPerbaikanProdusen[
-                                data.dataPemeriksaan?.dataPerbaikanProdusen
-                                  .length - 1
+                                data.dataPemeriksaan?.dataPerbaikanProdusen.length - 1
                               ].kategori
                             : data.dataPemeriksaan?.kategori}
                         </TableCell>
                         {currentUser.roles.includes("ROLE_PRODUSEN") ? (
                           <TableCell align="center">
-                            <Tooltip
-                              placement="top"
-                              title="Unduh Dokumen"
-                              arrow
-                            >
+                            <Tooltip placement="top" title="Unduh Dokumen" arrow>
                               <IconButton
                                 sx={{
                                   "&:hover": {
@@ -462,20 +756,16 @@ function UserTab() {
                                 size="small"
                                 component={RouterLink}
                                 to={
-                                  data.dataPemeriksaan?.dataPerbaikanProdusen
-                                    .length > 0
+                                  data.dataPemeriksaan?.dataPerbaikanProdusen.length > 0
                                     ? environment.api +
                                       "/data-perbaikan-produsen/unduhQA/" +
-                                      data.dataPemeriksaan
-                                        ?.dataPerbaikanProdusen[
-                                        data.dataPemeriksaan
-                                          ?.dataPerbaikanProdusen.length - 1
+                                      data.dataPemeriksaan?.dataPerbaikanProdusen[
+                                        data.dataPemeriksaan?.dataPerbaikanProdusen.length - 1
                                       ].uuid
                                     : environment.api +
                                       "/data-pemeriksaan/unduhFile/" +
                                       data.dataPemeriksaan?.uuid
                                 }
-                                //onClick={() => handleClickDelete(data)}
                               >
                                 <DownloadTwoToneIcon fontSize="small" />
                               </IconButton>
@@ -487,7 +777,6 @@ function UserTab() {
                         <TableCell align="center">
                           {data.tematik?.is_series ? "Series" : "Tidak Series"}
                         </TableCell>
-
                         <TableCell align="center">
                           {data.is_active ? "Aktif" : "Tidak Aktif"}
                         </TableCell>
@@ -535,86 +824,11 @@ function UserTab() {
                             ""
                           )}
                         </TableCell>
-                        {/*
-                      <TableCell align="center">
-                        <Tooltip placement="top" title="Unduh Dokumen" arrow>
-                          <IconButton
-                            sx={{
-                              "&:hover": {
-                                background: theme.colors.error.lighter,
-                              },
-                              color: theme.palette.error.main,
-                            }}
-                            color="inherit"
-                            size="small"
-                            //onClick={() => handleClickDelete(data)}
-                          >
-                            <DownloadTwoToneIcon fontSize="small" />
-                          </IconButton>
-                        </Tooltip>
-                      </TableCell>
-                      <TableCell align="center">
-                        <Tooltip placement="top" title="Unduh Metadata" arrow>
-                          <IconButton
-                            sx={{
-                              "&:hover": {
-                                background: theme.colors.error.lighter,
-                              },
-                              color: theme.palette.error.main,
-                            }}
-                            color="inherit"
-                            size="small"
-                            //onClick={() => handleClickDelete(data)}
-                          >
-                            <DownloadTwoToneIcon fontSize="small" />
-                          </IconButton>
-                        </Tooltip>
-                      </TableCell>
-                      <TableCell align="center">
-                        <Tooltip placement="top" title="Unduh File" arrow>
-                          <IconButton
-                            sx={{
-                              "&:hover": {
-                                background: theme.colors.error.lighter,
-                              },
-                              color: theme.palette.error.main,
-                            }}
-                            color="inherit"
-                            size="small"
-                            //onClick={() => handleClickDelete(data)}
-                          >
-                            <DownloadTwoToneIcon fontSize="small" />
-                          </IconButton>
-                        </Tooltip>
-                      </TableCell>
-                      */}
                         <TableCell align="right">
-                          {/*
-                          <Tooltip title="Edit Kategori" arrow>
-                            <IconButton
-                              sx={{
-                                "&:hover": {
-                                  background: theme.colors.primary.lighter,
-                                },
-                                color: theme.palette.primary.main,
-                              }}
-                              color="inherit"
-                              size="small"
-                              onClick={() => handleClickEdit(kategori)}
-                            >
-                              <EditTwoToneIcon fontSize="small" />
-                            </IconButton>
-                          </Tooltip>
-                            */}
-
                           {data.urlGeoserver == null || !data.is_active ? (
                             ""
                           ) : (
-                            <Tooltip
-                              placement="top"
-                              title="Unduh Data Publikasi"
-                              arrow
-                            >
+                            <Tooltip placement="top" title="Unduh Data Publikasi" arrow>
                               <IconButton
                                 sx={{
                                   "&:hover": {
@@ -624,8 +838,6 @@ function UserTab() {
                                 }}
                                 color="inherit"
                                 size="small"
-                                //component={RouterLink}
-                                //to={"unduh/" + data.uuid}
                                 onClick={() => handleUnduh(data)}
                               >
                                 <DownloadTwoToneIcon fontSize="small" />
@@ -654,15 +866,12 @@ function UserTab() {
                           ) : (
                             ""
                           )}
-                          {/*data.is_published &&
+                          
+                          {data.is_published &&
                           data.is_active &&
                           (currentUser.roles.includes("ROLE_ADMIN") ||
                             currentUser.roles.includes("ROLE_WALIDATA")) ? (
-                            <Tooltip
-                              placement="top"
-                              title="Deactivate Data"
-                              arrow
-                            >
+                            <Tooltip placement="top" title="Unpublish Data" arrow>
                               <IconButton
                                 sx={{
                                   "&:hover": {
@@ -672,21 +881,17 @@ function UserTab() {
                                 }}
                                 color="inherit"
                                 size="small"
-                                onClick={() => handleEdit(data)}
+                                onClick={() => handleClickUnpublish(data)}
                               >
-                                <UnpublishedIcon fontSize="small" />
+                                <PublicOffIcon fontSize="small" />
                               </IconButton>
                             </Tooltip>
                           ) : (
                             ""
-                          )*/}
-                          {data.is_published &&
-                          currentUser.roles.includes("ROLE_ADMIN") ? (
-                            <Tooltip
-                              placement="top"
-                              title="Delete Data Publikasi"
-                              arrow
-                            >
+                          )}
+                          
+                          {(currentUser.roles.includes("ROLE_ADMIN")) ? (
+                            <Tooltip placement="top" title="Delete Data Publikasi" arrow>
                               <IconButton
                                 sx={{
                                   "&:hover": {
@@ -706,30 +911,30 @@ function UserTab() {
                           )}
                         </TableCell>
                       </TableRow>
-                    ))}
+                    ))
+                  )}
                 </TableBody>
               </Table>
             </TableContainer>
-            {/*
-            <Box p={2}>
-              <TablePagination
-                component="div"
-                count={100}
-                page={page}
-                onPageChange={handleChangePage}
-                rowsPerPage={rowsPerPage}
-                onRowsPerPageChange={handleChangeRowsPerPage}
-              />
-            </Box>
-            */}
+            
+            {/* Pagination */}
+            <TablePagination
+              component="div"
+              count={datas.totalItems || 0}
+              page={page}
+              onPageChange={handleChangePage}
+              rowsPerPage={rowsPerPage}
+              onRowsPerPageChange={handleChangeRowsPerPage}
+              rowsPerPageOptions={[10, 25, 50, 100]}
+              labelRowsPerPage="Baris per halaman:"
+              labelDisplayedRows={({ from, to, count }) => 
+                `${from}-${to} dari ${count !== -1 ? count : `lebih dari ${to}`}`
+              }
+            />
           </CardContent>
 
           <UserDialog open={open} onClose={handleClose} config={config} />
-          <EditDialog
-            open={openEdit}
-            onClose={handleCloseEdit}
-            config={configEdit}
-          />
+          <EditDialog open={openEdit} onClose={handleCloseEdit} config={configEdit} />
         </Card>
       </Grid>
     </Grid>

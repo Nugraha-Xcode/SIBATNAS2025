@@ -33,6 +33,11 @@ export const MapViewerProvider = ({ children }) => {
       }),
     })
   );
+
+  // Log get center and zoom level
+  // console.log("View Center:", map.getView().getCenter());
+  // console.log("Zoom Level:", map.getView().getZoom());
+
   const setMapCenter = (center) => {
     map.getView().setCenter(center);
   };

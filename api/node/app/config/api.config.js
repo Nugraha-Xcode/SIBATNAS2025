@@ -1,3 +1,3 @@
 module.exports = {
-  api_grass: "http://172.16.3.163:5001",
+  api_grass: "http://sibatnas-node-api:8080",
 };

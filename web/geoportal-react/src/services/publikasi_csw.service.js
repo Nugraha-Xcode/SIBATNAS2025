@@ -3,12 +3,12 @@ import authHeader from "./auth-header";
 import authHeaderFile from "./auth-headerFile";
 const base = "publikasi_csw";
 
-const getAll = () => {
-  return http.get(`/${base}`, { headers: authHeader() });
+const getAll = (params = {}) => {
+  return http.get(`/${base}`, { headers: authHeader(), params });
 };
 
-const getAllPublik = () => {
-  return http.get(`/${base}/publik`);
+const getAllPublik = (params = {}) => {
+  return http.get(`/${base}/publik`, { params });
 };
 
 const get = (uuid) => {
@@ -22,12 +22,18 @@ const get = (uuid) => {
 const createData = (data, metadataFile) => {
   let formData = new FormData();
 
-  formData.append("metadataFile", metadataFile);
-  //formData.append("nip", data.nip);
-  formData.append("data", JSON.stringify(data));
-  console.log(data);
-  console.log(metadataFile);
+  console.log("Data yang dikirim:", data);
+  console.log("MetadataFile:", metadataFile);
+  console.log("Tipe MetadataFile:", typeof metadataFile);
+  console.log("Instanceof File:", metadataFile instanceof File);
 
+  formData.append("metadataFile", metadataFile);
+  formData.append("data", JSON.stringify(data));
+
+  console.log("Sending FormData:");
+  for (let pair of formData.entries()) {
+    console.log(pair[0] + ': ', pair[1]);
+  }
   return http.post(`/${base}`, formData, {
     headers: authHeaderFile(),
     //onUploadProgress,

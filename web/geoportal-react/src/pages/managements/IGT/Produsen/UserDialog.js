@@ -62,64 +62,88 @@ function UserDialog(props) {
       dispatch(retrieveUserProdusen());
     }
   }, []);
-  const handleProdusenChange = (e) => {
-    let value = null;
 
-    if (e.target.value !== "all") {
-      value = e.target.value;
-    }
+// Untuk handleUserChange
+const handleUserChange = (e) => {
+  let value = null;
 
-    setSelectedProdusen(value);
-    var a = produsens.filter(function (el) {
-      return el.name == value;
-    });
+  if (e.target.value !== "all") {
+    value = e.target.value;
+  }
 
-    setData({ ...data, ["produsen"]: a[0] });
-  };
+  setSelectedUser(value);
+  const selectedUserObj = users.find((user) => user.username === value);
+  
+  // Gunakan fungsi updater untuk memastikan menggunakan state terbaru
+  setData(prevData => ({ 
+    ...prevData, 
+    user: selectedUserObj 
+  }));
+};
 
-  const handleUserChange = (e) => {
-    let value = null;
+// Perbaikan serupa untuk handleProdusenChange
+const handleProdusenChange = (e) => {
+  let value = null;
 
-    if (e.target.value !== "all") {
-      value = e.target.value;
-    }
+  if (e.target.value !== "all") {
+    value = e.target.value;
+  }
 
-    setSelectedUser(value);
-    var a = users.filter(function (el) {
-      return el.username == value;
-    });
+  setSelectedProdusen(value);
+  const selectedProdusenObj = produsens.find((produsen) => produsen.name === value);
+  
+  setData(prevData => ({ 
+    ...prevData, 
+    produsen: selectedProdusenObj 
+  }));
+};
 
-    setData({ ...data, ["user"]: a[0] });
-  };
   const handleClose = () => {
     onClose();
   };
 
   useEffect(() => {
     if (config) {
-      //console.log(config);
       if (config.data) {
-        setData(config.data);
-        setSelectedUser(config.data.username);
-        var a = produsens.filter(function (el) {
-          return el.name == config.produsen?.name;
-        });
-        //setSelectedBpkhtl(config.data.bpkhtls[0]?.name);
-        setData({ ...data, ["produsen"]: a[0] });
-
-        var b = users.filter(function (el) {
-          return el.username == config.data.username;
-        });
-
-        setData({ ...data, ["user"]: b[0] });
+        const updatedData = {...config.data};
+        
+        // Jika produsen tidak ada, ambil dari config atau dari produsens
+        if (!updatedData.produsen) {
+          if (config.produsen) {
+            updatedData.produsen = config.produsen;
+          } else if (updatedData.produsens && updatedData.produsens.length > 0) {
+            updatedData.produsen = updatedData.produsens[0];
+          } else if (produsens && produsens.length > 0) {
+            updatedData.produsen = produsens[0];
+          }
+        }
+        
+        // Pastikan user juga ada
+        if (!updatedData.user && updatedData.uuid) {
+          updatedData.user = {
+            uuid: updatedData.uuid,
+            username: updatedData.username
+          };
+        }
+        
+        setData(updatedData);
+        setSelectedUser(updatedData.user?.username || updatedData.username);
+        setSelectedProdusen(updatedData.produsen?.name);
       } else {
-        setData(initialDataState);
-        setSelectedProdusen(config.produsen?.name);
-        setData({ ...data, ["produsen"]: config.produsen });
-        setSelectedUser(users[0]?.username);
+        // Inisialisasi dengan produsen dari config dan user default
+        const produsenObj = config.produsen || produsens[0];
+        const userObj = users[0];
+        
+        setData({
+          produsen: produsenObj,
+          user: userObj
+        });
+        
+        setSelectedProdusen(produsenObj?.name);
+        setSelectedUser(userObj?.username);
       }
     }
-  }, [config]);
+  }, [config, produsens, users]);
 
   const save = (e) => {
     e.preventDefault();
@@ -175,13 +199,41 @@ function UserDialog(props) {
 
   const removeData = (e) => {
     e.preventDefault();
-
     setLoading(true);
-
-    dispatch(remove(data))
+    
+    // Buat salinan data untuk dikirim
+    let dataToRemove = {...data};
+    
+    // Jika produsen undefined, tetapi produsens ada dan memiliki minimal 1 item
+    if (!dataToRemove.produsen && dataToRemove.produsens && dataToRemove.produsens.length > 0) {
+      // Gunakan produsen dari config jika tersedia, atau produsen pertama dari array produsens
+      dataToRemove.produsen = config.produsen || dataToRemove.produsens[0];
+    }
+    
+    // Pastikan user juga ada
+    if (!dataToRemove.user && dataToRemove.uuid) {
+      dataToRemove.user = {
+        uuid: dataToRemove.uuid,
+        username: dataToRemove.username
+      };
+    }
+    
+    //console.log("Data final untuk penghapusan:", dataToRemove);
+    
+    // Pastikan data sekarang lengkap
+    if (!dataToRemove.produsen || !dataToRemove.produsen.uuid || !dataToRemove.user || !dataToRemove.user.uuid) {
+      console.error("Data masih tidak lengkap:", dataToRemove);
+      setLoading(false);
+      swal("Error", "Data tidak lengkap untuk penghapusan", "error", {
+        buttons: false,
+        timer: 2000,
+      });
+      return;
+    }
+    
+    dispatch(remove(dataToRemove))
       .then(() => {
         setLoading(false);
-
         swal("Success", "Data berhasil dihapus!", "success", {
           buttons: false,
           timer: 2000,
@@ -190,8 +242,7 @@ function UserDialog(props) {
       })
       .catch((e) => {
         setLoading(false);
-
-        swal("Error", e.response.data.message, "error", {
+        swal("Error", e.response?.data?.message || "Terjadi kesalahan", "error", {
           buttons: false,
           timer: 2000,
         });

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
+import { NavLink as RouterLink } from "react-router-dom";
 import {
   Alert,
   Box,
@@ -76,7 +77,9 @@ function KategoriTab() {
       : null
   );
   */
-  const datas = useSelector((state) => state.data_publikasi);
+  const datas = useSelector((state) => state.data_publikasi.allRecords);
+
+  //console.log("datas", datas);
   //const regions = useSelector((state) => state.region);
   //const setting = useSelector((state) => state.setting);
   //const initialDataState = {
@@ -118,7 +121,7 @@ function KategoriTab() {
     dispatch(retrieveByUUID(uuid));
     //dispatch(retrieveInfoBatas());
     //console.log(currentUser);
-  }, []);
+  }, [dispatch]);
   /*
   useEffect(() => {
     if (provinsis.length > 0) {
@@ -362,7 +365,12 @@ function KategoriTab() {
       <Grid item xs={12}>
         <Card>
           <CardContent>
-            <Button onClick={unduhData} variant="contained">
+            <Button 
+            //onClick={unduhData} 
+            variant="contained"
+            component={RouterLink}
+            to={`${environment.api}data-publikasi/unduh/${datas?.uuid}/${currentUser.uuid}`}
+            >
               Unduh Data
             </Button>
           </CardContent>

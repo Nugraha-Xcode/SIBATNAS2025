@@ -22,6 +22,7 @@ import SyncIcon from "@mui/icons-material/Sync";
 import MapIcon from "@mui/icons-material/MapTwoTone";
 
 import { retrieveByEksternalUser } from "src/redux/actions/dataPublikasi";
+import { recordPublikasiDownload } from "src/redux/actions/visitor";
 import environment from "src/config/environment";
 
 function UserTab() {
@@ -33,9 +34,23 @@ function UserTab() {
 
   useEffect(() => {
     dispatch(retrieveByEksternalUser(currentUser.uuid));
-  }, []);
+  }, [dispatch, currentUser.uuid]);
 
   const handleUnduh = (data) => {
+    // Track download sebelum redirect
+    dispatch(recordPublikasiDownload(data, currentUser));
+
+    // Log download untuk debugging
+    console.log('Download tracked (Eksternal):', {
+      dataId: data.id,
+      uuid: data.uuid,
+      userUuid: currentUser.uuid,
+      tematik: data.tematik?.name,
+      kategori: data.dataPemeriksaan?.kategori,
+      userType: 'eksternal'
+    });
+
+    // Redirect ke download URL
     window.location.href = "publikasi/unduh/" + data.uuid;
   };
 
@@ -58,9 +73,9 @@ function UserTab() {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {datas.length == 0 ? (
+                  {datas.length === 0 ? (
                     <TableRow key={0}>
-                      <TableCell colSpan={9}>Data tidak ditemukan</TableCell>
+                      <TableCell colSpan={7}>Data tidak ditemukan</TableCell>
                     </TableRow>
                   ) : null}
                   {datas &&
@@ -71,9 +86,9 @@ function UserTab() {
                         <TableCell>{data.deskripsi}</TableCell>
                         <TableCell>
                           {data.dataPemeriksaan?.dataPerbaikanProdusen.length >
-                          0
+                            0
                             ? data.dataPemeriksaan?.dataPerbaikanProdusen[0]
-                                .kategori
+                              .kategori
                             : data.dataPemeriksaan?.kategori}
                         </TableCell>
 
@@ -86,9 +101,9 @@ function UserTab() {
                         <TableCell>
                           {data.waktuPublish
                             ? format(
-                                parseISO(data.waktuPublish),
-                                "dd MMMM, yyyy - h:mm:ss a"
-                              )
+                              parseISO(data.waktuPublish),
+                              "dd MMMM, yyyy - h:mm:ss a"
+                            )
                             : ""}
                         </TableCell>
                         <TableCell align="center">
@@ -140,8 +155,6 @@ function UserTab() {
                                 }}
                                 color="inherit"
                                 size="small"
-                                //component={RouterLink}
-                                //to={"unduh/" + data.uuid}
                                 onClick={() => handleUnduh(data)}
                               >
                                 <DownloadTwoToneIcon fontSize="small" />

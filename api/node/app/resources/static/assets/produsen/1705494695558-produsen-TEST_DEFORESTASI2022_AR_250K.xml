@@ -1,0 +1,842 @@
+﻿<MD_Metadata xmlns="http://www.isotc211.org/2005/gmd" xmlns:gco="http://www.isotc211.org/2005/gco" xmlns:gts="http://www.isotc211.org/2005/gts" xmlns:srv="http://www.isotc211.org/2005/srv" xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <fileIdentifier>
+    <gco:CharacterString>DEFORESTASI_2021_2022_AR_250K</gco:CharacterString>
+  </fileIdentifier>
+  <language>
+    <LanguageCode codeList="http://www.loc.gov/standards/iso639-2/php/code_list.php" codeListValue="eng" codeSpace="ISO639-2">eng</LanguageCode>
+  </language>
+  <characterSet>
+    <MD_CharacterSetCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_CharacterSetCode" codeListValue="utf8" codeSpace="ISOTC211/19115">utf8</MD_CharacterSetCode>
+  </characterSet>
+  <parentIdentifier>
+    <gco:CharacterString>DEFORESTASI_2021_2022_AR_250K</gco:CharacterString>
+  </parentIdentifier>
+  <hierarchyLevel>
+    <MD_ScopeCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_ScopeCode" codeListValue="dataset" codeSpace="ISOTC211/19115">dataset</MD_ScopeCode>
+  </hierarchyLevel>
+  <hierarchyLevelName>
+    <gco:CharacterString>dataset</gco:CharacterString>
+  </hierarchyLevelName>
+  <contact>
+    <CI_ResponsibleParty>
+      <individualName>
+        <gco:CharacterString>Belinda Arunarwati Margono</gco:CharacterString>
+      </individualName>
+      <organisationName>
+        <gco:CharacterString>Dit. IPSDH, Ditjen. PKTL</gco:CharacterString>
+      </organisationName>
+      <positionName>
+        <gco:CharacterString>Direktur Inventarisasi dan Pemantauan Sumber Daya Hutan</gco:CharacterString>
+      </positionName>
+      <contactInfo>
+        <CI_Contact>
+          <phone>
+            <CI_Telephone>
+              <voice>
+                <gco:CharacterString>021-5730335</gco:CharacterString>
+              </voice>
+              <facsimile>
+                <gco:CharacterString>021-5730335</gco:CharacterString>
+              </facsimile>
+            </CI_Telephone>
+          </phone>
+          <address>
+            <CI_Address>
+              <deliveryPoint>
+                <gco:CharacterString>Gedung Manggala Wanabakti Blok 1 Lantai 7</gco:CharacterString>
+              </deliveryPoint>
+              <city>
+                <gco:CharacterString>Jakarta</gco:CharacterString>
+              </city>
+              <administrativeArea>
+                <gco:CharacterString>DKI Jakarta</gco:CharacterString>
+              </administrativeArea>
+              <postalCode>
+                <gco:CharacterString>10270</gco:CharacterString>
+              </postalCode>
+              <country>
+                <Country codeList="http://www.iso.org/iso/country_codes/iso_3166_code_lists.htm" codeListValue="ID" codeSpace="ISO3166-1">ID</Country>
+              </country>
+              <electronicMailAddress>
+                <gco:CharacterString>tu.ipsdh@gmail.com</gco:CharacterString>
+              </electronicMailAddress>
+            </CI_Address>
+          </address>
+          <hoursOfService>
+            <gco:CharacterString>08.00-16.00 WIB</gco:CharacterString>
+          </hoursOfService>
+          <contactInstructions>
+            <gco:CharacterString>Data dapat diakses melalui SIGAP Kementerian LHK dan alamat website: www.webgis.menlhk.go.id Pelayanan kantor hanya pada hari dan jam kerja yang berlaku</gco:CharacterString>
+          </contactInstructions>
+        </CI_Contact>
+      </contactInfo>
+      <role>
+        <CI_RoleCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_RoleCode" codeListValue="owner" codeSpace="ISOTC211/19115">owner</CI_RoleCode>
+      </role>
+    </CI_ResponsibleParty>
+  </contact>
+  <contact>
+    <CI_ResponsibleParty>
+      <individualName>
+        <gco:CharacterString>Belinda Arunarwati Margono</gco:CharacterString>
+      </individualName>
+      <organisationName>
+        <gco:CharacterString>Dit. IPSDH, Ditjen. PKTL</gco:CharacterString>
+      </organisationName>
+      <positionName>
+        <gco:CharacterString>Direktur Inventarisasi dan Pemantauan Sumber Daya Hutan</gco:CharacterString>
+      </positionName>
+      <contactInfo>
+        <CI_Contact>
+          <phone>
+            <CI_Telephone>
+              <voice>
+                <gco:CharacterString>021-5730335</gco:CharacterString>
+              </voice>
+              <facsimile>
+                <gco:CharacterString>021-5730335</gco:CharacterString>
+              </facsimile>
+            </CI_Telephone>
+          </phone>
+          <address>
+            <CI_Address>
+              <deliveryPoint>
+                <gco:CharacterString>Gedung Manggala Wanabakti Blok 1 Lantai 7</gco:CharacterString>
+              </deliveryPoint>
+              <city>
+                <gco:CharacterString>Jakarta</gco:CharacterString>
+              </city>
+              <administrativeArea>
+                <gco:CharacterString>DKI Jakarta</gco:CharacterString>
+              </administrativeArea>
+              <postalCode>
+                <gco:CharacterString>10270</gco:CharacterString>
+              </postalCode>
+              <country>
+                <Country codeList="http://www.iso.org/iso/country_codes/iso_3166_code_lists.htm" codeListValue="ID" codeSpace="ISO3166-1">ID</Country>
+              </country>
+              <electronicMailAddress>
+                <gco:CharacterString>tu.ipsdh@gmail.com</gco:CharacterString>
+              </electronicMailAddress>
+            </CI_Address>
+          </address>
+          <hoursOfService>
+            <gco:CharacterString>08.00-16.00 WIB</gco:CharacterString>
+          </hoursOfService>
+          <contactInstructions>
+            <gco:CharacterString>Data dapat diakses melalui SIGAP Kementerian LHK dan alamat website: www.webgis.menlhk.go.id Pelayanan kantor hanya pada hari dan jam kerja yang berlaku</gco:CharacterString>
+          </contactInstructions>
+        </CI_Contact>
+      </contactInfo>
+      <role>
+        <CI_RoleCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_RoleCode" codeListValue="custodian" codeSpace="ISOTC211/19115">custodian</CI_RoleCode>
+      </role>
+    </CI_ResponsibleParty>
+  </contact>
+  <dateStamp>
+    <gco:Date>2023-03-01</gco:Date>
+  </dateStamp>
+  <metadataStandardName>
+    <gco:CharacterString>ISO 19139 Geographic Information - Metadata - Implementation Specification</gco:CharacterString>
+  </metadataStandardName>
+  <metadataStandardVersion>
+    <gco:CharacterString>2007</gco:CharacterString>
+  </metadataStandardVersion>
+  <spatialRepresentationInfo>
+    <MD_VectorSpatialRepresentation>
+      <topologyLevel>
+        <MD_TopologyLevelCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_TopologyLevelCode" codeListValue="geometryOnly" codeSpace="ISOTC211/19115">geometryOnly</MD_TopologyLevelCode>
+      </topologyLevel>
+      <geometricObjects>
+        <MD_GeometricObjects>
+          <geometricObjectType>
+            <MD_GeometricObjectTypeCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_GeometricObjectTypeCode" codeListValue="composite" codeSpace="ISOTC211/19115">composite</MD_GeometricObjectTypeCode>
+          </geometricObjectType>
+          <geometricObjectCount>
+            <gco:Integer>8224</gco:Integer>
+          </geometricObjectCount>
+        </MD_GeometricObjects>
+      </geometricObjects>
+    </MD_VectorSpatialRepresentation>
+  </spatialRepresentationInfo>
+  <referenceSystemInfo>
+    <MD_ReferenceSystem>
+      <referenceSystemIdentifier>
+        <RS_Identifier>
+          <code>
+            <gco:CharacterString>4326</gco:CharacterString>
+          </code>
+          <codeSpace>
+            <gco:CharacterString>EPSG</gco:CharacterString>
+          </codeSpace>
+          <version>
+            <gco:CharacterString>6.2(3.0.1)</gco:CharacterString>
+          </version>
+        </RS_Identifier>
+      </referenceSystemIdentifier>
+    </MD_ReferenceSystem>
+  </referenceSystemInfo>
+  <identificationInfo>
+    <MD_DataIdentification>
+      <citation>
+        <CI_Citation>
+          <title>
+            <gco:CharacterString>DEFORESTASI_2021_2022_AR_250K</gco:CharacterString>
+          </title>
+          <date>
+            <CI_Date>
+              <date>
+                <gco:DateTime>2023-03-01T08:00:00</gco:DateTime>
+              </date>
+              <dateType>
+                <CI_DateTypeCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode" codeListValue="creation" codeSpace="ISOTC211/19115">creation</CI_DateTypeCode>
+              </dateType>
+            </CI_Date>
+          </date>
+          <date>
+            <CI_Date>
+              <date>
+                <gco:Date>2023-03-31</gco:Date>
+              </date>
+              <dateType>
+                <CI_DateTypeCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode" codeListValue="publication" codeSpace="ISOTC211/19115">publication</CI_DateTypeCode>
+              </dateType>
+            </CI_Date>
+          </date>
+          <edition>
+            <gco:CharacterString>Penutupan Lahan Kawasan Hutan Tahun 2022</gco:CharacterString>
+          </edition>
+          <editionDate>
+            <gco:Date>2023-03-01</gco:Date>
+          </editionDate>
+          <citedResponsibleParty>
+            <CI_ResponsibleParty>
+              <individualName>
+                <gco:CharacterString>Belinda Arunarwati Margono</gco:CharacterString>
+              </individualName>
+              <organisationName>
+                <gco:CharacterString>Dit. IPSDH, Ditjen. PKTL</gco:CharacterString>
+              </organisationName>
+              <positionName>
+                <gco:CharacterString>Direktur Inventarisasi dan Pemantauan Sumber Daya Hutan</gco:CharacterString>
+              </positionName>
+              <contactInfo>
+                <CI_Contact>
+                  <phone>
+                    <CI_Telephone>
+                      <voice>
+                        <gco:CharacterString>021-5730335</gco:CharacterString>
+                      </voice>
+                      <facsimile>
+                        <gco:CharacterString>021-5730335</gco:CharacterString>
+                      </facsimile>
+                    </CI_Telephone>
+                  </phone>
+                  <address>
+                    <CI_Address>
+                      <deliveryPoint>
+                        <gco:CharacterString>Gedung Manggala Wanabakti Blok 1 Lantai 7</gco:CharacterString>
+                      </deliveryPoint>
+                      <city>
+                        <gco:CharacterString>Jakarta</gco:CharacterString>
+                      </city>
+                      <administrativeArea>
+                        <gco:CharacterString>DKI Jakarta</gco:CharacterString>
+                      </administrativeArea>
+                      <postalCode>
+                        <gco:CharacterString>10270</gco:CharacterString>
+                      </postalCode>
+                      <country>
+                        <Country codeList="http://www.iso.org/iso/country_codes/iso_3166_code_lists.htm" codeListValue="ID" codeSpace="ISO3166-1">ID</Country>
+                      </country>
+                      <electronicMailAddress>
+                        <gco:CharacterString>tu.ipsdh@gmail.com</gco:CharacterString>
+                      </electronicMailAddress>
+                    </CI_Address>
+                  </address>
+                  <hoursOfService>
+                    <gco:CharacterString>08.00-16.00 WIB</gco:CharacterString>
+                  </hoursOfService>
+                  <contactInstructions>
+                    <gco:CharacterString>Data dapat diakses melalui SIGAP Kementerian LHK dan alamat website: www.webgis.menlhk.go.id Pelayanan kantor hanya pada hari dan jam kerja yang berlaku</gco:CharacterString>
+                  </contactInstructions>
+                </CI_Contact>
+              </contactInfo>
+              <role>
+                <CI_RoleCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_RoleCode" codeListValue="owner" codeSpace="ISOTC211/19115">owner</CI_RoleCode>
+              </role>
+            </CI_ResponsibleParty>
+          </citedResponsibleParty>
+          <citedResponsibleParty>
+            <CI_ResponsibleParty>
+              <individualName>
+                <gco:CharacterString>Belinda Arunarwati Margono</gco:CharacterString>
+              </individualName>
+              <organisationName>
+                <gco:CharacterString>Dit. IPSDH, Ditjen. PKTL</gco:CharacterString>
+              </organisationName>
+              <positionName>
+                <gco:CharacterString>Direktur Inventarisasi dan Pemantauan Sumber Daya Hutan</gco:CharacterString>
+              </positionName>
+              <contactInfo>
+                <CI_Contact>
+                  <phone>
+                    <CI_Telephone>
+                      <voice>
+                        <gco:CharacterString>021-5730335</gco:CharacterString>
+                      </voice>
+                      <facsimile>
+                        <gco:CharacterString>021-5730335</gco:CharacterString>
+                      </facsimile>
+                    </CI_Telephone>
+                  </phone>
+                  <address>
+                    <CI_Address>
+                      <deliveryPoint>
+                        <gco:CharacterString>Gedung Manggala Wanabakti Blok 1 Lantai 7</gco:CharacterString>
+                      </deliveryPoint>
+                      <city>
+                        <gco:CharacterString>Jakarta</gco:CharacterString>
+                      </city>
+                      <administrativeArea>
+                        <gco:CharacterString>DKI Jakarta</gco:CharacterString>
+                      </administrativeArea>
+                      <postalCode>
+                        <gco:CharacterString>10270</gco:CharacterString>
+                      </postalCode>
+                      <country>
+                        <Country codeList="http://www.iso.org/iso/country_codes/iso_3166_code_lists.htm" codeListValue="ID" codeSpace="ISO3166-1">ID</Country>
+                      </country>
+                      <electronicMailAddress>
+                        <gco:CharacterString>tu.ipsdh@gmail.com</gco:CharacterString>
+                      </electronicMailAddress>
+                    </CI_Address>
+                  </address>
+                  <hoursOfService>
+                    <gco:CharacterString>08.00-16.00 WIB</gco:CharacterString>
+                  </hoursOfService>
+                  <contactInstructions>
+                    <gco:CharacterString>Data dapat diakses melalui SIGAP Kementerian LHK dan alamat website: www.webgis.menlhk.go.id Pelayanan kantor hanya pada hari dan jam kerja yang berlaku</gco:CharacterString>
+                  </contactInstructions>
+                </CI_Contact>
+              </contactInfo>
+              <role>
+                <CI_RoleCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_RoleCode" codeListValue="custodian" codeSpace="ISOTC211/19115">custodian</CI_RoleCode>
+              </role>
+            </CI_ResponsibleParty>
+          </citedResponsibleParty>
+          <presentationForm>
+            <CI_PresentationFormCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_PresentationFormCode" codeListValue="mapDigital" codeSpace="ISOTC211/19115">mapDigital</CI_PresentationFormCode>
+          </presentationForm>
+        </CI_Citation>
+      </citation>
+      <abstract>
+        <gco:CharacterString>Deskripsi : Peta Deforestasi Tahun 2021-2022 adalah hasil ekstraksi data penutupan lahan tahun 2022 dimana pada tahun 2021 merupakan kelas hutan dan berubah menjadi kelas bukan hutan pada tahun 2022. Proses pembuatan data menggunakan mosaik citra landsat tahun 2022 (akuisisi citra landsat pada periode Juli 2021 sampai dengan Juni 2022).Dasar : Peraturan Menteri Lingkungan Hidup dan Kehutanan Nomor7 Tahun 2021 tentang Perencanaan Kehutanan, Perubahan Peruntukan Kawasan Hutan dan Perubahan Fungsi Kawasan Hutan, serta Penggunaan Kawasan.</gco:CharacterString>
+      </abstract>
+      <purpose>
+        <gco:CharacterString>Penyediaan Informasi Data Spasial Tematik Deforestasi Indonesia Skala 1: 250.000</gco:CharacterString>
+      </purpose>
+      <credit>
+        <gco:CharacterString>Direktorat Inventarisasi dan Pemantauan Sumber Daya Hutan, Direktorat Jenderal Planologi Kehutanan dan Tata Lingkungan, Kementerian Lingkungan Hidup dan Kehutanan</gco:CharacterString>
+      </credit>
+      <pointOfContact>
+        <CI_ResponsibleParty>
+          <individualName>
+            <gco:CharacterString>Belinda Arunarwati Margono</gco:CharacterString>
+          </individualName>
+          <organisationName>
+            <gco:CharacterString>Dit. IPSDH, Ditjen. PKTL</gco:CharacterString>
+          </organisationName>
+          <positionName>
+            <gco:CharacterString>Direktur Inventarisasi dan Pemantauan Sumber Daya Hutan</gco:CharacterString>
+          </positionName>
+          <contactInfo>
+            <CI_Contact>
+              <phone>
+                <CI_Telephone>
+                  <voice>
+                    <gco:CharacterString>021-5730335</gco:CharacterString>
+                  </voice>
+                  <facsimile>
+                    <gco:CharacterString>021-5730335</gco:CharacterString>
+                  </facsimile>
+                </CI_Telephone>
+              </phone>
+              <address>
+                <CI_Address>
+                  <deliveryPoint>
+                    <gco:CharacterString>Gedung Manggala Wanabakti Blok 1 Lantai 7</gco:CharacterString>
+                  </deliveryPoint>
+                  <city>
+                    <gco:CharacterString>Jakarta</gco:CharacterString>
+                  </city>
+                  <administrativeArea>
+                    <gco:CharacterString>DKI Jakarta</gco:CharacterString>
+                  </administrativeArea>
+                  <postalCode>
+                    <gco:CharacterString>10270</gco:CharacterString>
+                  </postalCode>
+                  <country>
+                    <Country codeList="http://www.iso.org/iso/country_codes/iso_3166_code_lists.htm" codeListValue="ID" codeSpace="ISO3166-1">ID</Country>
+                  </country>
+                  <electronicMailAddress>
+                    <gco:CharacterString>tu.ipsdh@gmail.com</gco:CharacterString>
+                  </electronicMailAddress>
+                </CI_Address>
+              </address>
+              <hoursOfService>
+                <gco:CharacterString>08.00-16.00 WIB</gco:CharacterString>
+              </hoursOfService>
+              <contactInstructions>
+                <gco:CharacterString>Data dapat diakses melalui SIGAP Kementerian LHK dan alamat website: www.webgis.menlhk.go.id Pelayanan kantor hanya pada hari dan jam kerja yang berlaku</gco:CharacterString>
+              </contactInstructions>
+            </CI_Contact>
+          </contactInfo>
+          <role>
+            <CI_RoleCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_RoleCode" codeListValue="owner" codeSpace="ISOTC211/19115">owner</CI_RoleCode>
+          </role>
+        </CI_ResponsibleParty>
+      </pointOfContact>
+      <pointOfContact>
+        <CI_ResponsibleParty>
+          <individualName>
+            <gco:CharacterString>Belinda Arunarwati Margono</gco:CharacterString>
+          </individualName>
+          <organisationName>
+            <gco:CharacterString>Dit. IPSDH, Ditjen. PKTL</gco:CharacterString>
+          </organisationName>
+          <positionName>
+            <gco:CharacterString>Direktur Inventarisasi dan Pemantauan Sumber Daya Hutan</gco:CharacterString>
+          </positionName>
+          <contactInfo>
+            <CI_Contact>
+              <phone>
+                <CI_Telephone>
+                  <voice>
+                    <gco:CharacterString>021-5730335</gco:CharacterString>
+                  </voice>
+                  <facsimile>
+                    <gco:CharacterString>021-5730335</gco:CharacterString>
+                  </facsimile>
+                </CI_Telephone>
+              </phone>
+              <address>
+                <CI_Address>
+                  <deliveryPoint>
+                    <gco:CharacterString>Gedung Manggala Wanabakti Blok 1 Lantai 7</gco:CharacterString>
+                  </deliveryPoint>
+                  <city>
+                    <gco:CharacterString>Jakarta</gco:CharacterString>
+                  </city>
+                  <administrativeArea>
+                    <gco:CharacterString>DKI Jakarta</gco:CharacterString>
+                  </administrativeArea>
+                  <postalCode>
+                    <gco:CharacterString>10270</gco:CharacterString>
+                  </postalCode>
+                  <country>
+                    <Country codeList="http://www.iso.org/iso/country_codes/iso_3166_code_lists.htm" codeListValue="ID" codeSpace="ISO3166-1">ID</Country>
+                  </country>
+                  <electronicMailAddress>
+                    <gco:CharacterString>tu.ipsdh@gmail.com</gco:CharacterString>
+                  </electronicMailAddress>
+                </CI_Address>
+              </address>
+              <hoursOfService>
+                <gco:CharacterString>08.00-16.00 WIB</gco:CharacterString>
+              </hoursOfService>
+              <contactInstructions>
+                <gco:CharacterString>Data dapat diakses melalui SIGAP Kementerian LHK dan alamat website: www.webgis.menlhk.go.id Pelayanan kantor hanya pada hari dan jam kerja yang berlaku</gco:CharacterString>
+              </contactInstructions>
+            </CI_Contact>
+          </contactInfo>
+          <role>
+            <CI_RoleCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_RoleCode" codeListValue="custodian" codeSpace="ISOTC211/19115">custodian</CI_RoleCode>
+          </role>
+        </CI_ResponsibleParty>
+      </pointOfContact>
+      <resourceMaintenance>
+        <MD_MaintenanceInformation>
+          <maintenanceAndUpdateFrequency>
+            <MD_MaintenanceFrequencyCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_MaintenanceFrequencyCode" codeListValue="annually" codeSpace="ISOTC211/19115">annually</MD_MaintenanceFrequencyCode>
+          </maintenanceAndUpdateFrequency>
+          <dateOfNextUpdate>
+            <gco:Date>2024-03-01</gco:Date>
+          </dateOfNextUpdate>
+          <contact>
+            <CI_ResponsibleParty>
+              <individualName>
+                <gco:CharacterString>Belinda Arunarwati Margono</gco:CharacterString>
+              </individualName>
+              <organisationName>
+                <gco:CharacterString>Dit. IPSDH, Ditjen. PKTL</gco:CharacterString>
+              </organisationName>
+              <positionName>
+                <gco:CharacterString>Direktur Inventarisasi dan Pemantauan Sumber Daya Hutan</gco:CharacterString>
+              </positionName>
+              <contactInfo>
+                <CI_Contact>
+                  <phone>
+                    <CI_Telephone>
+                      <voice>
+                        <gco:CharacterString>021-5730335</gco:CharacterString>
+                      </voice>
+                      <facsimile>
+                        <gco:CharacterString>021-5730335</gco:CharacterString>
+                      </facsimile>
+                    </CI_Telephone>
+                  </phone>
+                  <address>
+                    <CI_Address>
+                      <deliveryPoint>
+                        <gco:CharacterString>Gedung Manggala Wanabakti Blok 1 Lantai 7</gco:CharacterString>
+                      </deliveryPoint>
+                      <city>
+                        <gco:CharacterString>Jakarta</gco:CharacterString>
+                      </city>
+                      <administrativeArea>
+                        <gco:CharacterString>DKI Jakarta</gco:CharacterString>
+                      </administrativeArea>
+                      <postalCode>
+                        <gco:CharacterString>10270</gco:CharacterString>
+                      </postalCode>
+                      <country>
+                        <Country codeList="http://www.iso.org/iso/country_codes/iso_3166_code_lists.htm" codeListValue="ID" codeSpace="ISO3166-1">ID</Country>
+                      </country>
+                      <electronicMailAddress>
+                        <gco:CharacterString>tu.ipsdh@gmail.com</gco:CharacterString>
+                      </electronicMailAddress>
+                    </CI_Address>
+                  </address>
+                  <hoursOfService>
+                    <gco:CharacterString>08.00-16.00 WIB</gco:CharacterString>
+                  </hoursOfService>
+                  <contactInstructions>
+                    <gco:CharacterString>Data dapat diakses melalui SIGAP Kementerian LHK dan alamat website: www.webgis.menlhk.go.id Pelayanan kantor hanya pada hari dan jam kerja yang berlaku</gco:CharacterString>
+                  </contactInstructions>
+                </CI_Contact>
+              </contactInfo>
+              <role>
+                <CI_RoleCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_RoleCode" codeListValue="owner" codeSpace="ISOTC211/19115">owner</CI_RoleCode>
+              </role>
+            </CI_ResponsibleParty>
+          </contact>
+          <contact>
+            <CI_ResponsibleParty>
+              <individualName>
+                <gco:CharacterString>Belinda Arunarwati Margono</gco:CharacterString>
+              </individualName>
+              <organisationName>
+                <gco:CharacterString>Dit. IPSDH, Ditjen. PKTL</gco:CharacterString>
+              </organisationName>
+              <positionName>
+                <gco:CharacterString>Direktur Inventarisasi dan Pemantauan Sumber Daya Hutan</gco:CharacterString>
+              </positionName>
+              <contactInfo>
+                <CI_Contact>
+                  <phone>
+                    <CI_Telephone>
+                      <voice>
+                        <gco:CharacterString>021-5730335</gco:CharacterString>
+                      </voice>
+                      <facsimile>
+                        <gco:CharacterString>021-5730335</gco:CharacterString>
+                      </facsimile>
+                    </CI_Telephone>
+                  </phone>
+                  <address>
+                    <CI_Address>
+                      <deliveryPoint>
+                        <gco:CharacterString>Gedung Manggala Wanabakti Blok 1 Lantai 7</gco:CharacterString>
+                      </deliveryPoint>
+                      <city>
+                        <gco:CharacterString>Jakarta</gco:CharacterString>
+                      </city>
+                      <administrativeArea>
+                        <gco:CharacterString>DKI Jakarta</gco:CharacterString>
+                      </administrativeArea>
+                      <postalCode>
+                        <gco:CharacterString>10270</gco:CharacterString>
+                      </postalCode>
+                      <country>
+                        <Country codeList="http://www.iso.org/iso/country_codes/iso_3166_code_lists.htm" codeListValue="ID" codeSpace="ISO3166-1">ID</Country>
+                      </country>
+                      <electronicMailAddress>
+                        <gco:CharacterString>tu.ipsdh@gmail.com</gco:CharacterString>
+                      </electronicMailAddress>
+                    </CI_Address>
+                  </address>
+                  <hoursOfService>
+                    <gco:CharacterString>08.00-16.00 WIB</gco:CharacterString>
+                  </hoursOfService>
+                  <contactInstructions>
+                    <gco:CharacterString>Data dapat diakses melalui SIGAP Kementerian LHK dan alamat website: www.webgis.menlhk.go.id Pelayanan kantor hanya pada hari dan jam kerja yang berlaku</gco:CharacterString>
+                  </contactInstructions>
+                </CI_Contact>
+              </contactInfo>
+              <role>
+                <CI_RoleCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_RoleCode" codeListValue="custodian" codeSpace="ISOTC211/19115">custodian</CI_RoleCode>
+              </role>
+            </CI_ResponsibleParty>
+          </contact>
+        </MD_MaintenanceInformation>
+      </resourceMaintenance>
+      <descriptiveKeywords>
+        <MD_Keywords>
+          <keyword>
+            <gco:CharacterString>INFORMASI GEOSPASIAL TEMATIK PENUTUPAN LAHAN TAHUN 2021_AR_250K</gco:CharacterString>
+          </keyword>
+        </MD_Keywords>
+      </descriptiveKeywords>
+      <descriptiveKeywords>
+        <MD_Keywords>
+          <keyword>
+            <gco:CharacterString>Downloadable Data</gco:CharacterString>
+          </keyword>
+          <thesaurusName uuidref="723f6998-058e-11dc-8314-0800200c9a66" />
+        </MD_Keywords>
+      </descriptiveKeywords>
+      <spatialRepresentationType>
+        <MD_SpatialRepresentationTypeCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_SpatialRepresentationTypeCode" codeListValue="vector" codeSpace="ISOTC211/19115">vector</MD_SpatialRepresentationTypeCode>
+      </spatialRepresentationType>
+      <spatialResolution>
+        <MD_Resolution>
+          <equivalentScale>
+            <MD_RepresentativeFraction>
+              <denominator>
+                <gco:Integer>250000</gco:Integer>
+              </denominator>
+            </MD_RepresentativeFraction>
+          </equivalentScale>
+        </MD_Resolution>
+      </spatialResolution>
+      <language>
+        <LanguageCode codeList="http://www.loc.gov/standards/iso639-2/php/code_list.php" codeListValue="eng" codeSpace="ISO639-2">eng</LanguageCode>
+      </language>
+      <characterSet>
+        <MD_CharacterSetCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_CharacterSetCode" codeListValue="utf8" codeSpace="ISOTC211/19115">utf8</MD_CharacterSetCode>
+      </characterSet>
+      <topicCategory>
+        <MD_TopicCategoryCode>environment</MD_TopicCategoryCode>
+      </topicCategory>
+      <topicCategory>
+        <MD_TopicCategoryCode>planningCadastre</MD_TopicCategoryCode>
+      </topicCategory>
+      <environmentDescription>
+        <gco:CharacterString> Version 6.2 (Build 9200) ; Esri ArcGIS 10.9.1.28388</gco:CharacterString>
+      </environmentDescription>
+      <extent>
+        <EX_Extent>
+          <geographicElement>
+            <EX_GeographicBoundingBox>
+              <extentTypeCode>
+                <gco:Boolean>true</gco:Boolean>
+              </extentTypeCode>
+              <westBoundLongitude>
+                <gco:Decimal>94.971952</gco:Decimal>
+              </westBoundLongitude>
+              <eastBoundLongitude>
+                <gco:Decimal>141.020042</gco:Decimal>
+              </eastBoundLongitude>
+              <southBoundLatitude>
+                <gco:Decimal>-11.007615</gco:Decimal>
+              </southBoundLatitude>
+              <northBoundLatitude>
+                <gco:Decimal>6.076768</gco:Decimal>
+              </northBoundLatitude>
+            </EX_GeographicBoundingBox>
+          </geographicElement>
+        </EX_Extent>
+      </extent>
+      <extent>
+        <EX_Extent>
+          <verticalElement>
+            <EX_VerticalExtent>
+              <minimumValue>
+                <gco:Real>0</gco:Real>
+              </minimumValue>
+              <maximumValue>
+                <gco:Real>0</gco:Real>
+              </maximumValue>
+              <verticalCRS gco:nilReason="other:see_referenceSystemInfo" />
+            </EX_VerticalExtent>
+          </verticalElement>
+        </EX_Extent>
+      </extent>
+      <extent>
+        <EX_Extent>
+          <geographicElement>
+            <EX_GeographicBoundingBox>
+              <extentTypeCode>
+                <gco:Boolean>true</gco:Boolean>
+              </extentTypeCode>
+              <westBoundLongitude>
+                <gco:Decimal>95.267957</gco:Decimal>
+              </westBoundLongitude>
+              <eastBoundLongitude>
+                <gco:Decimal>140.989376</gco:Decimal>
+              </eastBoundLongitude>
+              <southBoundLatitude>
+                <gco:Decimal>-10.906858</gco:Decimal>
+              </southBoundLatitude>
+              <northBoundLatitude>
+                <gco:Decimal>5.365464</gco:Decimal>
+              </northBoundLatitude>
+            </EX_GeographicBoundingBox>
+          </geographicElement>
+        </EX_Extent>
+      </extent>
+    </MD_DataIdentification>
+  </identificationInfo>
+  <distributionInfo>
+    <MD_Distribution>
+      <distributionFormat>
+        <MD_Format>
+          <name>
+            <gco:CharacterString>File Geodatabase Feature Class</gco:CharacterString>
+          </name>
+          <version>
+            <gco:CharacterString>Geodatabase</gco:CharacterString>
+          </version>
+        </MD_Format>
+      </distributionFormat>
+    </MD_Distribution>
+  </distributionInfo>
+  <dataQualityInfo>
+    <DQ_DataQuality>
+      <scope>
+        <DQ_Scope>
+          <level>
+            <MD_ScopeCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_ScopeCode" codeListValue="feature" codeSpace="ISOTC211/19115">feature</MD_ScopeCode>
+          </level>
+        </DQ_Scope>
+      </scope>
+    </DQ_DataQuality>
+  </dataQualityInfo>
+  <metadataMaintenance>
+    <MD_MaintenanceInformation>
+      <maintenanceAndUpdateFrequency>
+        <MD_MaintenanceFrequencyCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_MaintenanceFrequencyCode" codeListValue="annually" codeSpace="ISOTC211/19115">annually</MD_MaintenanceFrequencyCode>
+      </maintenanceAndUpdateFrequency>
+      <dateOfNextUpdate>
+        <gco:Date>2024-03-01</gco:Date>
+      </dateOfNextUpdate>
+      <contact>
+        <CI_ResponsibleParty>
+          <individualName>
+            <gco:CharacterString>Belinda Arunarwati Margono</gco:CharacterString>
+          </individualName>
+          <organisationName>
+            <gco:CharacterString>Dit. IPSDH, Ditjen. PKTL</gco:CharacterString>
+          </organisationName>
+          <positionName>
+            <gco:CharacterString>Direktur Inventarisasi dan Pemantauan Sumber Daya Hutan</gco:CharacterString>
+          </positionName>
+          <contactInfo>
+            <CI_Contact>
+              <phone>
+                <CI_Telephone>
+                  <voice>
+                    <gco:CharacterString>021-5730335</gco:CharacterString>
+                  </voice>
+                  <facsimile>
+                    <gco:CharacterString>021-5730335</gco:CharacterString>
+                  </facsimile>
+                </CI_Telephone>
+              </phone>
+              <address>
+                <CI_Address>
+                  <deliveryPoint>
+                    <gco:CharacterString>Gedung Manggala Wanabakti Blok 1 Lantai 7</gco:CharacterString>
+                  </deliveryPoint>
+                  <city>
+                    <gco:CharacterString>Jakarta</gco:CharacterString>
+                  </city>
+                  <administrativeArea>
+                    <gco:CharacterString>DKI Jakarta</gco:CharacterString>
+                  </administrativeArea>
+                  <postalCode>
+                    <gco:CharacterString>10270</gco:CharacterString>
+                  </postalCode>
+                  <country>
+                    <Country codeList="http://www.iso.org/iso/country_codes/iso_3166_code_lists.htm" codeListValue="ID" codeSpace="ISO3166-1">ID</Country>
+                  </country>
+                  <electronicMailAddress>
+                    <gco:CharacterString>tu.ipsdh@gmail.com</gco:CharacterString>
+                  </electronicMailAddress>
+                </CI_Address>
+              </address>
+              <hoursOfService>
+                <gco:CharacterString>08.00-16.00 WIB</gco:CharacterString>
+              </hoursOfService>
+              <contactInstructions>
+                <gco:CharacterString>Data dapat diakses melalui SIGAP Kementerian LHK dan alamat website: www.webgis.menlhk.go.id Pelayanan kantor hanya pada hari dan jam kerja yang berlaku</gco:CharacterString>
+              </contactInstructions>
+            </CI_Contact>
+          </contactInfo>
+          <role>
+            <CI_RoleCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_RoleCode" codeListValue="owner" codeSpace="ISOTC211/19115">owner</CI_RoleCode>
+          </role>
+        </CI_ResponsibleParty>
+      </contact>
+      <contact>
+        <CI_ResponsibleParty>
+          <individualName>
+            <gco:CharacterString>Belinda Arunarwati Margono</gco:CharacterString>
+          </individualName>
+          <organisationName>
+            <gco:CharacterString>Dit. IPSDH, Ditjen. PKTL</gco:CharacterString>
+          </organisationName>
+          <positionName>
+            <gco:CharacterString>Direktur Inventarisasi dan Pemantauan Sumber Daya Hutan</gco:CharacterString>
+          </positionName>
+          <contactInfo>
+            <CI_Contact>
+              <phone>
+                <CI_Telephone>
+                  <voice>
+                    <gco:CharacterString>021-5730335</gco:CharacterString>
+                  </voice>
+                  <facsimile>
+                    <gco:CharacterString>021-5730335</gco:CharacterString>
+                  </facsimile>
+                </CI_Telephone>
+              </phone>
+              <address>
+                <CI_Address>
+                  <deliveryPoint>
+                    <gco:CharacterString>Gedung Manggala Wanabakti Blok 1 Lantai 7</gco:CharacterString>
+                  </deliveryPoint>
+                  <city>
+                    <gco:CharacterString>Jakarta</gco:CharacterString>
+                  </city>
+                  <administrativeArea>
+                    <gco:CharacterString>DKI Jakarta</gco:CharacterString>
+                  </administrativeArea>
+                  <postalCode>
+                    <gco:CharacterString>10270</gco:CharacterString>
+                  </postalCode>
+                  <country>
+                    <Country codeList="http://www.iso.org/iso/country_codes/iso_3166_code_lists.htm" codeListValue="ID" codeSpace="ISO3166-1">ID</Country>
+                  </country>
+                  <electronicMailAddress>
+                    <gco:CharacterString>tu.ipsdh@gmail.com</gco:CharacterString>
+                  </electronicMailAddress>
+                </CI_Address>
+              </address>
+              <hoursOfService>
+                <gco:CharacterString>08.00-16.00 WIB</gco:CharacterString>
+              </hoursOfService>
+              <contactInstructions>
+                <gco:CharacterString>Data dapat diakses melalui SIGAP Kementerian LHK dan alamat website: www.webgis.menlhk.go.id Pelayanan kantor hanya pada hari dan jam kerja yang berlaku</gco:CharacterString>
+              </contactInstructions>
+            </CI_Contact>
+          </contactInfo>
+          <role>
+            <CI_RoleCode codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_RoleCode" codeListValue="custodian" codeSpace="ISOTC211/19115">custodian</CI_RoleCode>
+          </role>
+        </CI_ResponsibleParty>
+      </contact>
+    </MD_MaintenanceInformation>
+  </metadataMaintenance>
+</MD_Metadata>

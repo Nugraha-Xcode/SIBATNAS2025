@@ -1,0 +1,42 @@
+<featureType>
+  <id>FeatureTypeInfoImpl--25278b9:19766f7a946:-7fee</id>
+  <name>garpan_makassar</name>
+  <nativeName>garpan_makassar</nativeName>
+  <namespace>
+    <id>NamespaceInfoImpl-1c9950f8:19735030291:-7ffa</id>
+  </namespace>
+  <title>batas kota bogor NH</title>
+  <abstract>test</abstract>
+  <keywords>
+    <string>features</string>
+    <string>garpan_makassar</string>
+  </keywords>
+  <srs>EPSG:4326</srs>
+  <nativeBoundingBox>
+    <minx>119.37281799316406</minx>
+    <maxx>119.47766876220703</maxx>
+    <miny>-5.285181999206543</miny>
+    <maxy>-5.056221961975098</maxy>
+    <crs>EPSG:4326</crs>
+  </nativeBoundingBox>
+  <latLonBoundingBox>
+    <minx>119.37281799316406</minx>
+    <maxx>119.47766876220703</maxx>
+    <miny>-5.285181999206543</miny>
+    <maxy>-5.056221961975098</maxy>
+    <crs>EPSG:4326</crs>
+  </latLonBoundingBox>
+  <projectionPolicy>FORCE_DECLARED</projectionPolicy>
+  <enabled>true</enabled>
+  <store class="dataStore">
+    <id>DataStoreInfoImpl-1c9950f8:19735030291:-7ff9</id>
+  </store>
+  <serviceConfiguration>false</serviceConfiguration>
+  <maxFeatures>0</maxFeatures>
+  <numDecimals>0</numDecimals>
+  <padWithZeros>false</padWithZeros>
+  <forcedDecimal>false</forcedDecimal>
+  <overridingServiceSRS>false</overridingServiceSRS>
+  <skipNumberMatched>false</skipNumberMatched>
+  <circularArcPresent>false</circularArcPresent>
+</featureType>

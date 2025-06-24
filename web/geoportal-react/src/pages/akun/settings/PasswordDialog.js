@@ -21,10 +21,14 @@ import {
   Slide,
   TextField,
   Typography,
+  InputAdornment,
+  IconButton,
 } from "@mui/material";
 
 import swal from "sweetalert";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 
 const Transition = forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -40,6 +44,11 @@ function PasswordDialog(props) {
     passwordRepeat: "",
   };
   const [data, setData] = useState(initialDataState);
+  // Track password visibility for each field separately
+  const [showPasswordOld, setShowPasswordOld] = useState(false);
+  const [showPasswordNew, setShowPasswordNew] = useState(false);
+  const [showPasswordRepeat, setShowPasswordRepeat] = useState(false);
+  
   // const [submitted, setSubmitted] = useState(false);
   const dispatch = useDispatch();
 
@@ -50,6 +59,24 @@ function PasswordDialog(props) {
 
   const handleClose = () => {
     onClose();
+    // Reset form data and visibility states when closing the dialog
+    setData(initialDataState);
+    setShowPasswordOld(false);
+    setShowPasswordNew(false);
+    setShowPasswordRepeat(false);
+  };
+
+  // Toggle handlers for each password field
+  const togglePasswordOldVisibility = () => {
+    setShowPasswordOld(!showPasswordOld);
+  };
+
+  const togglePasswordNewVisibility = () => {
+    setShowPasswordNew(!showPasswordNew);
+  };
+
+  const togglePasswordRepeatVisibility = () => {
+    setShowPasswordRepeat(!showPasswordRepeat);
   };
 
   const updateContent = () => {
@@ -60,6 +87,8 @@ function PasswordDialog(props) {
           timer: 2000,
         });
 
+        // Reset form data before closing
+        setData(initialDataState);
         onClose();
       })
       .catch((e) => {
@@ -87,7 +116,7 @@ function PasswordDialog(props) {
         <DialogContentText>{config.description}</DialogContentText>
 
         <TextField
-          type="password"
+          type={showPasswordOld ? "text" : "password"}
           helperText=""
           margin="normal"
           required
@@ -97,11 +126,24 @@ function PasswordDialog(props) {
           name="passwordOld"
           value={data.passwordOld}
           onChange={handleInputChange}
-          autoComplete="passwordOld"
+          autoComplete="current-password"
           autoFocus
+          InputProps={{
+            endAdornment: (
+              <InputAdornment position="end">
+                <IconButton
+                  aria-label="toggle password visibility"
+                  onClick={togglePasswordOldVisibility}
+                  edge="end"
+                >
+                  {showPasswordOld ? <VisibilityOffIcon /> : <VisibilityIcon />}
+                </IconButton>
+              </InputAdornment>
+            ),
+          }}
         />
         <TextField
-          type="password"
+          type={showPasswordNew ? "text" : "password"}
           helperText=""
           margin="normal"
           required
@@ -111,11 +153,23 @@ function PasswordDialog(props) {
           name="passwordNew"
           value={data.passwordNew}
           onChange={handleInputChange}
-          autoComplete="passwordNew"
-          autoFocus
+          autoComplete="new-password"
+          InputProps={{
+            endAdornment: (
+              <InputAdornment position="end">
+                <IconButton
+                  aria-label="toggle password visibility"
+                  onClick={togglePasswordNewVisibility}
+                  edge="end"
+                >
+                  {showPasswordNew ? <VisibilityOffIcon /> : <VisibilityIcon />}
+                </IconButton>
+              </InputAdornment>
+            ),
+          }}
         />
         <TextField
-          type="password"
+          type={showPasswordRepeat ? "text" : "password"}
           helperText=""
           margin="normal"
           required
@@ -125,8 +179,20 @@ function PasswordDialog(props) {
           name="passwordRepeat"
           value={data.passwordRepeat}
           onChange={handleInputChange}
-          autoComplete="passwordRepeat"
-          autoFocus
+          autoComplete="new-password"
+          InputProps={{
+            endAdornment: (
+              <InputAdornment position="end">
+                <IconButton
+                  aria-label="toggle password visibility"
+                  onClick={togglePasswordRepeatVisibility}
+                  edge="end"
+                >
+                  {showPasswordRepeat ? <VisibilityOffIcon /> : <VisibilityIcon />}
+                </IconButton>
+              </InputAdornment>
+            ),
+          }}
         />
       </DialogContent>
       <DialogActions>

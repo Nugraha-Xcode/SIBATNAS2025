@@ -4,7 +4,7 @@ import { Outlet, Link as RouterLink, useLocation } from "react-router-dom";
 
 import { Box } from "@mui/material";
 
-import Header from "./Header";
+import Header from "src/components/Navbar";
 
 const BaseLayout = ({ children }) => {
   const location = useLocation();
@@ -20,7 +20,7 @@ const BaseLayout = ({ children }) => {
       sx={{
         flex: 1,
         height: "100%",
-        backgroundColor: "#000",
+        backgroundColor: "#F6F9FC",
       }}
     >
       {location.pathname == "/auth/login" ? "" : <Header />}

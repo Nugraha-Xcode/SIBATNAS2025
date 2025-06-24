@@ -23,7 +23,7 @@ function BukuTamuTransactions() {
 
   const tabs = [
     { value: "own", label: "Notifikasi Anda" },
-    { value: "all", label: "Semua User" },
+    // { value: "all", label: "Semua User" },
   ];
 
   const handleTabsChange = (event, value) => {
@@ -70,7 +70,7 @@ function BukuTamuTransactions() {
           </Grid>
           <Grid item xs={12}>
             {currentTab === "own" && <DataTab />}
-            {currentTab === "all" && <AllDataTab />}
+            {/* {currentTab === "all" && <AllDataTab />} */}
           </Grid>
         </Grid>
       </Container>

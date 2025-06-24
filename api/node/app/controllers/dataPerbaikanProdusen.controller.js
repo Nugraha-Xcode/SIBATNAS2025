@@ -6,6 +6,13 @@ const uploadMetadata = require("../middleware/uploadMetadata");
 
 const fs = require("fs");
 
+const {
+  validateShapefileZip,
+  checkTableExists
+} = require("../utils/shapefile_to_postgis");
+
+const { checkSLDExistsInGeoserver } = require("../utils/sld_to_geoserver");
+
 const User = db.user;
 const Lokasi = db.lokasi;
 const BukuTamu = db.bukutamu;
@@ -18,6 +25,8 @@ const dataPublikasi = db.dataPublikasi;
 
 const dataPemeriksaan = db.dataPemeriksaan;
 const statusPemeriksaan = db.statusPemeriksaan;
+
+const notifikasi = db.notifikasi;
 
 exports.create = async (req, res) => {
   try {
@@ -47,6 +56,32 @@ exports.create = async (req, res) => {
     if (!objectValue.user && !objectValue.dataPemeriksaan) {
       return res.status(400).send({
         message: "Content can not be empty!",
+      });
+    }
+
+    // ================= VALIDASI ===================
+    const zipFilePath = req.files[2].path; // Assumsi shapefile ZIP ada di file ke-3
+    let fileBaseName;
+    try {
+      // validasi isi zip dan nama file
+      fileBaseName = await validateShapefileZip(zipFilePath);
+
+      // Cek jika nama file dan tabel sama
+      await checkTableExists(fileBaseName);
+
+      // Cek jika nama sld sudah ada
+      const sldExists = await checkSLDExistsInGeoserver(zipFilePath, fileBaseName);
+      console.log(`SLD check result: ${sldExists ? 'SLD already exists in GeoServer' : 'SLD does not exist in GeoServer'}`);
+
+      if (sldExists) {
+        return res.status(400).send({
+          message: `SLD file for layer '${fileBaseName}' already exists in GeoServer. Please rename your sld.`
+        });
+      }
+
+    } catch (validationError) {
+      return res.status(400).send({
+        message: validationError.message
       });
     }
 
@@ -173,6 +208,38 @@ exports.periksa = async (req, res) => {
           uuid: objectValue.user.uuid,
         },
       });
+
+      let dPerbaikanProdusen = await dataPerbaikanProdusen.findOne({
+        where: {
+          uuid: objectValue.uuid,
+        },
+        include: [
+          {
+            model: dataPemeriksaan,
+            as: "dataPemeriksaan", // alias relasi
+            attributes: ["id", "dataProdusenId"],
+            include: [
+              {
+                model: dataProdusen,
+                as: "dataProdusen", // alias relasi
+                attributes: ["id", "deskripsi", "userId"] // field
+              }
+            ]
+          }
+        ]
+      });
+
+      let notif = {
+              uuid: uuidv4(),
+              waktuKirim: new Date(),
+              subjek: "Data " + dPerbaikanProdusen.dataPemeriksaan.dataProdusen.deskripsi + " Sudah Lolos Pemeriksaan",
+              pesan:
+                "Data Anda sudah lolos pemeriksaan, silahkan tunggu publikasi data anda pada menu publikasi",
+              sudahBaca: false,
+              userId: dPerbaikanProdusen.dataPemeriksaan.dataProdusen.userId,
+            };
+
+      notifikasi.create(notif);
 
       //update status data pemeriksaan == 3, userId, kategori, filename
       const update = {
@@ -356,7 +423,34 @@ exports.periksa = async (req, res) => {
         where: {
           uuid: objectValue.uuid,
         },
+        include: [
+          {
+            model: dataPemeriksaan,
+            as: "dataPemeriksaan", // alias relasi
+            attributes: ["id", "dataProdusenId"],
+            include: [
+              {
+                model: dataProdusen,
+                as: "dataProdusen", // alias relasi
+                attributes: ["id", "deskripsi", "userId"] // field
+              }
+            ]
+          }
+        ]
       });
+
+      let notif = {
+              uuid: uuidv4(),
+              waktuKirim: new Date(),
+              subjek: "Data " + dPerbaikanProdusen.dataPemeriksaan.dataProdusen.deskripsi + " Belum Lolos Pemeriksaan",
+              pesan:
+                "Data Anda belum lolos pemeriksaan, silahkan perbaiki data anda dan upload ulang pada menu pemeriksaan -> data perbaikan",
+              sudahBaca: false,
+              userId: dPerbaikanProdusen.dataPemeriksaan.dataProdusen.userId,
+            };
+
+      notifikasi.create(notif);
+
       //update status data pemeriksaan == 3, userId, kategori, filename
       const update = {
         kategori: objectValue.kategori.nilai,
@@ -938,22 +1032,47 @@ exports.findAllLokasi = (req, res) => {
 };
 
 exports.downloadReferensi = async (req, res) => {
-  const uuid = req.params.uuid;
-  let data = await dataPerbaikanProdusen.findOne({
-    where: {
-      uuid: uuid,
-    },
-  });
-  const fileName = data.pdfname;
-  const directoryPath = __basedir + "/app/resources/static/assets/perbaikan/";
-
-  res.download(directoryPath + fileName, fileName, (err) => {
-    if (err) {
-      res.status(500).send({
-        message: "Could not download the file. " + err,
+  try {
+    const uuid = req.params.uuid;
+    const data = await dataPerbaikanProdusen.findOne({
+      where: {
+        uuid: uuid,
+      },
+    });
+    
+    if (!data) {
+      return res.status(404).send({
+        message: "Data not found",
       });
     }
-  });
+    
+    const fileName = data.pdfname;
+    const directoryPath = __basedir + "/app/resources/static/assets/perbaikan/";
+    const filePath = directoryPath + fileName;
+    
+    // Check if file exists
+    const fs = require('fs');
+    if (!fs.existsSync(filePath)) {
+      return res.status(404).send({
+        message: "File not found",
+      });
+    }
+
+    res.download(filePath, fileName, (err) => {
+      if (err && !res.headersSent) {
+        return res.status(500).send({
+          message: "Could not download the file. " + err,
+        });
+      }
+      // Don't send any response here, as the download response is already sent
+    });
+  } catch (error) {
+    if (!res.headersSent) {
+      return res.status(500).send({
+        message: "Error processing download request: " + error.message,
+      });
+    }
+  }
 };
 
 // Update a Kategori by the id in the request
@@ -1059,58 +1178,133 @@ exports.delete = async (req, res) => {
 };
 
 exports.downloadMetadata = async (req, res) => {
-  const uuid = req.params.uuid;
-  let data = await dataPerbaikanProdusen.findOne({
-    where: {
-      uuid: uuid,
-    },
-  });
-  const fileName = data.metadatafilename;
-  const directoryPath = __basedir + "/app/resources/static/assets/perbaikan/";
-
-  res.download(directoryPath + fileName, fileName, (err) => {
-    if (err) {
-      res.status(500).send({
-        message: "Could not download the file. " + err,
+  try {
+    const uuid = req.params.uuid;
+    const data = await dataPerbaikanProdusen.findOne({
+      where: {
+        uuid: uuid,
+      },
+    });
+    
+    if (!data) {
+      return res.status(404).send({
+        message: "Data not found",
       });
     }
-  });
+    
+    const fileName = data.metadatafilename;
+    const directoryPath = __basedir + "/app/resources/static/assets/perbaikan/";
+    const filePath = directoryPath + fileName;
+    
+    // Check if file exists
+    const fs = require('fs');
+    if (!fs.existsSync(filePath)) {
+      return res.status(404).send({
+        message: "File not found",
+      });
+    }
+
+    res.download(filePath, fileName, (err) => {
+      if (err && !res.headersSent) {
+        return res.status(500).send({
+          message: "Could not download the file. " + err,
+        });
+      }
+      // Don't send any response here, as the download response is already sent
+    });
+  } catch (error) {
+    if (!res.headersSent) {
+      return res.status(500).send({
+        message: "Error processing download request: " + error.message,
+      });
+    }
+  }
 };
 
 exports.downloadFile = async (req, res) => {
-  const uuid = req.params.uuid;
-  let data = await dataPerbaikanProdusen.findOne({
-    where: {
-      uuid: uuid,
-    },
-  });
-  const fileName = data.filename;
-  const directoryPath = __basedir + "/app/resources/static/assets/perbaikan/";
-
-  res.download(directoryPath + fileName, fileName, (err) => {
-    if (err) {
-      res.status(500).send({
-        message: "Could not download the file. " + err,
+  try {
+    const uuid = req.params.uuid;
+    const data = await dataPerbaikanProdusen.findOne({
+      where: {
+        uuid: uuid,
+      },
+    });
+    
+    if (!data) {
+      return res.status(404).send({
+        message: "Data not found",
       });
     }
-  });
+    
+    const fileName = data.filename;
+    const directoryPath = __basedir + "/app/resources/static/assets/perbaikan/";
+    const filePath = directoryPath + fileName;
+    
+    // Check if file exists
+    const fs = require('fs');
+    if (!fs.existsSync(filePath)) {
+      return res.status(404).send({
+        message: "File not found",
+      });
+    }
+
+    res.download(filePath, fileName, (err) => {
+      if (err && !res.headersSent) {
+        return res.status(500).send({
+          message: "Could not download the file. " + err,
+        });
+      }
+      // Don't send any response here, as the download response is already sent
+    });
+  } catch (error) {
+    if (!res.headersSent) {
+      return res.status(500).send({
+        message: "Error processing download request: " + error.message,
+      });
+    }
+  }
 };
 
 exports.downloadQA = async (req, res) => {
-  const uuid = req.params.uuid;
-  let data = await dataPerbaikanProdusen.findOne({
-    where: {
-      uuid: uuid,
-    },
-  });
-  const fileName = data.pemeriksaanfilename;
-  const directoryPath = __basedir + "/app/resources/static/assets/perbaikan/";
-
-  res.download(directoryPath + fileName, fileName, (err) => {
-    if (err) {
-      res.status(500).send({
-        message: "Could not download the file. " + err,
+  try {
+    const uuid = req.params.uuid;
+    const data = await dataPerbaikanProdusen.findOne({
+      where: {
+        uuid: uuid,
+      },
+    });
+    
+    if (!data) {
+      return res.status(404).send({
+        message: "Data not found",
       });
     }
-  });
+    
+    const fileName = data.pemeriksaanfilename;
+    const directoryPath = __basedir + "/app/resources/static/assets/perbaikan/";
+    const filePath = directoryPath + fileName;
+    
+    // Check if file exists
+    const fs = require('fs');
+    if (!fs.existsSync(filePath)) {
+      return res.status(404).send({
+        message: "File not found",
+      });
+    }
+
+    res.download(filePath, fileName, (err) => {
+      if (err && !res.headersSent) {
+        return res.status(500).send({
+          message: "Could not download the file. " + err,
+        });
+      }
+      // Don't send any response here, as the download response is already sent
+    });
+  } catch (error) {
+    if (!res.headersSent) {
+      return res.status(500).send({
+        message: "Error processing download request: " + error.message,
+      });
+    }
+  }
 };

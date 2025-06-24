@@ -7,14 +7,18 @@ const getAll = () => {
   return http.get(`/${base}`, { headers: authHeader() });
 };
 
-const getAllProdusen = (uuid) => {
-  //return http.get("/tutorials");
-  return http.get(`/${base}/produsen/${uuid}`, { headers: authHeader() });
+const getAllProdusen = (uuid, params = {}) => {
+  return http.get(`/${base}/produsen/${uuid}`, { 
+    params, 
+    headers: authHeader() 
+  });
 };
 
-const getAllUser = (uuid) => {
-  //return http.get("/tutorials");
-  return http.get(`/${base}/user/${uuid}`, { headers: authHeader() });
+const getAllUser = (uuid, params = {}) => {
+  return http.get(`/${base}/user/${uuid}`, { 
+    params, 
+    headers: authHeader() 
+  });
 };
 
 const get = (uuid) => {

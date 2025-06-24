@@ -119,6 +119,51 @@ export const remove = (uuid) => async (dispatch) => {
     console.log(err);
   }
 };
+
+export const retrieveAllProdusenPaginated = (uuid, params) => async (dispatch) => {
+  try {
+    const res = await Service.getAllProdusenPaginated(uuid, params);
+    dispatch({
+      type: RETRIEVE_DATA_PEMERIKSAAN_SUCCESS,
+      payload: res.data,
+    });
+    return Promise.resolve(res.data);
+  } catch (err) {
+    if (err.response && err.response.status === 401) {
+      EventBus.dispatch("logout");
+    }
+    return Promise.reject(err);
+  }
+};
+
+export const retrieveAllProdusenUserPaginated = (uuid, params) => async (dispatch) => {
+  try {
+    const res = await Service.getAllProdusenUserPaginated(uuid, params);
+    
+    // Ensure the response has the correct structure
+    const payload = res.data.records 
+      ? res.data 
+      : { 
+          records: res.data, 
+          totalItems: res.data.length, 
+          totalPages: 1, 
+          currentPage: 0 
+        };
+
+    dispatch({
+      type: RETRIEVE_DATA_PEMERIKSAAN_SUCCESS,
+      payload: payload,
+    });
+    return Promise.resolve(payload);
+  } catch (err) {
+    if (err.response && err.response.status === 401) {
+      EventBus.dispatch("logout");
+    }
+    console.error('Pagination fetch error:', err);
+    return Promise.reject(err);
+  }
+};
+
 /*
   export const create = (name) => (dispatch) => {
     return KategoriService.create({ name }).then(

@@ -1,6 +1,5 @@
-import { useContext, useState } from "react";
-
-import { useSelector } from "react-redux";
+import { useContext, useState, useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import {
   ListSubheader,
   alpha,
@@ -17,6 +16,8 @@ import {
 import { NavLink as RouterLink } from "react-router-dom";
 import { SidebarContext } from "src/contexts/SidebarContext";
 
+import { Badge } from "@mui/material";
+
 import DesignServicesTwoToneIcon from "@mui/icons-material/DesignServicesTwoTone";
 import BrightnessLowTwoToneIcon from "@mui/icons-material/BrightnessLowTwoTone";
 import MmsTwoToneIcon from "@mui/icons-material/MmsTwoTone";
@@ -24,20 +25,17 @@ import TableChartTwoToneIcon from "@mui/icons-material/TableChartTwoTone";
 import AccountCircleTwoToneIcon from "@mui/icons-material/AccountCircleTwoTone";
 import ExpandLessTwoToneIcon from "@mui/icons-material/ExpandLessTwoTone";
 import ExpandMoreTwoToneIcon from "@mui/icons-material/ExpandMoreTwoTone";
+import WebIcon from '@mui/icons-material/Web';
+import GroupAddIcon from '@mui/icons-material/GroupAdd';
+import CorporateFareIcon from '@mui/icons-material/CorporateFare';
+import LocalOfferIcon from '@mui/icons-material/LocalOffer';
+import FeaturedPlayListIcon from '@mui/icons-material/FeaturedPlayList';
+import MapIcon from '@mui/icons-material/Map';
+import EventRepeatIcon from '@mui/icons-material/EventRepeat';
+import LanguageIcon from '@mui/icons-material/Language';
+import CloudSyncIcon from '@mui/icons-material/CloudSync';
+import FeedIcon from '@mui/icons-material/Feed';
 
-import BallotTwoToneIcon from "@mui/icons-material/BallotTwoTone";
-import BeachAccessTwoToneIcon from "@mui/icons-material/BeachAccessTwoTone";
-import EmojiEventsTwoToneIcon from "@mui/icons-material/EmojiEventsTwoTone";
-import FilterVintageTwoToneIcon from "@mui/icons-material/FilterVintageTwoTone";
-import HowToVoteTwoToneIcon from "@mui/icons-material/HowToVoteTwoTone";
-import LocalPharmacyTwoToneIcon from "@mui/icons-material/LocalPharmacyTwoTone";
-import RedeemTwoToneIcon from "@mui/icons-material/RedeemTwoTone";
-import SettingsTwoToneIcon from "@mui/icons-material/SettingsTwoTone";
-import TrafficTwoToneIcon from "@mui/icons-material/TrafficTwoTone";
-import CheckBoxTwoToneIcon from "@mui/icons-material/CheckBoxTwoTone";
-import ChromeReaderModeTwoToneIcon from "@mui/icons-material/ChromeReaderModeTwoTone";
-import WorkspacePremiumTwoToneIcon from "@mui/icons-material/WorkspacePremiumTwoTone";
-import CameraFrontTwoToneIcon from "@mui/icons-material/CameraFrontTwoTone";
 import DisplaySettingsTwoToneIcon from "@mui/icons-material/DisplaySettingsTwoTone";
 import FactCheckIcon from "@mui/icons-material/FactCheck";
 
@@ -48,6 +46,8 @@ import SendIcon from "@mui/icons-material/Send";
 import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
 import StarBorder from "@mui/icons-material/StarBorder";
+
+import { retrieveAll, retrieveAllUser, retrieveAllUserUnread, updateReadStatus } from "src/redux/actions/notifikasi";
 
 const MenuWrapper = styled(Box)(
   ({ theme }) => `
@@ -64,7 +64,7 @@ const MenuWrapper = styled(Box)(
       text-transform: uppercase;
       font-weight: bold;
       font-size: ${theme.typography.pxToRem(12)};
-      color: ${theme.colors.alpha.trueWhite[50]};
+      color: ${theme.colors.alpha.black[50]};
       padding: ${theme.spacing(0, 2.5)};
       line-height: 1.4;
     }
@@ -77,7 +77,7 @@ const SubMenuWrapper = styled(Box)(
     .MuiList-root {
       .MuiListItemButton-root {
           display: flex;
-          color: ${theme.colors.alpha.trueWhite[70]};
+          color: ${theme.colors.alpha.black[70]};
           background-color: transparent;
           width: 100%;
           justify-content: flex-start;
@@ -94,13 +94,13 @@ const SubMenuWrapper = styled(Box)(
           }
 
           .MuiButton-startIcon {
-            color: ${theme.colors.alpha.trueWhite[30]};
+            color: ${theme.colors.alpha.black[30]};
             font-size: ${theme.typography.pxToRem(20)};
             margin-right: ${theme.spacing(1)};
           }
           
           .MuiButton-endIcon {
-            color: ${theme.colors.alpha.trueWhite[50]};
+            color: ${theme.colors.alpha.black[50]};
             margin-left: auto;
             opacity: .8;
             font-size: ${theme.typography.pxToRem(20)};
@@ -108,12 +108,12 @@ const SubMenuWrapper = styled(Box)(
 
           &.active,
           &:hover {
-            background-color: ${alpha(theme.colors.alpha.trueWhite[100], 0.06)};
-            color: ${theme.colors.alpha.trueWhite[100]};
+            background-color: ${alpha(theme.colors.primary.main, 0.06)};
+            color: ${theme.colors.primary.main};
 
             .MuiButton-startIcon,
             .MuiButton-endIcon {
-              color: ${theme.colors.alpha.trueWhite[100]};
+              color: ${theme.colors.primary.main};
             }
           }
         }
@@ -137,7 +137,7 @@ const SubMenuWrapper = styled(Box)(
     
         .MuiButton-root {
           display: flex;
-          color: ${theme.colors.alpha.trueWhite[70]};
+          color: ${theme.colors.alpha.black[70]};
           background-color: transparent;
           width: 100%;
           justify-content: flex-start;
@@ -154,13 +154,13 @@ const SubMenuWrapper = styled(Box)(
           }
 
           .MuiButton-startIcon {
-            color: ${theme.colors.alpha.trueWhite[30]};
+            color: ${theme.colors.alpha.black[30]};
             font-size: ${theme.typography.pxToRem(20)};
             margin-right: ${theme.spacing(1)};
           }
           
           .MuiButton-endIcon {
-            color: ${theme.colors.alpha.trueWhite[50]};
+            color: ${theme.colors.alpha.black[50]};
             margin-left: auto;
             opacity: .8;
             font-size: ${theme.typography.pxToRem(20)};
@@ -168,12 +168,12 @@ const SubMenuWrapper = styled(Box)(
 
           &.active,
           &:hover {
-            background-color: ${alpha(theme.colors.alpha.trueWhite[100], 0.06)};
-            color: ${theme.colors.alpha.trueWhite[100]};
+            background-color: ${alpha(theme.colors.primary.main, 0.06)};
+            color: ${theme.colors.primary.main};
 
             .MuiButton-startIcon,
             .MuiButton-endIcon {
-              color: ${theme.colors.alpha.trueWhite[100]};
+              color: ${theme.colors.primary.main};
             }
           }
         }
@@ -238,11 +238,23 @@ const SubMenuWrapper = styled(Box)(
 
 function SidebarMenu() {
   const { closeSidebar } = useContext(SidebarContext);
+  const dispatch = useDispatch();
 
   const { user: currentUser } = useSelector((state) => state.auth);
 
   const [open, setOpen] = useState(false);
   const [openMetadata, setOpenMetadata] = useState(false);
+
+  const notifications = useSelector((state) => state.notifikasi.unreadRecords || []);
+  //console.log("notifications", notifications);
+  const unreadCount = notifications.filter(notif => !notif.sudahBaca).length;
+  
+
+
+  // Add useEffect to fetch notifications when component mounts
+  useEffect(() => {
+    dispatch(retrieveAllUserUnread(currentUser.uuid));
+  }, [dispatch]);
 
   const toggleMenu = () => {
     setOpen(!open);
@@ -264,7 +276,7 @@ function SidebarMenu() {
                   component={RouterLink}
                   onClick={closeSidebar}
                   to="/overview"
-                  startIcon={<DesignServicesTwoToneIcon />}
+                  startIcon={<FeedIcon />}
                 >
                   Overview
                 </Button>
@@ -319,15 +331,39 @@ function SidebarMenu() {
               </ListItem>
               */}
               <ListItem component="div">
-                <Button
-                  disableRipple
-                  component={RouterLink}
-                  onClick={closeSidebar}
-                  to="/akun/profile/notifikasi"
-                  startIcon={<MmsTwoToneIcon />}
-                >
-                  Notification
-                </Button>
+              <Button
+                disableRipple
+                component={RouterLink}
+                onClick={closeSidebar}
+                to="/akun/profile/notifikasi"
+                startIcon={<MmsTwoToneIcon />}
+              >
+                Notification
+                {unreadCount > 0 && (
+                  <Box
+                    component="span"
+                    sx={{
+                      ml: 1,
+                      fontSize: '0.75rem',
+                      fontWeight: 'bold',
+                      color: 'white', // Teks putih
+                      backgroundColor: 'primary.main', // atau 'secondary.main'
+                      px: 1,
+                      minWidth: 20,
+                      height: 20,
+                      borderRadius: '50%',
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      lineHeight: 1,
+                    }}
+                  >
+                    {unreadCount}
+                  </Box>
+                )}
+              </Button>
+
+
               </ListItem>
             </List>
           </SubMenuWrapper>
@@ -344,26 +380,26 @@ function SidebarMenu() {
           >
             <SubMenuWrapper>
               <List component="div">
-                {/*
+                
                 <ListItem component="div">
                   <Button
                     disableRipple
                     component={RouterLink}
                     onClick={closeSidebar}
                     to="/systems/settings"
-                    startIcon={<TableChartTwoToneIcon />}
+                    startIcon={<WebIcon />}
                   >
-                    Settings
+                    Site Settings
                   </Button>
                 </ListItem>
-                */}
+               
                 <ListItem component="div">
                   <Button
                     disableRipple
                     component={RouterLink}
                     onClick={closeSidebar}
                     to="/systems/user"
-                    startIcon={<TableChartTwoToneIcon />}
+                    startIcon={<GroupAddIcon />}
                   >
                     User
                   </Button>
@@ -392,7 +428,7 @@ function SidebarMenu() {
                     component={RouterLink}
                     onClick={closeSidebar}
                     to="/managements/igt"
-                    startIcon={<TableChartTwoToneIcon />}
+                    startIcon={<CorporateFareIcon />}
                   >
                     IGT dan Produsen
                   </Button>
@@ -403,7 +439,7 @@ function SidebarMenu() {
                     component={RouterLink}
                     onClick={closeSidebar}
                     to="/managements/keywords"
-                    startIcon={<DesignServicesTwoToneIcon />}
+                    startIcon={<LocalOfferIcon />}
                   >
                     Keywords
                   </Button>
@@ -426,9 +462,9 @@ function SidebarMenu() {
                     component={RouterLink}
                     onClick={closeSidebar}
                     to="/managements/pemeriksaan"
-                    startIcon={<TableChartTwoToneIcon />}
+                    startIcon={<FeaturedPlayListIcon />}
                   >
-                    Pemeriksaan
+                    Status Pemeriksaan
                   </Button>
                 </ListItem>
               </List>
@@ -437,35 +473,36 @@ function SidebarMenu() {
         ) : (
           ""
         )}
-
-        <List
-          component="div"
-          subheader={
-            <ListSubheader component="div" disableSticky>
-              Data
-            </ListSubheader>
-          }
-        >
-          <SubMenuWrapper>
-            <List component="div">
-              <ListItemButton onClick={toggleMenu}>
-                <ListItemText primary="Manage Data Geospasial" />
-                {open ? <ExpandLessTwoToneIcon /> : <ExpandMoreTwoToneIcon />}
-              </ListItemButton>
-              <Collapse in={open} timeout="auto" unmountOnExit>
-                <List component="div" disablePadding>
-                  <ListItem component="div">
-                    <Button
-                      disableRipple
-                      component={RouterLink}
-                      onClick={closeSidebar}
-                      to="/data/produsen"
-                      startIcon={<DesignServicesTwoToneIcon />}
-                    >
-                      Daftar Data Vektor
-                    </Button>
-                  </ListItem>
-                  {/* <ListItem component="div">
+        {currentUser.roles.includes("ROLE_ADMIN") ||
+        currentUser.roles.includes("ROLE_PRODUSEN") ? (
+          <List
+            component="div"
+            subheader={
+              <ListSubheader component="div" disableSticky>
+                Data
+              </ListSubheader>
+            }
+          >
+            <SubMenuWrapper>
+              <List component="div">
+                <ListItemButton onClick={toggleMenu}>
+                  <ListItemText primary="Manage Data Geospasial" />
+                  {open ? <ExpandLessTwoToneIcon /> : <ExpandMoreTwoToneIcon />}
+                </ListItemButton>
+                <Collapse in={open} timeout="auto" unmountOnExit>
+                  <List component="div" disablePadding>
+                    <ListItem component="div">
+                      <Button
+                        disableRipple
+                        component={RouterLink}
+                        onClick={closeSidebar}
+                        to="/data/produsen"
+                        startIcon={<MapIcon />}
+                      >
+                        Daftar Data Vektor
+                      </Button>
+                    </ListItem>
+                    {/* <ListItem component="div">
                     <Button
                       disableRipple
                       component={RouterLink}
@@ -477,11 +514,14 @@ function SidebarMenu() {
                     </Button>
                   </ListItem>
                   */}
-                </List>
-              </Collapse>
-            </List>
-          </SubMenuWrapper>
-        </List>
+                  </List>
+                </Collapse>
+              </List>
+            </SubMenuWrapper>
+          </List>
+        ) : (
+          ""
+        )}
         {/*
         <List
           component="div"
@@ -539,7 +579,7 @@ function SidebarMenu() {
                     component={RouterLink}
                     onClick={closeSidebar}
                     to="/data/pemeriksaan"
-                    startIcon={<TableChartTwoToneIcon />}
+                    startIcon={<EventRepeatIcon />}
                   >
                     Pemeriksaan
                   </Button>
@@ -556,7 +596,7 @@ function SidebarMenu() {
                     onClick={closeSidebar}
                     //href={process.env.PUBLIC_URL + "/data/publikasi"}
                     to="/data/publikasi"
-                    startIcon={<TableChartTwoToneIcon />}
+                    startIcon={<LanguageIcon />}
                   >
                     Publikasi Geoservice
                   </Button>
@@ -571,7 +611,7 @@ function SidebarMenu() {
                   onClick={closeSidebar}
                   //href={process.env.PUBLIC_URL + "/data/publikasi"}
                   to="/data/publikasi-csw"
-                  startIcon={<TableChartTwoToneIcon />}
+                  startIcon={<CloudSyncIcon />}
                 >
                   Publikasi CSW
                 </Button>
