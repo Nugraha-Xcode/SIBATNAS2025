@@ -23,7 +23,10 @@
 /web/geoportal-react/node_modules/
 /api/node/node_modules/
 /api/node/app/config/db.config.js
-
+/api/node/app/resources/static/assets/produsen/
+/api/node/app/resources/static/assets/pemeriksaan/
+/api/node/app/resources/static/assets/publikasi/
+/api/node/app/resources/static/assets/berita/*
 !/api/node/app/resources/static/assets/berita/.gitkeep
 /geoserver/data_dir/**/*.log
 /geoserver/data_dir/**/*.lck
